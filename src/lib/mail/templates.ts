@@ -44,6 +44,7 @@ const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\n13:00 Eintreffen ·
 
 type Block =
   | { p: string }
+  | { hero: { kicker: string; line1: string; line2: string; image?: string } }
   | { facts: string }
   | { code: string }
   | { buttons: { label: string; href: string; primary?: boolean }[] };
@@ -61,16 +62,29 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
   const art = ctx.participationType ? PARTICIPATION[ctx.participationType].title : "";
 
   let subject = "";
+  let preheader = "";
   let blocks: Block[] = [];
 
   switch (type) {
-    case "save_the_date":
-      subject = "Save the Date: die FOI-Weihnachtsfeier der anderen Art";
+    case "save_the_date": {
+      const gcal =
+        "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+        "&text=" + encodeURIComponent("FOI Racing – Die Weihnachtsfeier der anderen Art") +
+        "&dates=20261214/20261215" +
+        "&location=" + encodeURIComponent("Hockenheimring, Am Motodrom, 68766 Hockenheim") +
+        "&details=" + encodeURIComponent("Save the Date. Die persönliche Einladung folgt im November. " + ctx.siteUrl);
+      subject = "Save the Date: Die Weihnachtsfeier der anderen Art – 14. Dezember";
+      preheader = "Hockenheimring statt Weihnachtsmarkt: Bitte merken Sie sich Montag, den 14. Dezember vor.";
       blocks = [
-        { p: "zum Jahresende feiern wir anders: Wir tauschen den Tisch gegen die Strecke. Gemeinsam mit der School of Racing laden wir die Gäste der Frontline of Innovation am Montag, 14. Dezember 2026, auf den Hockenheimring ein: Racing am Nachmittag, danach ein frühes Dinner in der Mercedes-Loge." },
-        { p: "Bitte halten Sie sich den Nachmittag und frühen Abend frei. Ihre persönliche Einladung mit Anmeldecode folgt Mitte November. Die Plätze sind auf 80 begrenzt." },
+        { hero: { kicker: "Save the Date · Montag, 14. Dezember 2026 · Hockenheimring", line1: "Die Weihnachtsfeier", line2: "der anderen Art.", image: `${ctx.siteUrl}/images/mail-hero.jpg` } },
+        { p: "das Jahr neigt sich dem Ende zu – und wir möchten es gern mit Ihnen ausklingen lassen. Nur diesmal nicht am gedeckten Tisch, sondern auf der Strecke: Gemeinsam mit Paul Muck und der School of Racing laden wir Sie zur Weihnachtsfeier der anderen Art auf den Hockenheimring ein." },
+        { p: "Am Nachmittag geht es auf den Asphalt – am Steuer Ihres eigenen Wagens oder als Beifahrer an der Seite eines Profis. Am Abend lassen wir den Tag beim gemeinsamen Dinner ausklingen: mit guten Gesprächen, ein paar Überraschungen und einem Abend für den guten Zweck." },
+        { facts: "Montag, 14. Dezember 2026\nHockenheimring · Nachmittag und Abend\nPersönliche Einladung mit allen Details folgt im November" },
+        { p: "Bitte merken Sie sich den Termin schon heute vor. Wir würden uns sehr freuen, wenn Sie dabei sind." },
+        { buttons: [{ label: "In den Kalender eintragen", href: `${ctx.siteUrl}/foi-racing-2026.ics`, primary: true }, { label: "Google Kalender", href: gcal }, { label: "Mehr erfahren", href: ctx.siteUrl }] },
       ];
       break;
+    }
     case "einladung":
       subject = "Ihre Einladung: FOI Racing am 14. Dezember";
       blocks = [
@@ -153,7 +167,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
   // Sicherung: Mails mit offenen Platzhaltern wie „[Treffpunkt]“ werden nie verschickt
   const open = text.match(/\[[^\]\n]{2,}\]/g);
   if (open) throw new MailPlaceholderError(`Mail „${MAIL_LABEL[type]}“ enthält noch Platzhalter: ${[...new Set(open)].join(", ")}`);
-  return { subject, html: toHtml(anrede, blocks, ctx.siteUrl), text };
+  return { subject, html: toHtml(anrede, blocks, ctx.siteUrl, preheader), text };
 }
 
 export class MailPlaceholderError extends Error {}
@@ -173,7 +187,8 @@ function esc(s: string): string {
 }
 
 function toText(anrede: string, blocks: Block[]): string {
-  const parts = [anrede];
+  const hero = blocks.find((b) => "hero" in b) as { hero: { kicker: string; line1: string; line2: string } } | undefined;
+  const parts = hero ? [`${hero.hero.kicker.toUpperCase()}\n${hero.hero.line1} ${hero.hero.line2}`, anrede] : [anrede];
   for (const b of blocks) {
     if ("p" in b) parts.push(b.p);
     if ("facts" in b) parts.push(b.facts);
@@ -185,14 +200,24 @@ function toText(anrede: string, blocks: Block[]): string {
   return parts.join("\n\n");
 }
 
-function toHtml(anrede: string, blocks: Block[], siteUrl: string): string {
+function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = ""): string {
+  const heroBlock = blocks.find((b) => "hero" in b) as { hero: { kicker: string; line1: string; line2: string; image?: string } } | undefined;
+  const hero = heroBlock
+    ? `${heroBlock.hero.image ? `<tr><td style="background:#000;line-height:0"><img src="${esc(heroBlock.hero.image)}" width="600" alt="Sportwagen auf dem Hockenheimring" style="display:block;width:100%;max-width:600px;height:auto;border:0"></td></tr>` : ""}
+<tr><td style="background:#000;padding:22px 28px 28px;font-family:Arial,Helvetica,sans-serif">
+<p style="margin:0 0 10px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#E6941A">${esc(heroBlock.hero.kicker)}</p>
+<p style="margin:0;font-family:Impact,'Arial Narrow Bold','Arial Black',Arial,sans-serif;font-size:38px;line-height:1.05;text-transform:uppercase;color:#ffffff">${esc(heroBlock.hero.line1)}<br><span style="color:#E6941A">${esc(heroBlock.hero.line2)}</span></p>
+</td></tr>`
+    : "";
   const body = blocks
+    .filter((b) => !("hero" in b))
     .map((b) => {
       if ("p" in b) return `<p style="margin:0 0 16px">${esc(b.p)}</p>`;
       if ("facts" in b)
         return `<p style="margin:0 0 16px;padding:14px 16px;border-left:3px solid #E6941A;background:#f6f6f4;font-size:15px">${esc(b.facts).replace(/\n/g, "<br>")}</p>`;
       if ("code" in b)
         return `<p style="margin:0 0 16px">Ihr persönlicher Code:<br><span style="display:inline-block;margin-top:6px;padding:8px 14px;background:#000;color:#fff;font-family:'Courier New',monospace;font-size:20px;letter-spacing:3px">${esc(b.code)}</span></p>`;
+      if (!("buttons" in b)) return "";
       return `<p style="margin:8px 0 20px">${b.buttons
         .map((x) =>
           x.primary
@@ -205,9 +230,11 @@ function toHtml(anrede: string, blocks: Block[], siteUrl: string): string {
 
   return `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
 <body style="margin:0;padding:0;background:#efefed">
+${preheader ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#efefed">${esc(preheader)}</div>` : ""}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#efefed"><tr><td align="center" style="padding:24px 12px">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff">
 <tr><td style="background:#000;padding:22px 28px"><img src="${siteUrl}/images/foi-logo.png" alt="Frontline of Innovation" height="36" style="display:block;height:36px"></td></tr>
+${hero}
 <tr><td style="height:6px;background:repeating-linear-gradient(90deg,#000 0 6px,#fff 6px 12px)"></td></tr>
 <tr><td style="padding:28px 28px 8px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.55;color:#1a1a1a">
 <p style="margin:0 0 16px">${esc(anrede)}</p>
