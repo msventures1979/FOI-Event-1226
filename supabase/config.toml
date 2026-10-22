@@ -1,0 +1,18 @@
+# Supabase-Projektkonfiguration (für die GitHub-Integration bzw. die Supabase CLI)
+project_id = "foi-event-1226"
+
+[db]
+major_version = 17
+
+[db.migrations]
+enabled = true
+
+[db.seed]
+enabled = false
+
+[auth]
+site_url = "https://racing.frontlineofinnovation.de"
+additional_redirect_urls = ["http://localhost:3000/auth/callback", "https://racing.frontlineofinnovation.de/auth/callback"]
+
+[auth.email]
+enable_signup = true

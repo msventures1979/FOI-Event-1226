@@ -1,0 +1,12 @@
+import { NextResponse } from "next/server";
+import { authClient } from "@/lib/supabase/server";
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const code = url.searchParams.get("code");
+  if (code) {
+    const supa = await authClient();
+    await supa.auth.exchangeCodeForSession(code);
+  }
+  return NextResponse.redirect(new URL("/admin", url.origin));
+}
