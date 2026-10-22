@@ -162,7 +162,7 @@ export async function queueMails(_prev: unknown, form: FormData): Promise<{ msg:
 
   if (test) {
     const mail = renderMail(type, { guest: g, siteUrl: env.siteUrl, participationType: "own", freeSlots: 12 });
-    const r = await new Resend(env.resendKey).emails.send({ from: env.mailFrom, to: admin, replyTo: env.mailReplyTo, subject: `[TEST] ${mail.subject}`, html: mail.html, text: mail.text });
+    const r = await new Resend(env.resendKey).emails.send({ from: mail.from ?? env.mailFrom, to: admin, replyTo: env.mailReplyTo, subject: `[TEST] ${mail.subject}`, html: mail.html, text: mail.text });
     return { msg: r.error ? `Fehler: ${r.error.message}` : `Testmail an ${admin} gesendet (Daten von ${g.first_name} ${g.last_name}).` };
   }
 

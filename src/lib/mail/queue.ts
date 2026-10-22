@@ -2,7 +2,7 @@ import "server-only";
 import { Resend } from "resend";
 import { db } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
-import { buildIcs } from "@/lib/ics";
+import { buildIcs, buildTeaserIcs } from "@/lib/ics";
 import { renderMail, type MailType } from "@/lib/mail/templates";
 import type { Guest, Registration } from "@/lib/types";
 
@@ -130,7 +130,9 @@ export async function processQueue(opts: { guestId?: string; max?: number } = {}
     }
 
     const attachments =
-      job.type === "bestaetigung"
+      job.type === "save_the_date"
+        ? [{ filename: "Save-the-Date-14-Dezember.ics", contentType: "text/calendar; charset=utf-8; method=PUBLISH", content: Buffer.from(buildTeaserIcs()).toString("base64") }]
+        : job.type === "bestaetigung"
         ? [
             {
               filename: "FOI-Racing-2026.ics",
@@ -141,7 +143,7 @@ export async function processQueue(opts: { guestId?: string; max?: number } = {}
         : undefined;
 
     const res = await resend.emails.send({
-      from: env.mailFrom,
+      from: mail.from ?? env.mailFrom,
       to: job.to_email,
       replyTo: env.mailReplyTo,
       subject: mail.subject,

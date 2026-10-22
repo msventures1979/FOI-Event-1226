@@ -79,7 +79,7 @@ async function main() {
   if (testTo) {
     const g = todo[0] ?? unique[0];
     const m = renderMail("save_the_date", { guest: { ...g, code: "", manage_token: "" }, siteUrl: site });
-    const r = await resend.emails.send({ from, to: testTo, replyTo, subject: "[TEST] " + m.subject, html: m.html, text: m.text });
+    const r = await resend.emails.send({ from: m.from ?? from, to: testTo, replyTo, subject: "[TEST] " + m.subject, html: m.html, text: m.text });
     console.log(r.error ? `Fehler: ${r.error.message}` : `Testmail an ${testTo} gesendet (Anrede wie für ${g.email}).`);
     return;
   }
@@ -87,7 +87,7 @@ async function main() {
   let n = 0;
   for (const g of todo.slice(0, limit)) {
     const m = renderMail("save_the_date", { guest: { ...g, code: "", manage_token: "" }, siteUrl: site });
-    const r = await resend.emails.send({ from, to: g.email, replyTo, subject: m.subject, html: m.html, text: m.text });
+    const r = await resend.emails.send({ from: m.from ?? from, to: g.email, replyTo, subject: m.subject, html: m.html, text: m.text });
     if (r.error) {
       console.error(`✗ ${g.email}: ${r.error.message}`);
       if (/limit|quota|rate/i.test(r.error.message)) break;

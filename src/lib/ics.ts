@@ -21,6 +21,28 @@ export function buildIcs(opts: { uid: string; url: string; title?: string }): st
   return lines.map(fold).join("\r\n") + "\r\n";
 }
 
+/** Neutraler Kalendereintrag für das Save the Date (ganztägig, ohne Ort). */
+export function buildTeaserIcs(): string {
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Frontline of Innovation//Save the Date//DE",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    "UID:foi-2026-12-14-save-the-date@frontlineofinnovation.de",
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`,
+    "DTSTART;VALUE=DATE:20261214",
+    "DTEND;VALUE=DATE:20261215",
+    "SUMMARY:Frontline of Innovation – Die Weihnachtsfeier der anderen Art",
+    "DESCRIPTION:Save the Date. Die persönliche Einladung mit allen Details folgt im November.",
+    "TRANSP:TRANSPARENT",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return lines.map(fold).join("\r\n") + "\r\n";
+}
+
 /** RFC 5545 §3.1: Zeilen über 75 Oktette umbrechen (Fortsetzung beginnt mit einem Leerzeichen). */
 function fold(line: string): string {
   const enc = new TextEncoder();

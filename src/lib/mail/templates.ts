@@ -37,7 +37,13 @@ export interface RenderedMail {
   subject: string;
   html: string;
   text: string;
+  /** Abweichender Absender (z. B. neutral für das Save the Date) */
+  from?: string;
 }
+
+/** Für das Save the Date: nichts darf auf Auto/Rennen hindeuten – auch nicht Absender, Links oder Bildadressen. */
+export const TEASER_FROM = "Frontline of Innovation <info@frontlineofinnovation.de>";
+const TEASER_ASSETS = "https://foi-event-1226.vercel.app";
 
 const GRUSS = "Herzliche Grüße aus Mannheim\nMatthias Storch und Süleyman Acar";
 const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\n13:00 Eintreffen · 14:00 Racing · 17:00 Early Dinner in der Mercedes-Loge";
@@ -63,25 +69,31 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
 
   let subject = "";
   let preheader = "";
+  let from: string | undefined;
+  let assets = ctx.siteUrl;
+  let footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing";
   let blocks: Block[] = [];
 
   switch (type) {
     case "save_the_date": {
+      // Bewusst neutral: kein Bild, kein Ort, kein Link zur Event-Seite
       const gcal =
         "https://calendar.google.com/calendar/render?action=TEMPLATE" +
-        "&text=" + encodeURIComponent("FOI Racing – Die Weihnachtsfeier der anderen Art") +
+        "&text=" + encodeURIComponent("Frontline of Innovation – Die Weihnachtsfeier der anderen Art") +
         "&dates=20261214/20261215" +
-        "&location=" + encodeURIComponent("Hockenheimring, Am Motodrom, 68766 Hockenheim") +
-        "&details=" + encodeURIComponent("Save the Date. Die persönliche Einladung folgt im November. " + ctx.siteUrl);
+        "&details=" + encodeURIComponent("Save the Date. Die persönliche Einladung mit allen Details folgt im November.");
       subject = "Save the Date: Die Weihnachtsfeier der anderen Art – 14. Dezember";
-      preheader = "Hockenheimring statt Weihnachtsmarkt: Bitte merken Sie sich Montag, den 14. Dezember vor.";
+      preheader = "Bitte merken Sie sich Montag, den 14. Dezember vor. Mehr verraten wir noch nicht.";
+      from = TEASER_FROM;
+      assets = TEASER_ASSETS;
+      footer = "Frontline of Innovation";
       blocks = [
-        { hero: { kicker: "Save the Date · Montag, 14. Dezember 2026 · Hockenheimring", line1: "Die Weihnachtsfeier", line2: "der anderen Art.", image: `${ctx.siteUrl}/images/mail-hero.jpg` } },
-        { p: "das Jahr neigt sich dem Ende zu – und wir möchten es gern mit Ihnen ausklingen lassen. Nur diesmal nicht am gedeckten Tisch, sondern auf der Strecke: Gemeinsam mit Paul Muck und der School of Racing laden wir Sie zur Weihnachtsfeier der anderen Art auf den Hockenheimring ein." },
-        { p: "Am Nachmittag geht es auf den Asphalt – am Steuer Ihres eigenen Wagens oder als Beifahrer an der Seite eines Profis. Am Abend lassen wir den Tag beim gemeinsamen Dinner ausklingen: mit guten Gesprächen, ein paar Überraschungen und einem Abend für den guten Zweck." },
-        { facts: "Montag, 14. Dezember 2026\nHockenheimring · Nachmittag und Abend\nPersönliche Einladung mit allen Details folgt im November" },
-        { p: "Bitte merken Sie sich den Termin schon heute vor. Wir würden uns sehr freuen, wenn Sie dabei sind." },
-        { buttons: [{ label: "In den Kalender eintragen", href: `${ctx.siteUrl}/foi-racing-2026.ics`, primary: true }, { label: "Google Kalender", href: gcal }, { label: "Mehr erfahren", href: ctx.siteUrl }] },
+        { hero: { kicker: "Save the Date · Montag, 14. Dezember 2026", line1: "Die Weihnachtsfeier", line2: "der anderen Art." } },
+        { p: "das Jahr neigt sich dem Ende zu – und wir möchten es gern gemeinsam mit Ihnen ausklingen lassen. Allerdings nicht ganz so, wie man es von einer Weihnachtsfeier erwartet." },
+        { p: "Was genau wir vorhaben, verraten wir noch nicht. Nur so viel: Es wird ein Nachmittag und Abend, wie Sie ihn mit der Frontline of Innovation noch nicht erlebt haben – mit guten Gesprächen, ein paar Überraschungen und einem Zweck, der über den Tag hinausgeht." },
+        { facts: "Montag, 14. Dezember 2026 · Nachmittag und Abend\nIn der Region Rhein-Neckar\nIhre persönliche Einladung mit allen Details folgt im November" },
+        { p: "Bitte merken Sie sich den Termin schon heute vor – wir würden uns sehr freuen, wenn Sie dabei sind. Den Kalendereintrag finden Sie auch im Anhang." },
+        { buttons: [{ label: "Im Google Kalender eintragen", href: gcal, primary: true }] },
       ];
       break;
     }
@@ -167,7 +179,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
   // Sicherung: Mails mit offenen Platzhaltern wie „[Treffpunkt]“ werden nie verschickt
   const open = text.match(/\[[^\]\n]{2,}\]/g);
   if (open) throw new MailPlaceholderError(`Mail „${MAIL_LABEL[type]}“ enthält noch Platzhalter: ${[...new Set(open)].join(", ")}`);
-  return { subject, html: toHtml(anrede, blocks, ctx.siteUrl, preheader), text };
+  return { subject, html: toHtml(anrede, blocks, assets, preheader, footer, type === "save_the_date"), text: text.replace("—\nFrontline of Innovation · info@frontlineofinnovation.de", `—\n${footer} · info@frontlineofinnovation.de`), from };
 }
 
 export class MailPlaceholderError extends Error {}
@@ -200,7 +212,7 @@ function toText(anrede: string, blocks: Block[]): string {
   return parts.join("\n\n");
 }
 
-function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = ""): string {
+function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = "", footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing", neutral = false): string {
   const heroBlock = blocks.find((b) => "hero" in b) as { hero: { kicker: string; line1: string; line2: string; image?: string } } | undefined;
   const hero = heroBlock
     ? `${heroBlock.hero.image ? `<tr><td style="background:#000;line-height:0"><img src="${esc(heroBlock.hero.image)}" width="600" alt="Sportwagen auf dem Hockenheimring" style="display:block;width:100%;max-width:600px;height:auto;border:0"></td></tr>` : ""}
@@ -235,12 +247,12 @@ ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0;c
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff">
 <tr><td style="background:#000;padding:22px 28px"><img src="${siteUrl}/images/foi-logo.png" alt="Frontline of Innovation" height="36" style="display:block;height:36px"></td></tr>
 ${hero}
-<tr><td style="height:6px;background:repeating-linear-gradient(90deg,#000 0 6px,#fff 6px 12px)"></td></tr>
+${neutral ? `<tr><td style="height:4px;background:#E6941A;line-height:4px;font-size:0">&nbsp;</td></tr>` : `<tr><td style="height:6px;background:repeating-linear-gradient(90deg,#000 0 6px,#fff 6px 12px)"></td></tr>`}
 <tr><td style="padding:28px 28px 8px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.55;color:#1a1a1a">
 <p style="margin:0 0 16px">${esc(anrede)}</p>
 ${body}
 <p style="margin:24px 0 0">${esc(GRUSS).replace(/\n/g, "<br>")}</p>
 </td></tr>
-<tr><td style="padding:24px 28px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#888">Frontline of Innovation · in Zusammenarbeit mit School of Racing · <a href="mailto:info@frontlineofinnovation.de" style="color:#888">info@frontlineofinnovation.de</a></td></tr>
+<tr><td style="padding:24px 28px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#888">${esc(footer)} · <a href="mailto:info@frontlineofinnovation.de" style="color:#888">info@frontlineofinnovation.de</a></td></tr>
 </table></td></tr></table></body></html>`;
 }
