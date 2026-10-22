@@ -1,13 +1,11 @@
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/site";
+import { Datenschutz, Impressum } from "@/content/legal";
 
-/** Rechtstexte – Inhalte folgen (Platzhalter, bis die Texte vorliegen). */
-const PAGES: Record<string, { title: string; body: string }> = {
-  impressum: { title: "Impressum", body: "[Impressum – verantwortliche Gesellschaft, Anschrift, Vertretung, Registereintrag, Kontakt]" },
-  datenschutz: {
-    title: "Datenschutz",
-    body: "[Datenschutzerklärung – Verantwortlicher, Zwecke (Einladung, Anmeldung, Durchführung), Empfänger (School of Racing, Autohaus Gohm, Supabase, Resend, Vercel), Speicherdauer (Fahrzeug- und Führerscheinangaben bis 3 Monate nach dem Event), Rechte der Betroffenen]",
-  },
+/** Rechtstexte. Teilnahmebedingungen und Partnertexte folgen (Platzhalter, bis die Texte vorliegen). */
+const PAGES: Record<string, { title: string; body: React.ReactNode }> = {
+  impressum: { title: "Impressum", body: <Impressum /> },
+  datenschutz: { title: "Datenschutz", body: <Datenschutz /> },
   teilnahmebedingungen: { title: "Teilnahmebedingungen", body: "[Teilnahmebedingungen FOI Racing]" },
   haftungsverzicht: { title: "Haftungsverzicht School of Racing", body: "[Text bzw. PDF der School of Racing]" },
   "nutzungsbedingungen-gohm": { title: "Nutzungsbedingungen Autohaus Gohm", body: "[Text des Autohauses Gohm für die Lamborghini-Fahrten]" },
@@ -32,7 +30,7 @@ export default async function Legal({ params }: { params: Promise<{ slug: string
     <PageShell>
       <main className="mx-auto max-w-[760px] px-6 pb-24 pt-20">
         <h1 className="font-display text-5xl font-bold uppercase leading-none">{page.title}</h1>
-        <p className="mt-8 text-[17px] leading-relaxed text-[#d1d1d1]">{page.body}</p>
+        <div className="mt-8 text-[17px] leading-relaxed text-[#d1d1d1]">{page.body}</div>
       </main>
     </PageShell>
   );

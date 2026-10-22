@@ -13,7 +13,6 @@ const FAQ: { q: string; a: string }[] = [
   { q: "Was passiert bei Regen oder Schnee?", a: "[Regelung – von School of Racing]" },
   { q: "Was ziehe ich an?", a: "[Strecke: warm und wetterfest; Dinner: Dresscode offen]" },
   { q: "Wie komme ich hin, wo parke ich?", a: "[Anfahrt, Parken, Treffpunkt]" },
-  { q: "Wie komme ich nach dem Dinner nach Hause?", a: "[Shuttle – offen]" },
   { q: "Kann ich eine Begleitung mitbringen?", a: "[offen – zählt sie zum Kontingent?]" },
   {
     q: "Was, wenn ich doch nicht kommen kann?",
@@ -136,7 +135,7 @@ export default async function Home() {
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           <TypeCard type="own" image="/images/card-own-car.jpg" alt="Sportwagen bei einem Trackday der School of Racing" foot="Voraussetzungen: [Fahrzeug, Reifen, Helm]" free={slots?.own.free} />
-          <TypeCard type="taxi" foot="[Fahrzeug, Rundenzahl]" free={slots?.taxi.free} />
+          <TypeCard type="taxi" image="/images/card-taxi.jpg" alt="Blick aus dem Cockpit auf die Rennstrecke bei einem Training der School of Racing" foot="[Fahrzeug, Rundenzahl]" free={slots?.taxi.free} />
           <TypeCard type="lambo" image="/images/card-lamborghini.jpg" alt="Lamborghini mit geöffneten Türen beim FOI-Dinner im Mai 2026" foot="[Modell, Runden]" free={slots?.lambo.free} gold />
         </div>
       </section>
@@ -191,10 +190,9 @@ export default async function Home() {
             </p>
             <dl className="grid grid-cols-[minmax(110px,auto)_1fr] border-t border-line-strong text-base">
               {[
-                ["Adresse", "[Adresse]"],
+                ["Adresse", "Am Motodrom, 68766 Hockenheim"],
                 ["Treffpunkt", "[Eingang / Fahrerlager]"],
                 ["Parken", "[Hinweis]"],
-                ["Heimfahrt", "[Shuttle nach Mannheim und Heidelberg – offen]"],
               ].map(([k, v]) => (
                 <div key={k} className="contents">
                   <dt className="border-b border-line-strong py-3.5 pr-4 text-dim">{k}</dt>
@@ -203,9 +201,26 @@ export default async function Home() {
               ))}
             </dl>
           </div>
-          <div className="flex min-h-[300px] items-center justify-center border border-line-strong bg-[#0d0d0d] p-6 text-center text-xs uppercase tracking-[0.12em] text-[#8c8c8c]">
-            [Karte als statisches Bild]
-          </div>
+          <figure className="flex flex-col">
+            {/* Statische Karte (selbst gehostet, keine Drittanbieter-Einbindung); Klick öffnet die Route */}
+            <a
+              href="https://www.google.com/maps/dir/?api=1&destination=Hockenheimring%2C%20Am%20Motodrom%2C%2068766%20Hockenheim"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative block min-h-[300px] flex-1 overflow-hidden border border-line-strong"
+              aria-label="Route zum Hockenheimring in Google Maps öffnen"
+            >
+              <Image src="/images/karte-hockenheimring.jpg" alt="Karte: Hockenheimring an der A6 östlich von Hockenheim" fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover" />
+              <span className="absolute bottom-4 left-4 bg-black/85 px-4 py-2.5 text-sm text-white group-hover:text-gold">Route planen →</span>
+            </a>
+            <figcaption className="mt-2 text-xs text-dim">
+              Karte: ©{" "}
+              <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="text-dim underline">
+                OpenStreetMap
+              </a>
+              -Mitwirkende
+            </figcaption>
+          </figure>
         </div>
       </section>
 

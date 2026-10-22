@@ -127,7 +127,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       blocks = [
         { p: "in einer Woche sehen wir uns auf dem Hockenheimring." },
         { facts: `Eintreffen 13:00 Uhr · Treffpunkt [Eingang] · Parken [Hinweis]\nIhre Teilnahme: ${art}` },
-        { p: "Bitte denken Sie an [warme, wetterfeste Kleidung; Helm/Reifen bei eigenem Wagen]. Nach dem Dinner [bringt Sie ein Shuttle nach Mannheim und Heidelberg]." },
+        { p: "Bitte denken Sie an [warme, wetterfeste Kleidung; Helm/Reifen bei eigenem Wagen].." },
         { p: "Bitte bestätigen Sie kurz, dass es bei Ihrer Teilnahme bleibt. Bitte geben Sie uns bis zum 10. Dezember Bescheid." },
         { buttons: [{ label: "Ich bin dabei", href: `${verwalten}?bestaetigen=1`, primary: true }, { label: "Ich muss leider absagen", href: `${verwalten}?absagen=1` }] },
       ];

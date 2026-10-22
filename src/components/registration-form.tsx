@@ -328,6 +328,9 @@ export function RegistrationForm({
             placeholder="optional"
             maxLength={500}
           />
+          <p className="mt-1.5 text-xs text-[#a6a6a6]">
+            Freiwillig. Wir nutzen die Angabe nur für das Essen am Abend und löschen sie spätestens drei Monate nach der Veranstaltung.
+          </p>
         </div>
       </div>
 
