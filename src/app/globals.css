@@ -17,6 +17,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Sprungziele nicht unter dem festen Kopfbereich verstecken */
+[id] {
+  scroll-margin-top: 88px;
+}
+
 body {
   background: #000;
   color: #fff;
