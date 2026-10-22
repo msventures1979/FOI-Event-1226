@@ -1,9 +1,11 @@
+import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/supabase/admin";
 import { getEvent } from "@/lib/event";
 import { PARTICIPATION, type Guest, type Registration } from "@/lib/types";
 import { guestAction } from "../../actions";
 
 export default async function Checkin({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  await requireAdmin();
   const { q = "" } = await searchParams;
   const ev = await getEvent();
   const { data } = await db()

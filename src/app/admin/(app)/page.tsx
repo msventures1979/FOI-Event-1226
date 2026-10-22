@@ -1,19 +1,23 @@
+import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/supabase/admin";
 import { getEvent, getFreeSlots } from "@/lib/event";
 import { env } from "@/lib/env";
 import { sentToday } from "@/lib/mail/queue";
 import { PARTICIPATION, PARTICIPATION_TYPES, STATUS_LABEL, type GuestStatus } from "@/lib/types";
 import { runQueue, saveCapacity } from "../actions";
+import { SubmitButton } from "@/components/submit-button";
 
-export default async function Overview({ searchParams }: { searchParams: Promise<{ queue?: string }> }) {
-  const { queue } = await searchParams;
+export default async function Overview({ searchParams }: { searchParams: Promise<{ queue?: string; fehler?: string; gespeichert?: string }> }) {
+  await requireAdmin();
+  const { queue, fehler, gespeichert } = await searchParams;
   const ev = await getEvent();
-  const [slots, { data: guests }, { data: caps }, today, { count: pending }] = await Promise.all([
+  const [slots, { data: guests }, { data: caps }, today, { count: pending }, { data: failedJobs }] = await Promise.all([
     getFreeSlots(ev.id),
     db().from("event_guests").select("status").eq("event_id", ev.id),
     db().from("event_capacity").select("*").eq("event_id", ev.id),
     sentToday(),
-    db().from("email_queue").select("id", { count: "exact", head: true }).is("sent_at", null),
+    db().from("email_queue").select("id", { count: "exact", head: true }).is("sent_at", null).lt("attempts", 5),
+    db().from("email_queue").select("id, type, to_email, last_error, attempts").is("sent_at", null).not("last_error", "is", null).order("id", { ascending: false }).limit(10),
   ]);
 
   const counts: Record<string, number> = {};
@@ -52,8 +56,10 @@ export default async function Overview({ searchParams }: { searchParams: Promise
             <label className="lbl" htmlFor="deadline">Anmeldeschluss</label>
             <input id="deadline" name="deadline" type="datetime-local" defaultValue={deadline} className="field" />
           </div>
-          <button className="btn-gold !min-h-12">Speichern</button>
+          <SubmitButton className="btn-gold !min-h-12" pendingText="Speichert …">Speichern</SubmitButton>
         </form>
+        {fehler && <p role="alert" className="mt-3 text-sm text-[#ff8a80]">Nicht alles gespeichert: {fehler}</p>}
+        {gespeichert && <p role="status" className="mt-3 text-sm text-gold">Gespeichert.</p>}
         <p className="mt-2 text-xs text-dim">Mehr Plätze lassen Wartende automatisch nachrücken (sie bekommen ein Angebot per Mail).</p>
       </section>
 
@@ -63,10 +69,25 @@ export default async function Overview({ searchParams }: { searchParams: Promise
           <span>Heute versendet: <b>{today}</b> / {env.mailDailyLimit}</span>
           <span>In der Warteschlange: <b>{pending ?? 0}</b></span>
           <form action={runQueue}>
-            <button className="btn-ghost">Warteschlange jetzt abarbeiten</button>
+            <SubmitButton className="btn-ghost" pendingText="Versendet …">Warteschlange jetzt abarbeiten</SubmitButton>
           </form>
           {queue && <span className="text-gold">Letzter Lauf: {queue.split("-")[0]} gesendet, {queue.split("-")[1]} Fehler, {queue.split("-")[2]} auf morgen verschoben</span>}
         </div>
+        {(failedJobs ?? []).length > 0 && (
+          <div className="mt-6">
+            <h3 className="mb-2 text-sm font-semibold text-[#ff8a80]">Mails mit Problemen</h3>
+            <table className="admin-table w-full">
+              <thead>
+                <tr><th>Mail</th><th>Empfänger</th><th>Versuche</th><th>Fehler</th></tr>
+              </thead>
+              <tbody>
+                {(failedJobs ?? []).map((j) => (
+                  <tr key={j.id}><td>{j.type}</td><td>{j.to_email}</td><td>{j.attempts}</td><td className="text-[#d1d1d1]">{j.last_error}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
     </div>
   );

@@ -12,11 +12,27 @@ export function buildIcs(opts: { uid: string; url: string; title?: string }): st
     "DTSTART:20261214T120000Z",
     "DTEND:20261214T200000Z",
     `SUMMARY:${opts.title ?? "FOI Racing – Die Weihnachtsfeier der anderen Art"}`,
-    "LOCATION:Hockenheimring",
+    "LOCATION:Hockenheimring\\, Am Motodrom\\, 68766 Hockenheim",
     "DESCRIPTION:13:00 Eintreffen · 14:00 Racing · 17:00 Early Dinner in der Mercedes-Loge.\\nFrontline of Innovation in Zusammenarbeit mit School of Racing.",
     `URL:${opts.url}`,
     "END:VEVENT",
     "END:VCALENDAR",
   ];
-  return lines.join("\r\n") + "\r\n";
+  return lines.map(fold).join("\r\n") + "\r\n";
+}
+
+/** RFC 5545 §3.1: Zeilen über 75 Oktette umbrechen (Fortsetzung beginnt mit einem Leerzeichen). */
+function fold(line: string): string {
+  const enc = new TextEncoder();
+  const out: string[] = [];
+  let cur = "";
+  for (const ch of line) {
+    const limit = out.length === 0 ? 75 : 74;
+    if (enc.encode(cur + ch).length > limit) {
+      out.push(cur);
+      cur = ch;
+    } else cur += ch;
+  }
+  out.push(cur);
+  return out.join("\r\n ");
 }

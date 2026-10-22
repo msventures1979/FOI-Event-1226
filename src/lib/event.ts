@@ -27,7 +27,10 @@ export async function getPublicFreeSlots(): Promise<FreeSlots | null> {
 }
 
 export function normalizeCode(code: string): string {
-  return code.trim().toUpperCase().replace(/\s+/g, "");
+  // „foi k7mp q2xa“, „FOI-K7MPQ2XA“, „k7mpq2xa“ → „FOI-K7MPQ2XA“
+  const raw = code.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const rest = raw.startsWith("FOI") && raw.length > 8 ? raw.slice(3) : raw;
+  return rest ? `FOI-${rest}` : "";
 }
 
 export async function guestByCode(code: string): Promise<Guest | null> {
@@ -51,6 +54,6 @@ export async function guestByToken(token: string): Promise<{ guest: Guest; regis
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // ohne 0/O, 1/I
 
 export function generateCode(): string {
-  const bytes = crypto.getRandomValues(new Uint8Array(6));
+  const bytes = crypto.getRandomValues(new Uint8Array(8)); // 32^8 ≈ 10^12 Kombinationen
   return "FOI-" + Array.from(bytes, (b) => CODE_ALPHABET[b % CODE_ALPHABET.length]).join("");
 }

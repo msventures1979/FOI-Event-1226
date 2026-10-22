@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { PageShell } from "@/components/site";
 import { Progress } from "@/components/progress";
 import { ParticipationSummary } from "@/components/participation-summary";
@@ -13,6 +13,8 @@ export default async function Bestaetigt({ searchParams }: { searchParams: Promi
   const found = t ? await guestByToken(t) : null;
   if (!found) notFound();
   const { guest, registration } = found;
+  // nur direkt nach der Anmeldung sinnvoll – sonst die aktuelle Übersicht zeigen
+  if (!["angemeldet", "bestaetigt", "warteliste"].includes(guest.status)) redirect(`/meine-teilnahme/${guest.manage_token}`);
   const waitlist = guest.status === "warteliste";
 
   return (
@@ -22,11 +24,11 @@ export default async function Bestaetigt({ searchParams }: { searchParams: Promi
         <ParticipationSummary
           guest={guest}
           registration={registration}
-          headline={waitlist ? "Sie stehen auf der Warteliste." : "Wir sehen uns auf der Strecke."}
+          headline={waitlist ? "Sie stehen auf der Warteliste." : "Ihr Platz ist reserviert."}
           intro={
             waitlist
               ? "Vielen Dank, {name}. Die Plätze für Ihre Wahl sind derzeit vergeben. Sobald ein Platz frei wird, schreiben wir Ihnen."
-              : "Vielen Dank, {name}. Ihr Platz ist bestätigt. Die Bestätigung mit allen Details haben wir Ihnen per E-Mail geschickt."
+              : "Vielen Dank, {name}. Wir haben Ihren Startplatz für Sie reserviert. Alle Details haben wir Ihnen per E-Mail geschickt."
           }
         />
         <div className="mt-6 flex flex-wrap gap-3">

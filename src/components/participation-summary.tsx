@@ -25,9 +25,9 @@ export function ParticipationSummary({ guest, registration, headline, intro }: {
           <dt className="text-[#a6a6a6]">Datum</dt>
           <dd>Montag, 14. Dezember 2026</dd>
           <dt className="text-[#a6a6a6]">Eintreffen</dt>
-          <dd>13:00 Uhr, [Treffpunkt]</dd>
+          <dd>13:00 Uhr</dd>
           <dt className="text-[#a6a6a6]">Ort</dt>
-          <dd>Hockenheimring, [Adresse]</dd>
+          <dd>Hockenheimring, Am Motodrom, 68766 Hockenheim</dd>
           {registration?.start_number && ["angemeldet", "bestaetigt", "eingecheckt"].includes(guest.status) && (
             <>
               <dt className="text-[#a6a6a6]">Startnummer</dt>

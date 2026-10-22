@@ -13,14 +13,15 @@ export default async function MeineTeilnahme({
   searchParams,
 }: {
   params: Promise<{ token: string }>;
-  searchParams: Promise<{ bestaetigen?: string; absagen?: string }>;
+  searchParams: Promise<{ bestaetigen?: string; absagen?: string; hinweis?: string }>;
 }) {
   const { token } = await params;
   const sp = await searchParams;
   const found = await guestByToken(token);
   if (!found) notFound();
   const { guest, registration } = found;
-  const s = guest.status;
+  const offerExpired = guest.status === "angeboten" && !!guest.offer_expires_at && new Date(guest.offer_expires_at) < new Date();
+  const s = offerExpired ? "verfallen" : guest.status;
 
   const texts: Record<string, [string, string]> = {
     angemeldet: ["Ihr Platz ist reserviert.", "{name}, Sie sind angemeldet. Hier können Sie Ihre Teilnahme bestätigen oder absagen."],
@@ -30,7 +31,7 @@ export default async function MeineTeilnahme({
     angeboten: ["Ein Platz ist frei.", "{name}, für Sie ist ein Platz frei geworden. Bitte nehmen Sie ihn an."],
     abgesagt: ["Ihre Absage ist angekommen.", "{name}, schade, dass Sie diesmal nicht dabei sind."],
     storniert: ["Ihre Absage ist angekommen.", "{name}, Ihr Platz geht an einen anderen Gast. Vielen Dank für die Rückmeldung."],
-    verfallen: ["Das Angebot ist abgelaufen.", "{name}, leider ist die Frist für den freien Platz verstrichen. Bitte schreiben Sie uns an info@frontlineofinnovation.de."],
+    verfallen: ["Das Angebot ist abgelaufen.", "{name}, leider ist die Frist für den freien Platz verstrichen. Wenn Sie trotzdem gern dabei wären, schreiben Sie uns an info@frontlineofinnovation.de – wir schauen, was möglich ist."],
     eingeladen: ["Ihre Einladung ist noch offen.", "{name}, Sie haben sich noch nicht angemeldet."],
   };
   const [headline, intro] = texts[s] ?? texts.eingeladen;
@@ -40,6 +41,14 @@ export default async function MeineTeilnahme({
     <PageShell>
       <main className="mx-auto max-w-[1040px] px-6 pb-24 pt-16">
         <ParticipationSummary guest={guest} registration={registration} headline={headline} intro={intro} />
+
+        {sp.hinweis && (
+          <p role="status" className="mt-6 max-w-[640px] border-l-2 border-gold bg-card p-4 text-[15px]">
+            {sp.hinweis === "abgelaufen"
+              ? "Die Frist für dieses Angebot ist leider abgelaufen."
+              : "Diese Aktion ist für Ihre Teilnahme gerade nicht möglich. Bei Fragen erreichen Sie uns unter info@frontlineofinnovation.de."}
+          </p>
+        )}
 
         <div className="mt-6 flex flex-wrap items-start gap-3">
           {s === "angeboten" && (
@@ -53,7 +62,7 @@ export default async function MeineTeilnahme({
               )}
             </form>
           )}
-          {s === "angemeldet" && (
+          {s === "angemeldet" && !sp.absagen && (
             <form action={confirmAttendanceAction}>
               <input type="hidden" name="token" value={token} />
               <button className={sp.bestaetigen ? "btn-gold" : "btn-ghost"}>Ich bin dabei – Teilnahme bestätigen</button>

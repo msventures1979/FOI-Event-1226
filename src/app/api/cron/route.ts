@@ -30,20 +30,26 @@ export async function GET(req: Request) {
 
     // Mail 3: Erinnerung 7 Tage nach der Einladung an alle, die nicht reagiert haben
     const sevenDaysAgo = new Date(now.getTime() - 7 * 864e5).toISOString();
-    const { data: invited } = await supa.from("email_log").select("guest_id").eq("type", "einladung").lte("created_at", sevenDaysAgo);
-    const ids = [...new Set((invited ?? []).map((r) => r.guest_id as string))];
-    if (ids.length) {
-      const { data: open } = await supa.from("event_guests").select("id").eq("event_id", ev.id).eq("status", "eingeladen").in("id", ids);
-      report.erinnerung = await enqueue(ev.id, (open ?? []).map((g) => g.id), "erinnerung");
+    const { data: invited } = await supa
+      .from("email_log")
+      .select("guest_id")
+      .eq("event_id", ev.id)
+      .eq("type", "einladung")
+      .eq("status", "gesendet")
+      .lte("created_at", sevenDaysAgo);
+    const ids = new Set((invited ?? []).map((r) => r.guest_id as string));
+    if (ids.size && berlinDate < "2026-12-01") {
+      const { data: open } = await supa.from("event_guests").select("id").eq("event_id", ev.id).eq("status", "eingeladen");
+      report.erinnerung = await enqueue(ev.id, (open ?? []).map((g) => g.id).filter((id) => ids.has(id)), "erinnerung");
     }
 
     const registered = async () =>
       ((await supa.from("event_guests").select("id").eq("event_id", ev.id).in("status", ["angemeldet", "bestaetigt"])).data ?? []).map((g) => g.id);
 
     // Mail 8: eine Woche vorher
-    if (berlinDate >= "2026-12-07") report.letzteInfos = await enqueue(ev.id, await registered(), "letzte_infos");
-    // Mail 9: Freitag davor
-    if (berlinDate >= "2026-12-11") report.vorabend = await enqueue(ev.id, await registered(), "vorabend");
+    if (berlinDate >= "2026-12-07" && berlinDate < "2026-12-14") report.letzteInfos = await enqueue(ev.id, await registered(), "letzte_infos");
+    // Mail 9: Freitag davor (wer sich danach anmeldet, bekommt nur noch diese)
+    if (berlinDate >= "2026-12-11" && berlinDate < "2026-12-14") report.vorabend = await enqueue(ev.id, await registered(), "vorabend");
   }
 
   report.queue = await processQueue();

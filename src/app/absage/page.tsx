@@ -13,15 +13,21 @@ export const metadata = { title: "Absage – FOI Racing", robots: { index: false
  * Absage aus der Einladungsmail. Bewusst mit Bestätigungs-Button statt Ein-Klick-GET,
  * damit Link-Scanner von Mailprogrammen keine Absagen auslösen.
  */
-export default async function Absage({ searchParams }: { searchParams: Promise<{ code?: string; erledigt?: string }> }) {
-  const { code, erledigt } = await searchParams;
+export default async function Absage({ searchParams }: { searchParams: Promise<{ code?: string; fehler?: string }> }) {
+  const { code, fehler } = await searchParams;
   if (!code || !env.hasDb) redirect("/");
   const guest = await guestByCode(code);
 
   let content: React.ReactNode;
   if (!guest) {
     content = <p className="text-[17px]">Dieser Link ist nicht gültig. Bitte schreiben Sie uns an <a href="mailto:info@frontlineofinnovation.de">info@frontlineofinnovation.de</a>.</p>;
-  } else if (erledigt || ["abgesagt", "storniert"].includes(guest.status)) {
+  } else if (fehler || ["eingecheckt", "verfallen"].includes(guest.status)) {
+    content = (
+      <p className="text-[17px]">
+        Für Ihre Teilnahme ist eine Absage über diesen Link nicht mehr möglich. Bitte schreiben Sie uns an <a href="mailto:info@frontlineofinnovation.de">info@frontlineofinnovation.de</a>.
+      </p>
+    );
+  } else if (["abgesagt", "storniert"].includes(guest.status)) {
     content = (
       <>
         <h1 className="font-display text-5xl font-bold uppercase leading-none">Ihre Absage ist angekommen.</h1>

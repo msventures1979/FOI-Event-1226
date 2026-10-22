@@ -1,7 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { useFormStatus } from "react-dom";
+import { startTransition, useActionState, useState } from "react";
 import { queueMails } from "../../actions";
 
 const GROUPS: [string, string][] = [
@@ -13,10 +12,17 @@ const GROUPS: [string, string][] = [
 ];
 
 export function SendForm({ labels }: { labels: Record<string, string> }) {
-  const [state, action] = useActionState(queueMails, { msg: "" });
+  const [state, action, pending] = useActionState(queueMails, { msg: "" });
   const [confirmed, setConfirmed] = useState(false);
+  // onSubmit statt form action: Auswahl bleibt erhalten; nach echtem Versand muss erneut bestätigt werden
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    if (fd.get("test") !== "on") setConfirmed(false);
+    startTransition(() => action(fd));
+  };
   return (
-    <form action={action} className="flex flex-col gap-4 border border-line bg-card p-6">
+    <form onSubmit={onSubmit} className="flex flex-col gap-4 border border-line bg-card p-6">
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="lbl" htmlFor="type">Mail</label>
@@ -44,17 +50,10 @@ export function SendForm({ labels }: { labels: Record<string, string> }) {
       <label className="chk">
         <input type="checkbox" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} /> Ich habe Mail und Empfängergruppe geprüft
       </label>
-      <Btn disabled={!confirmed} />
+      <button className="btn-gold self-start" disabled={pending || !confirmed}>
+        {pending ? "Wird verarbeitet …" : "Ausführen"}
+      </button>
       {state.msg && <p className="text-gold">{state.msg}</p>}
     </form>
-  );
-}
-
-function Btn({ disabled }: { disabled: boolean }) {
-  const { pending } = useFormStatus();
-  return (
-    <button className="btn-gold self-start" disabled={pending || disabled}>
-      {pending ? "Wird verarbeitet …" : "Ausführen"}
-    </button>
   );
 }

@@ -1,18 +1,23 @@
 "use client";
 
-import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
+import { startTransition, useActionState } from "react";
 import { importGuests } from "../../actions";
 
 export function ImportForm() {
-  const [state, action] = useActionState(importGuests, { msg: "" });
+  const [state, action, pending] = useActionState(importGuests, { msg: "" });
+  // onSubmit statt form action: Datei und Häkchen bleiben nach der Vorschau erhalten
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    startTransition(() => action(fd));
+  };
   return (
-    <form action={action} className="flex flex-col gap-4 border border-line bg-card p-6">
+    <form onSubmit={onSubmit} className="flex flex-col gap-4 border border-line bg-card p-6">
       <input type="file" name="file" accept=".csv,.xlsx" required className="text-sm" />
       <label className="chk">
         <input type="checkbox" name="dry" defaultChecked /> Nur Vorschau (nichts speichern)
       </label>
-      <Btn />
+      <button className="btn-gold self-start" disabled={pending}>{pending ? "Wird verarbeitet …" : "Datei verarbeiten"}</button>
       {state.msg && <p className="text-gold">{state.msg}</p>}
       {state.rows && state.rows.length > 0 && (
         <table className="admin-table">
@@ -36,9 +41,4 @@ export function ImportForm() {
       )}
     </form>
   );
-}
-
-function Btn() {
-  const { pending } = useFormStatus();
-  return <button className="btn-gold self-start" disabled={pending}>{pending ? "Wird verarbeitet …" : "Datei verarbeiten"}</button>;
 }

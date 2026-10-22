@@ -26,7 +26,7 @@ export const MAIL_LABEL: Record<MailType, string> = {
 };
 
 export interface MailContext {
-  guest: Pick<Guest, "salutation" | "title" | "first_name" | "last_name" | "code" | "manage_token">;
+  guest: Pick<Guest, "salutation" | "title" | "first_name" | "last_name" | "code" | "manage_token"> & Partial<Pick<Guest, "status">>;
   siteUrl: string;
   participationType?: ParticipationType | null;
   offerExpiresAt?: string | null;
@@ -90,10 +90,11 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       ];
       break;
     case "bestaetigung":
-      subject = "Bestätigt: FOI Racing am 14. Dezember";
+      subject = "Anmeldung bestätigt: FOI Racing am 14. Dezember";
       blocks = [
-        { p: "Ihr Platz ist bestätigt." },
-        { facts: `Teilnahmeart: ${art}\nMontag, 14. Dezember 2026, Eintreffen 13:00 Uhr\nHockenheimring, [Adresse/Eingang]\nDresscode: [offen]` },
+        { p: "vielen Dank für Ihre Anmeldung – Ihr Startplatz ist für Sie reserviert." },
+        { facts: `Teilnahmeart: ${art}\nMontag, 14. Dezember 2026, Eintreffen 13:00 Uhr\nHockenheimring, Am Motodrom, 68766 Hockenheim` },
+        { p: "Alle Details zu Treffpunkt, Parken und Ablauf schicken wir Ihnen eine Woche vor dem Termin." },
         { p: "Den Kalendereintrag finden Sie im Anhang. Falls sich Ihre Pläne ändern, sagen Sie bitte über diesen Link ab, damit wir den Platz weitergeben können." },
         { buttons: [{ label: "Teilnahme verwalten", href: verwalten }] },
       ];
@@ -117,7 +118,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
     case "absage":
       subject = "Ihre Absage: FOI Racing am 14. Dezember";
       blocks = [
-        { p: "schade, dass Sie diesmal nicht dabei sein können. Ihre Absage ist bei uns angekommen; Ihr Platz geht an einen anderen Gast." },
+        { p: "schade, dass Sie diesmal nicht dabei sein können. Ihre Absage ist bei uns angekommen" + (g.status === "storniert" ? "; Ihr Platz geht an einen anderen Gast." : ".") },
         { p: "Wir freuen uns, Sie bei einer der nächsten Runden der Frontline of Innovation zu sehen." },
       ];
       break;
@@ -128,7 +129,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { facts: `Eintreffen 13:00 Uhr · Treffpunkt [Eingang] · Parken [Hinweis]\nIhre Teilnahme: ${art}` },
         { p: "Bitte denken Sie an [warme, wetterfeste Kleidung; Helm/Reifen bei eigenem Wagen]. Nach dem Dinner [bringt Sie ein Shuttle nach Mannheim und Heidelberg]." },
         { p: "Bitte bestätigen Sie kurz, dass es bei Ihrer Teilnahme bleibt. Bitte geben Sie uns bis zum 10. Dezember Bescheid." },
-        { buttons: [{ label: "Ich bin dabei", href: `${verwalten}?bestaetigen=1`, primary: true }, { label: "Ich muss leider absagen", href: verwalten }] },
+        { buttons: [{ label: "Ich bin dabei", href: `${verwalten}?bestaetigen=1`, primary: true }, { label: "Ich muss leider absagen", href: `${verwalten}?absagen=1` }] },
       ];
       break;
     case "vorabend":
@@ -148,7 +149,23 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       break;
   }
 
-  return { subject, html: toHtml(anrede, blocks, ctx.siteUrl), text: toText(anrede, blocks) };
+  const text = toText(anrede, blocks);
+  // Sicherung: Mails mit offenen Platzhaltern wie „[Treffpunkt]“ werden nie verschickt
+  const open = text.match(/\[[^\]\n]{2,}\]/g);
+  if (open) throw new MailPlaceholderError(`Mail „${MAIL_LABEL[type]}“ enthält noch Platzhalter: ${[...new Set(open)].join(", ")}`);
+  return { subject, html: toHtml(anrede, blocks, ctx.siteUrl), text };
+}
+
+export class MailPlaceholderError extends Error {}
+
+/** Prüft, ob eine Mail versandbereit ist (für Admin-Hinweise). */
+export function mailReady(type: MailType, ctx: MailContext): string | null {
+  try {
+    renderMail(type, ctx);
+    return null;
+  } catch (e) {
+    return e instanceof Error ? e.message : String(e);
+  }
 }
 
 function esc(s: string): string {

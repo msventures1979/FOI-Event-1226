@@ -24,7 +24,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
       <p className="eyebrow mb-3">FOI Racing · Admin</p>
       <h1 className="font-display text-4xl font-bold uppercase">Anmelden</h1>
       {gesendet ? (
-        <p className="mt-6 text-[17px] text-[#d1d1d1]">Wenn die Adresse freigeschaltet ist, kommt in wenigen Minuten ein Anmeldelink per E-Mail.</p>
+        <p className="mt-6 text-[17px] text-[#d1d1d1]">Wenn die Adresse freigeschaltet ist, kommt in wenigen Minuten ein Anmeldelink per E-Mail. Bitte öffnen Sie ihn im selben Browser, in dem Sie ihn angefordert haben.</p>
       ) : (
         <form action={login} className="mt-8">
           <label className="lbl" htmlFor="email">E-Mail-Adresse</label>

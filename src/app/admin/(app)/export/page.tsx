@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/admin";
 const EXPORTS: [string, string, string][] = [
   ["alle", "Alle Gäste", "Stammdaten, Status, Code, Teilnahme, Anmeldedaten"],
   ["fahrer", "Fahrerliste für School of Racing", "Eigener Wagen und Renntaxi: Name, Mobil, Fahrzeug, Bereifung, Erfahrung, Führerschein, Körpergröße"],
@@ -6,7 +7,8 @@ const EXPORTS: [string, string, string][] = [
   ["checkin", "Check-in-Liste zum Ausdrucken", "Alphabetisch mit Startnummer und Teilnahmeart"],
 ];
 
-export default function ExportPage() {
+export default async function ExportPage() {
+  await requireAdmin();
   return (
     <div className="max-w-[900px]">
       <h1 className="mb-6 font-display text-3xl font-semibold uppercase">Export</h1>

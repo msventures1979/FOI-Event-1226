@@ -47,7 +47,7 @@ export default async function Home() {
               <input
                 id="code-hero"
                 name="code"
-                placeholder="FOI-XXXXXX"
+                placeholder="FOI-XXXXXXXX"
                 autoComplete="off"
                 className="field !min-h-[52px] flex-[1_1_220px] !bg-black/60 font-display !text-xl tracking-[0.14em]"
               />

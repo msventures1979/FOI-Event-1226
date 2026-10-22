@@ -1,8 +1,10 @@
+import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/supabase/admin";
 import { MAIL_LABEL } from "@/lib/mail/templates";
 import { SendForm } from "./form";
 
 export default async function Versand() {
+  await requireAdmin();
   const { data: log } = await db().from("email_log").select("type,status").limit(5000);
   const stats: Record<string, { ok: number; err: number }> = {};
   for (const l of log ?? []) {

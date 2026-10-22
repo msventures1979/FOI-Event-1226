@@ -1,6 +1,8 @@
+import { requireAdmin } from "@/lib/admin";
 import { ImportForm } from "./form";
 
-export default function ImportPage() {
+export default async function ImportPage() {
+  await requireAdmin();
   return (
     <div className="max-w-[900px]">
       <h1 className="mb-3 font-display text-3xl font-semibold uppercase">Gäste importieren</h1>

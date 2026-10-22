@@ -108,15 +108,15 @@ export interface FreeSlots {
 
 /** „Sehr geehrter Herr Dr. Müller“ / „Sehr geehrte Frau Müller“ / „Guten Tag Max Müller“ */
 export function briefanrede(g: Pick<Guest, "salutation" | "title" | "first_name" | "last_name">): string {
-  const t = g.title ? `${g.title} ` : "";
-  if (g.salutation === "Herr") return `Sehr geehrter Herr ${t}${g.last_name}`;
-  if (g.salutation === "Frau") return `Sehr geehrte Frau ${t}${g.last_name}`;
-  return `Guten Tag ${t}${g.first_name} ${g.last_name}`.trim();
+  const name = (...p: (string | null | undefined)[]) => p.map((x) => x?.trim()).filter(Boolean).join(" ");
+  if (g.salutation === "Herr") return `Sehr geehrter ${name("Herr", g.title, g.last_name)}`;
+  if (g.salutation === "Frau") return `Sehr geehrte ${name("Frau", g.title, g.last_name)}`;
+  return `Guten Tag ${name(g.title, g.first_name, g.last_name)}`;
 }
 
 /** „Herr Müller“ für die Bestätigungsseite */
 export function kurzanrede(g: Pick<Guest, "salutation" | "title" | "first_name" | "last_name">): string {
-  const t = g.title ? `${g.title} ` : "";
-  if (g.salutation) return `${g.salutation} ${t}${g.last_name}`;
-  return `${t}${g.first_name} ${g.last_name}`.trim();
+  const name = (...p: (string | null | undefined)[]) => p.map((x) => x?.trim()).filter(Boolean).join(" ");
+  if (g.salutation) return name(g.salutation, g.title, g.last_name);
+  return name(g.title, g.first_name, g.last_name);
 }

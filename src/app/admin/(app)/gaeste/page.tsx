@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/admin";
 import Link from "next/link";
 import { db } from "@/lib/supabase/admin";
 import { getEvent } from "@/lib/event";
@@ -5,6 +6,7 @@ import { PARTICIPATION, STATUS_LABEL, type Guest, type GuestStatus, type Registr
 import { guestAction } from "../../actions";
 
 export default async function Gaeste({ searchParams }: { searchParams: Promise<{ status?: string; q?: string }> }) {
+  await requireAdmin();
   const { status = "", q = "" } = await searchParams;
   const ev = await getEvent();
   let query = db().from("event_guests").select("*, event_registrations(*)").eq("event_id", ev.id).order("last_name");

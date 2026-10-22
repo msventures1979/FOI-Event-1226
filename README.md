@@ -59,7 +59,7 @@ CSV-Spalten: `Anrede;Titel;Vorname;Nachname;E-Mail`. Bereits Angeschriebene werd
 Empfängern einfach am nächsten Tag erneut starten (Resend-Free: 100 Mails/Tag).
 
 ## Ablauf im Admin
-1. **Import:** Gästeliste (CSV/XLSX) hochladen – erst Vorschau, dann speichern. Jeder Gast bekommt einen Code `FOI-XXXXXX`.
+1. **Import:** Gästeliste (CSV/XLSX) hochladen – erst Vorschau, dann speichern. Jeder Gast bekommt einen Code `FOI-XXXXXXXX`.
 2. **Übersicht:** Gesamtkontingent (80), Obergrenzen je Teilnahmeart, Anmeldeschluss.
 3. **Versand:** Mail + Empfängergruppe wählen, Testmail an sich selbst, dann einreihen. Die Warteschlange läuft im Tageslimit
    (20 Plätze bleiben täglich für Bestätigungen reserviert).

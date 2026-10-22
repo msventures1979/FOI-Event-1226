@@ -62,7 +62,7 @@ function CodeEntry({ code = "", error, info }: { code?: string; error?: string; 
                 defaultValue={code}
                 required
                 autoComplete="off"
-                placeholder="FOI-XXXXXX"
+                placeholder="FOI-XXXXXXXX"
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? "code-err" : undefined}
                 className="field !min-h-[60px] font-display !text-2xl tracking-[0.16em]"

@@ -1,8 +1,8 @@
 -- FOI Event-Plattform – Grundschema
 -- Alle Tabellen sind per RLS gesperrt; Zugriff ausschließlich serverseitig mit dem Service-Role-Key.
 
-create extension if not exists pgcrypto;
-create extension if not exists citext;
+create extension if not exists pgcrypto with schema extensions;
+create extension if not exists citext with schema extensions;
 
 -- ---------------------------------------------------------------------------
 -- Events
@@ -43,7 +43,7 @@ create table public.event_guests (
   position text not null default '',
   note text not null default '',
   code text not null unique,
-  manage_token text not null unique default encode(gen_random_bytes(18), 'hex'),
+  manage_token text not null unique default encode(extensions.gen_random_bytes(18), 'hex'),
   status text not null default 'eingeladen' check (
     status in ('eingeladen', 'angemeldet', 'bestaetigt', 'warteliste', 'angeboten', 'abgesagt', 'storniert', 'eingecheckt', 'verfallen')
   ),
@@ -74,13 +74,16 @@ create table public.event_registrations (
   companion text not null default '',
   consent_photo boolean not null default false,
   consent_terms_at timestamptz,
-  consent_waiver_at timestamptz,
+  consent_waiver_at timestamptz,   -- Haftungsverzicht School of Racing
+  consent_gohm_at timestamptz,     -- Nutzungsbedingungen Autohaus Gohm
   start_number int,
   confirmed_at timestamptz,
   checked_in_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+create unique index event_registrations_start_number_uq on public.event_registrations (event_id, start_number);
 
 -- ---------------------------------------------------------------------------
 -- Mails
@@ -95,6 +98,7 @@ create table public.email_queue (
   scheduled_for timestamptz not null default now(),
   sent_at timestamptz,
   attempts int not null default 0,
+  locked_at timestamptz,
   last_error text,
   created_at timestamptz not null default now()
 );
@@ -219,7 +223,7 @@ end $$;
 -- Anmeldung (atomar: sperrt die Event-Zeile, damit nie überbucht wird)
 -- ---------------------------------------------------------------------------
 create or replace function public.register_guest(p_code text, p_data jsonb)
-returns jsonb language plpgsql security definer set search_path = public as $$
+returns jsonb language plpgsql security definer set search_path = public, extensions as $$
 declare
   v_guest public.event_guests;
   v_event public.events;
@@ -229,13 +233,17 @@ declare
   v_status text;
   v_pos int;
   v_start int;
+  v_eid uuid;
 begin
-  select * into v_guest from public.event_guests where code = upper(trim(p_code));
+  select event_id into v_eid from public.event_guests where code = upper(trim(p_code));
   if not found then
     return jsonb_build_object('result', 'invalid');
   end if;
 
-  select * into v_event from public.events where id = v_guest.event_id for update;
+  -- erst das Event sperren, dann den Gast frisch lesen (parallele Anmeldungen mit demselben Code)
+  select * into v_event from public.events where id = v_eid for update;
+  perform public.expire_offers(v_event.id);
+  select * into v_guest from public.event_guests where code = upper(trim(p_code)) for update;
 
   if v_guest.status in ('angemeldet', 'bestaetigt', 'eingecheckt', 'warteliste', 'angeboten') then
     return jsonb_build_object('result', 'already', 'manage_token', v_guest.manage_token, 'status', v_guest.status);
@@ -271,7 +279,7 @@ begin
     title = coalesce(p_data ->> 'title', title),
     first_name = coalesce(nullif(p_data ->> 'first_name', ''), first_name),
     last_name = coalesce(nullif(p_data ->> 'last_name', ''), last_name),
-    email = coalesce(nullif(p_data ->> 'email', ''), email::text)::citext,
+    email = coalesce(nullif(p_data ->> 'email', ''), email::text),
     company = coalesce(p_data ->> 'company', company),
     position = coalesce(p_data ->> 'position', position),
     status = v_status,
@@ -282,7 +290,7 @@ begin
   insert into public.event_registrations (
     guest_id, event_id, requested_type, participation_type, second_choice, extra_ride, mobile, vehicle,
     experience, license_since, height_cm, diet, allergies, companion, consent_photo,
-    consent_terms_at, consent_waiver_at, start_number
+    consent_terms_at, consent_waiver_at, consent_gohm_at, start_number
   ) values (
     v_guest.id, v_event.id, v_requested, v_type, v_second,
     coalesce((p_data ->> 'extra_ride')::boolean, false),
@@ -297,6 +305,7 @@ begin
     coalesce((p_data ->> 'consent_photo')::boolean, false),
     case when coalesce((p_data ->> 'consent_terms')::boolean, false) then now() end,
     case when coalesce((p_data ->> 'consent_waiver')::boolean, false) then now() end,
+    case when coalesce((p_data ->> 'consent_gohm')::boolean, false) then now() end,
     v_start
   )
   on conflict (guest_id) do update set
@@ -315,6 +324,7 @@ begin
     consent_photo = excluded.consent_photo,
     consent_terms_at = excluded.consent_terms_at,
     consent_waiver_at = excluded.consent_waiver_at,
+    consent_gohm_at = excluded.consent_gohm_at,
     start_number = coalesce(public.event_registrations.start_number, excluded.start_number);
 
   return jsonb_build_object(
@@ -330,7 +340,7 @@ end $$;
 -- Nachrücken: bietet den nächsten passenden Wartelistenplatz an
 -- ---------------------------------------------------------------------------
 create or replace function public.promote_next(p_event uuid)
-returns uuid language plpgsql security definer set search_path = public as $$
+returns uuid language plpgsql security definer set search_path = public, extensions as $$
 declare
   v_event public.events;
   v_candidate record;
@@ -373,13 +383,16 @@ end $$;
 
 -- Angebot annehmen
 create or replace function public.accept_offer(p_token text)
-returns jsonb language plpgsql security definer set search_path = public as $$
+returns jsonb language plpgsql security definer set search_path = public, extensions as $$
 declare
   v_guest public.event_guests;
   v_start int;
+  v_eid uuid;
 begin
-  select * into v_guest from public.event_guests where manage_token = p_token for update;
+  select event_id into v_eid from public.event_guests where manage_token = p_token;
   if not found then return jsonb_build_object('result', 'invalid'); end if;
+  perform 1 from public.events where id = v_eid for update;
+  select * into v_guest from public.event_guests where manage_token = p_token for update;
   if v_guest.status <> 'angeboten' then return jsonb_build_object('result', 'not_offered', 'status', v_guest.status); end if;
   if v_guest.offer_expires_at < now() then return jsonb_build_object('result', 'expired'); end if;
 
@@ -391,23 +404,28 @@ end $$;
 
 -- Absage (per Code aus der Einladung oder per Verwaltungs-Token)
 create or replace function public.decline_guest(p_code text default null, p_token text default null)
-returns jsonb language plpgsql security definer set search_path = public as $$
+returns jsonb language plpgsql security definer set search_path = public, extensions as $$
 declare
   v_guest public.event_guests;
   v_was_occupying boolean;
   v_new_status text;
+  v_eid uuid;
 begin
-  if p_token is not null then
-    select * into v_guest from public.event_guests where manage_token = p_token;
-  else
-    select * into v_guest from public.event_guests where code = upper(trim(p_code));
-  end if;
+  select event_id into v_eid from public.event_guests
+    where (p_token is not null and manage_token = p_token) or (p_token is null and code = upper(trim(p_code)));
   if not found then return jsonb_build_object('result', 'invalid'); end if;
 
-  perform 1 from public.events where id = v_guest.event_id for update;
+  perform 1 from public.events where id = v_eid for update;
+  perform public.expire_offers(v_eid);
+  select * into v_guest from public.event_guests
+    where (p_token is not null and manage_token = p_token) or (p_token is null and code = upper(trim(p_code)))
+    for update;
 
   if v_guest.status in ('abgesagt', 'storniert') then
     return jsonb_build_object('result', 'already', 'guest_id', v_guest.id);
+  end if;
+  if v_guest.status in ('eingecheckt', 'verfallen') then
+    return jsonb_build_object('result', 'not_allowed', 'guest_id', v_guest.id, 'status', v_guest.status);
   end if;
 
   v_was_occupying := v_guest.status in ('angemeldet', 'bestaetigt', 'angeboten');
@@ -425,21 +443,38 @@ end $$;
 
 -- Abgelaufene Angebote freigeben und den Nächsten fragen
 create or replace function public.expire_offers(p_event uuid)
-returns int language plpgsql security definer set search_path = public as $$
+returns int language plpgsql security definer set search_path = public, extensions as $$
 declare
   v_count int := 0;
-  v_id uuid;
 begin
-  for v_id in
-    select id from public.event_guests
-    where event_id = p_event and status = 'angeboten' and offer_expires_at < now()
-  loop
-    update public.event_guests set status = 'verfallen', offer_expires_at = null where id = v_id;
-    v_count := v_count + 1;
-    perform public.promote_next(p_event);
-  end loop;
+  perform 1 from public.events where id = p_event for update;
+  update public.event_guests set status = 'verfallen', offer_expires_at = null
+    where event_id = p_event and status = 'angeboten' and offer_expires_at < now();
+  get diagnostics v_count = row_count;
+  -- so viele Nachrücker fragen, wie Plätze frei sind (promote_next liefert null, wenn nichts passt)
+  if v_count > 0 then
+    for i in 1..greatest((public.free_slots(p_event) ->> 'free')::int, 0) loop
+      exit when public.promote_next(p_event) is null;
+    end loop;
+  end if;
   return v_count;
 end $$;
+
+-- Mail-Jobs reservieren, damit parallele Läufe (Cron, Button, Sofortversand) nie doppelt senden
+create or replace function public.claim_mail_jobs(p_max int, p_guest uuid default null)
+returns setof public.email_queue language sql security definer set search_path = public, extensions as $$
+  update public.email_queue q set locked_at = now()
+  where q.id in (
+    select id from public.email_queue
+    where sent_at is null and attempts < 5 and scheduled_for <= now()
+      and (locked_at is null or locked_at < now() - interval '10 minutes')
+      and (p_guest is null or guest_id = p_guest)
+    order by priority, scheduled_for
+    limit p_max
+    for update skip locked
+  )
+  returning q.*;
+$$;
 
 -- Funktionen nur für den Service-Role-Key
 revoke all on function public.register_guest(text, jsonb) from public, anon, authenticated;
@@ -448,6 +483,18 @@ revoke all on function public.accept_offer(text) from public, anon, authenticate
 revoke all on function public.decline_guest(text, text) from public, anon, authenticated;
 revoke all on function public.expire_offers(uuid) from public, anon, authenticated;
 revoke all on function public.free_slots(uuid) from public, anon, authenticated;
+revoke all on function public.occupied_counts(uuid) from public, anon, authenticated;
+revoke all on function public.type_fits(uuid, text) from public, anon, authenticated;
+revoke all on function public.claim_mail_jobs(int, uuid) from public, anon, authenticated;
+revoke all on function public.touch_updated_at() from public, anon, authenticated;
+revoke all on function public.log_status_change() from public, anon, authenticated;
+
+-- Tabellen: kein Zugriff für anon/authenticated, voller Zugriff für den Service-Role-Key
+revoke all on all tables in schema public from anon, authenticated;
+grant usage on schema public to service_role;
+grant all on all tables in schema public to service_role;
+grant all on all sequences in schema public to service_role;
+grant execute on all functions in schema public to service_role;
 
 -- ---------------------------------------------------------------------------
 -- Startdaten: FOI Racing 2026

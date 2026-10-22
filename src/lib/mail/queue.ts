@@ -20,16 +20,22 @@ export async function enqueue(
 ): Promise<{ queued: number; skipped: number }> {
   if (guestIds.length === 0) return { queued: 0, skipped: 0 };
   const supa = db();
-  const { data: guests } = await supa.from("event_guests").select("id,email,bounced").in("id", guestIds);
-  let skip = new Set<string>();
-  if (!opts.force && ONCE.includes(type)) {
-    const [{ data: sent }, { data: pending }] = await Promise.all([
-      supa.from("email_log").select("guest_id").eq("type", type).in("guest_id", guestIds),
-      supa.from("email_queue").select("guest_id").eq("type", type).is("sent_at", null).in("guest_id", guestIds),
-    ]);
-    skip = new Set([...(sent ?? []), ...(pending ?? [])].map((r) => r.guest_id as string));
+  const guests: { id: string; email: string; bounced: boolean }[] = [];
+  const skip = new Set<string>();
+  // in Blöcken abfragen, damit die URL bei großen Listen nicht zu lang wird
+  for (let i = 0; i < guestIds.length; i += 100) {
+    const ids = guestIds.slice(i, i + 100);
+    const { data } = await supa.from("event_guests").select("id,email,bounced").in("id", ids);
+    guests.push(...(data ?? []));
+    if (!opts.force && ONCE.includes(type)) {
+      const [{ data: sent }, { data: pending }] = await Promise.all([
+        supa.from("email_log").select("guest_id").eq("type", type).eq("status", "gesendet").in("guest_id", ids),
+        supa.from("email_queue").select("guest_id").eq("type", type).is("sent_at", null).lt("attempts", 5).in("guest_id", ids),
+      ]);
+      [...(sent ?? []), ...(pending ?? [])].forEach((r) => skip.add(r.guest_id as string));
+    }
   }
-  const rows = (guests ?? [])
+  const rows = guests
     .filter((g) => !skip.has(g.id) && !g.bounced)
     .map((g) => ({
       event_id: eventId,
@@ -46,19 +52,12 @@ export async function enqueue(
   return { queued: rows.length, skipped: guestIds.length - rows.length };
 }
 
-function startOfBerlinDay(): Date {
-  const now = new Date();
-  const berlin = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Berlin" }));
-  const offset = now.getTime() - berlin.getTime();
-  berlin.setHours(0, 0, 0, 0);
-  return new Date(berlin.getTime() + offset);
-}
-
+/** Gesendete Mails der letzten 24 Stunden (rollierend – so wird das Tageslimit nie überschritten, egal wie Resend zählt). */
 export async function sentToday(): Promise<number> {
   const { count } = await db()
     .from("email_log")
     .select("id", { count: "exact", head: true })
-    .gte("created_at", startOfBerlinDay().toISOString())
+    .gte("created_at", new Date(Date.now() - 24 * 3600 * 1000).toISOString())
     .eq("status", "gesendet");
   return count ?? 0;
 }
@@ -70,27 +69,20 @@ export async function processQueue(opts: { guestId?: string; max?: number } = {}
   const limit = env.mailDailyLimit;
   let today = await sentToday();
 
-  let q = supa
-    .from("email_queue")
-    .select("*")
-    .is("sent_at", null)
-    .lte("scheduled_for", new Date().toISOString())
-    .lt("attempts", 5)
-    .order("priority")
-    .order("scheduled_for")
-    .limit(opts.max ?? 200);
-  if (opts.guestId) q = q.eq("guest_id", opts.guestId);
-  const { data: jobs, error } = await q;
+  // Jobs reservieren (parallele Läufe bekommen nie dieselben Jobs)
+  const { data: jobs, error } = await supa.rpc("claim_mail_jobs", { p_max: opts.max ?? 200, p_guest: opts.guestId ?? null });
   if (error) throw error;
+  const release = (id: number) => supa.from("email_queue").update({ locked_at: null }).eq("id", id);
 
   let sent = 0,
     failed = 0,
     deferred = 0;
 
-  for (const job of jobs ?? []) {
+  for (const job of (jobs ?? []) as { id: number; event_id: string; guest_id: string; to_email: string; type: string; priority: number; attempts: number }[]) {
     const isTransactional = job.priority <= 1;
     if (today >= limit || (!isTransactional && today >= limit - TRANSACTIONAL_RESERVE)) {
       deferred++;
+      await release(job.id);
       continue;
     }
 
@@ -119,19 +111,30 @@ export async function processQueue(opts: { guestId?: string; max?: number } = {}
       free = (fs as { free: number } | null)?.free ?? null;
     }
 
-    const mail = renderMail(job.type as MailType, {
-      guest: guest as Guest,
-      siteUrl: env.siteUrl,
-      participationType: reg?.participation_type ?? null,
-      offerExpiresAt: (guest as Guest).offer_expires_at,
-      freeSlots: free,
-    });
+    let mail;
+    try {
+      mail = renderMail(job.type as MailType, {
+        guest: guest as Guest,
+        siteUrl: env.siteUrl,
+        participationType: reg?.participation_type ?? null,
+        offerExpiresAt: (guest as Guest).offer_expires_at,
+        freeSlots: free,
+      });
+    } catch (e) {
+      // z. B. offene Platzhalter: nicht senden, Job bleibt sichtbar in der Warteschlange
+      failed++;
+      const msg = e instanceof Error ? e.message : String(e);
+      await supa.from("email_queue").update({ attempts: 5, last_error: msg, locked_at: null }).eq("id", job.id);
+      await supa.from("email_log").insert({ event_id: job.event_id, guest_id: job.guest_id, to_email: job.to_email, type: job.type, status: "fehler", error: msg });
+      continue;
+    }
 
     const attachments =
       job.type === "bestaetigung"
         ? [
             {
               filename: "FOI-Racing-2026.ics",
+              contentType: "text/calendar; charset=utf-8; method=PUBLISH",
               content: Buffer.from(buildIcs({ uid: (guest as Guest).id, url: `${env.siteUrl}/meine-teilnahme/${(guest as Guest).manage_token}` })).toString("base64"),
             },
           ]
@@ -146,13 +149,16 @@ export async function processQueue(opts: { guestId?: string; max?: number } = {}
       text: mail.text,
       attachments,
       headers: { "X-Entity-Ref-ID": `${job.type}-${job.id}` },
-    });
+    }, { idempotencyKey: `foi-${job.type}-${job.id}` });
 
     if (res.error) {
       failed++;
-      await supa.from("email_queue").update({ attempts: job.attempts + 1, last_error: res.error.message }).eq("id", job.id);
+      await supa.from("email_queue").update({ attempts: job.attempts + 1, last_error: res.error.message, locked_at: null }).eq("id", job.id);
       await supa.from("email_log").insert({ event_id: job.event_id, guest_id: job.guest_id, to_email: job.to_email, type: job.type, status: "fehler", error: res.error.message });
-      if (/rate|limit|quota/i.test(res.error.message)) break;
+      if (/rate|limit|quota/i.test(res.error.message)) {
+        for (const j of (jobs ?? []).slice((jobs ?? []).indexOf(job) + 1)) await release(j.id);
+        break;
+      }
       continue;
     }
 
