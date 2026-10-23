@@ -92,10 +92,10 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { hero: { kicker: "Save the Date · Montag, 14. Dezember 2026", line1: "Die Weihnachtsfeier", line2: "der anderen Art." } },
         { p: "das Jahr neigt sich dem Ende zu – und wir möchten es gern gemeinsam mit Ihnen ausklingen lassen. Allerdings nicht ganz so, wie man es von einer Weihnachtsfeier erwartet." },
         { p: "Was genau wir vorhaben, verraten wir noch nicht. Nur so viel: Es wird ein Nachmittag und Abend, wie Sie ihn mit der Frontline of Innovation noch nicht erlebt haben – mit guten Gesprächen, ein paar Überraschungen und einem Zweck, der über den Tag hinausgeht." },
-        { facts: "Montag, 14. Dezember 2026 · Nachmittag und Abend\nIn der Region Rhein-Neckar\nIhre persönliche Einladung mit allen Details folgt im November" },
+        { facts: "Montag, 14. Dezember 2026 · Nachmittag und Abend\nIn der Region Rhein-Neckar\nDie Teilnahme ist auf 80 Gäste beschränkt\nIhre persönliche Einladung mit allen Details folgt im November" },
         { p: "Bitte merken Sie sich den Termin schon heute vor – wir würden uns sehr freuen, wenn Sie dabei sind. Den Kalendereintrag finden Sie auch im Anhang dieser Mail." },
         { buttons: [{ label: "In Outlook / Apple Kalender eintragen", href: `${TEASER_ASSETS}/api/ics/save-the-date`, primary: true }, { label: "Google Kalender", href: gcal }] },
-        { ps: "P.S. Einen kleinen Hinweis, was Sie erwartet, schicken wir Ihnen Anfang November. Und wenn Sie sich den Termin schon notiert haben, freuen wir uns über eine kurze Antwort auf diese Mail." },
+        { ps: "P.S. Einen kleinen Hinweis, was Sie erwartet, schicken wir Ihnen kurzfristig. Und wenn Sie sich den Termin schon notiert haben, freuen wir uns über eine kurze Antwort auf diese Mail." },
       ];
       break;
     }
