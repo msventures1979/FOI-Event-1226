@@ -42,7 +42,7 @@ export interface RenderedMail {
 }
 
 /** Für das Save the Date: nichts darf auf Auto/Rennen hindeuten – auch nicht Absender, Links oder Bildadressen. */
-export const TEASER_FROM = "Frontline of Innovation <info@frontlineofinnovation.de>";
+export const TEASER_FROM = `"Matthias Storch | Frontline of Innovation" <info@frontlineofinnovation.de>`;
 const TEASER_ASSETS = "https://foi-event-1226.vercel.app";
 
 const GRUSS = "Herzliche Grüße aus Mannheim\nMatthias Storch und Süleyman Acar";
