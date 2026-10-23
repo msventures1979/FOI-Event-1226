@@ -50,6 +50,7 @@ const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\n13:00 Eintreffen ·
 
 type Block =
   | { p: string }
+  | { ps: string }
   | { hero: { kicker: string; line1: string; line2: string; image?: string } }
   | { facts: string }
   | { code: string }
@@ -82,8 +83,8 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         "&text=" + encodeURIComponent("Frontline of Innovation – Die Weihnachtsfeier der anderen Art") +
         "&dates=20261214/20261215" +
         "&details=" + encodeURIComponent("Save the Date. Die persönliche Einladung mit allen Details folgt im November.");
-      subject = "Save the Date: Die Weihnachtsfeier der anderen Art – 14. Dezember";
-      preheader = "Bitte merken Sie sich Montag, den 14. Dezember vor. Mehr verraten wir noch nicht.";
+      subject = "14.12. – mehr verraten wir noch nicht";
+      preheader = "Die Weihnachtsfeier der anderen Art: Bitte merken Sie sich den Termin schon heute vor.";
       from = TEASER_FROM;
       assets = TEASER_ASSETS;
       footer = "Frontline of Innovation";
@@ -94,6 +95,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { facts: "Montag, 14. Dezember 2026 · Nachmittag und Abend\nIn der Region Rhein-Neckar\nIhre persönliche Einladung mit allen Details folgt im November" },
         { p: "Bitte merken Sie sich den Termin schon heute vor – wir würden uns sehr freuen, wenn Sie dabei sind. Den Kalendereintrag finden Sie auch im Anhang dieser Mail." },
         { buttons: [{ label: "In Outlook / Apple Kalender eintragen", href: `${TEASER_ASSETS}/api/ics/save-the-date`, primary: true }, { label: "Google Kalender", href: gcal }] },
+        { ps: "P.S. Einen kleinen Hinweis, was Sie erwartet, schicken wir Ihnen Anfang November. Und wenn Sie sich den Termin schon notiert haben, freuen wir uns über eine kurze Antwort auf diese Mail." },
       ];
       break;
     }
@@ -208,6 +210,7 @@ function toText(anrede: string, blocks: Block[]): string {
     if ("buttons" in b) parts.push(b.buttons.map((x) => `${x.label}: ${x.href}`).join("\n"));
   }
   parts.push(GRUSS);
+  for (const b of blocks) if ("ps" in b) parts.push(b.ps);
   parts.push("—\nFrontline of Innovation · info@frontlineofinnovation.de");
   return parts.join("\n\n");
 }
@@ -221,8 +224,9 @@ function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = ""
 <p style="margin:0;font-family:Impact,'Arial Narrow Bold','Arial Black',Arial,sans-serif;font-size:38px;line-height:1.05;text-transform:uppercase;color:#ffffff">${esc(heroBlock.hero.line1)}<br><span style="color:#E6941A">${esc(heroBlock.hero.line2)}</span></p>
 </td></tr>`
     : "";
+  const ps = blocks.filter((b): b is { ps: string } => "ps" in b).map((b) => `<p style="margin:20px 0 0;font-size:15px;color:#444">${esc(b.ps)}</p>`).join("");
   const body = blocks
-    .filter((b) => !("hero" in b))
+    .filter((b) => !("hero" in b) && !("ps" in b))
     .map((b) => {
       if ("p" in b) return `<p style="margin:0 0 16px">${esc(b.p)}</p>`;
       if ("facts" in b)
@@ -252,6 +256,7 @@ ${neutral ? `<tr><td style="height:4px;background:#E6941A;line-height:4px;font-s
 <p style="margin:0 0 16px">${esc(anrede)}</p>
 ${body}
 <p style="margin:24px 0 0">${esc(GRUSS).replace(/\n/g, "<br>")}</p>
+${ps}
 </td></tr>
 <tr><td style="padding:24px 28px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#888">${esc(footer)} · <a href="mailto:info@frontlineofinnovation.de" style="color:#888">info@frontlineofinnovation.de</a></td></tr>
 </table></td></tr></table></body></html>`;
