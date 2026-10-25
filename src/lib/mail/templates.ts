@@ -104,7 +104,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       blocks = [
         { p: "wir laden Sie herzlich zur Weihnachtsfeier der anderen Art ein: FOI Racing auf dem Hockenheimring." },
         { facts: FAKTEN + ", mit einem Überraschungsgast und einer Charity-Auktion" },
-        { p: "Sie fahren Ihren eigenen Wagen oder einen Lamborghini, oder Sie steigen ins Renntaxi. Die Teilnahme ist für Sie kostenfrei. Es gibt 80 Plätze; sie werden in der Reihenfolge der Anmeldung vergeben." },
+        { p: "Sie fahren Ihren eigenen Wagen unter Anleitung, oder Sie steigen ins Renntaxi. Die Teilnahme ist für Sie kostenfrei. Es gibt 80 Plätze; sie werden in der Reihenfolge der Anmeldung vergeben." },
         { code: g.code },
         { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
       ];

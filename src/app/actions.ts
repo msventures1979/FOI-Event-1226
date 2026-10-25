@@ -6,7 +6,7 @@ import { db } from "@/lib/supabase/admin";
 import { getEvent, guestByToken, normalizeCode } from "@/lib/event";
 import { processQueue, sendNow } from "@/lib/mail/queue";
 
-const type = z.enum(["own", "taxi", "lambo"]);
+const type = z.enum(["own", "taxi"]);
 
 const schema = z
   .object({
@@ -27,7 +27,6 @@ const schema = z
     consent_photo: z.boolean(),
     consent_terms: z.literal(true, { message: "Bitte Teilnahmebedingungen und Datenschutzhinweise akzeptieren" }),
     consent_waiver: z.boolean(),
-    consent_gohm: z.boolean(),
     vehicle: z.record(z.string(), z.string().max(60)),
     experience: z.string().max(40),
     license_since: z.string().max(10),
@@ -39,10 +38,9 @@ const schema = z
     const issue = (message: string, path: string) => ctx.addIssue({ code: "custom", message, path: [path] });
     if (types.has("own") && ["marke", "modell", "baujahr", "ps", "kennzeichen", "getriebe", "reifen"].some((k) => !d.vehicle[k]))
       issue("Bitte alle Fahrzeugangaben ausfüllen", "vehicle");
-    if ((types.has("own") || types.has("lambo")) && !d.license_since) issue("Bitte angeben, seit wann Sie den Führerschein haben", "license_since");
-    if ((types.has("own") || types.has("lambo")) && !d.experience) issue("Bitte Ihre Rennstreckenerfahrung angeben", "experience");
+    if (types.has("own") && !d.license_since) issue("Bitte angeben, seit wann Sie den Führerschein haben", "license_since");
+    if (types.has("own") && !d.experience) issue("Bitte Ihre Rennstreckenerfahrung angeben", "experience");
     if ((types.has("own") || types.has("taxi")) && !d.consent_waiver) issue("Bitte den Haftungsverzicht der School of Racing bestätigen", "consent_waiver");
-    if (types.has("lambo") && !d.consent_gohm) issue("Bitte die Nutzungsbedingungen des Autohauses Gohm bestätigen", "consent_gohm");
   });
 
 export type RegisterState = { error?: string } | undefined;
@@ -67,7 +65,6 @@ export async function registerAction(_prev: RegisterState, form: FormData): Prom
     consent_photo: form.get("consent_photo") === "on",
     consent_terms: form.get("consent_terms") === "on",
     consent_waiver: form.get("consent_waiver") === "on",
-    consent_gohm: form.get("consent_gohm") === "on",
     vehicle: Object.fromEntries(
       ["marke", "modell", "baujahr", "ps", "kennzeichen", "getriebe", "reifen"].map((k) => [k, s(`vehicle_${k}`)]).filter(([, v]) => v),
     ),

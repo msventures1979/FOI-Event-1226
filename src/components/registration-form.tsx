@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   startTransition,
   useActionState,
@@ -68,7 +67,7 @@ export function RegistrationForm({
         <legend className="mb-4 font-display text-[22px] font-semibold uppercase tracking-[0.04em]">
           Teilnahmeart {req}
         </legend>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
           {PARTICIPATION_TYPES.map((t) => {
             const on = t === art;
             const free = slots[t].free;
@@ -106,9 +105,7 @@ export function RegistrationForm({
                 <span className="text-sm leading-normal text-muted">
                   {t === "own"
                     ? "Mit Instruktor der School of Racing."
-                    : t === "taxi"
-                      ? "Beifahrer, am Steuer ein Profi."
-                      : "Selbst fahren, mit dem Autohaus Gohm."}
+                    : "Beifahrer, am Steuer ein Profi."}
                 </span>
               </label>
             );
@@ -209,20 +206,10 @@ export function RegistrationForm({
           </Box>
         )}
 
-        {(need.has("own") || need.has("lambo")) && (
+        {need.has("own") && (
           <Box
-            first={art === "lambo"}
-            title={
-              need.has("lambo") && !need.has("own")
-                ? "Ihre Lamborghini-Fahrt" + forSecond("lambo")
-                : "Fahrerangaben"
-            }
-            sub={
-              need.has("lambo")
-                ? "Diese Angaben gehen an die School of Racing und das Autohaus Gohm."
-                : "Diese Angaben gehen an die School of Racing."
-            }
-            logo={need.has("lambo")}
+            title={"Fahrerangaben" + forSecond("own")}
+            sub="Diese Angaben gehen an die School of Racing."
           >
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <Field
@@ -347,18 +334,6 @@ export function RegistrationForm({
             </span>
           </label>
         )}
-        {need.has("lambo") && (
-          <label className="chk">
-            <input type="checkbox" name="consent_gohm" required />
-            <span>
-              Ich akzeptiere die{" "}
-              <a href="/nutzungsbedingungen-gohm" target="_blank">
-                Nutzungsbedingungen des Autohauses Gohm
-              </a>{" "}
-              für die Lamborghini-Fahrt. {req}
-            </span>
-          </label>
-        )}
         <label className="chk">
           <input type="checkbox" name="consent_photo" /> Freiwillig: Ich bin
           einverstanden, dass Fotos und Videos von mir veröffentlicht werden.
@@ -374,8 +349,7 @@ export function RegistrationForm({
             <a href="/datenschutz" target="_blank">
               Datenschutzhinweise
             </a>
-            . Meine Fahrerdaten gehen an die School of Racing, bei
-            Lamborghini-Fahrten an das Autohaus Gohm. {req}
+            . Meine Fahrerdaten gehen an die School of Racing. {req}
           </span>
         </label>
       </div>
@@ -402,35 +376,22 @@ function Box({
   title,
   sub,
   children,
-  logo = false,
   first = false,
 }: {
   title: string;
   sub: string;
   children: React.ReactNode;
-  logo?: boolean;
   first?: boolean;
 }) {
   return (
     <div
       className={`mb-10 border border-line-strong bg-card p-7 ${first ? "order-first" : ""}`}
     >
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h2 className="mb-1.5 font-display text-[22px] font-semibold uppercase tracking-[0.04em]">
-            {title}
-          </h2>
-          <p className="text-sm text-[#a6a6a6]">{sub}</p>
-        </div>
-        {logo && (
-          <Image
-            src="/images/lamborghini-stuttgart.png"
-            alt="Lamborghini Stuttgart"
-            width={88}
-            height={48}
-            className="h-12 w-auto"
-          />
-        )}
+      <div className="mb-6">
+        <h2 className="mb-1.5 font-display text-[22px] font-semibold uppercase tracking-[0.04em]">
+          {title}
+        </h2>
+        <p className="text-sm text-[#a6a6a6]">{sub}</p>
       </div>
       {children}
     </div>

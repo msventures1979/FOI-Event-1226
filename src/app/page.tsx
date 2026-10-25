@@ -59,7 +59,7 @@ export default async function Home() {
             <h2 className="px-7 pb-2.5 pt-6 font-display text-[13px] font-medium uppercase tracking-[0.2em] text-dim">Startaufstellung</h2>
             <dl className="grid grid-cols-2">
               <Stat value={showFree ? `${slots!.free}` : "80"} label={showFree ? "Plätze noch frei" : "Plätze, nicht mehr"} border="br" />
-              <Stat value="3" label="Arten, die Strecke zu erleben" border="b" />
+              <Stat value="2" label="Arten, die Strecke zu erleben" border="b" />
               <Stat value="0 €" label="für Sie, getragen von Partnern" border="r" />
               <Stat value="1" label="Überraschungsgast zum Dinner" gold />
             </dl>
@@ -70,12 +70,8 @@ export default async function Home() {
       {/* Partnerleiste */}
       <section aria-label="Partner" className="border-b border-line bg-[#050505]">
         <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-x-12 gap-y-6 px-6 py-7">
-          <div className="flex flex-wrap items-center gap-5">
-            <span className="font-display text-xs uppercase tracking-[0.22em] text-gold">Hauptpartner</span>
-            <Image src="/images/lamborghini-stuttgart.png" alt="Lamborghini Stuttgart, Autohaus Gohm" width={102} height={56} className="h-14 w-auto" />
-          </div>
           <div className="flex flex-wrap items-center gap-x-10 gap-y-5">
-            <span className="font-display text-xs uppercase tracking-[0.22em] text-dim">Mit</span>
+            <span className="font-display text-xs uppercase tracking-[0.22em] text-gold">Partner</span>
             <Image src="/images/billiger.png" alt="billiger.de" width={79} height={26} className="h-[26px] w-auto opacity-85" />
             <Image src="/images/unzer.png" alt="UNZER" width={97} height={22} className="h-[22px] w-auto opacity-85" />
           </div>
@@ -84,7 +80,7 @@ export default async function Home() {
 
       <div className="overflow-hidden border-b border-line">
         <p className="px-6 py-5 text-center font-display text-[22px] uppercase leading-relaxed tracking-[0.12em] text-[#8c8c8c]">
-          {["Eigener Wagen", "Renntaxi", "Lamborghini", "Early Dinner", "Überraschungsgast", "Charity-Auktion"].map((w, i) => (
+          {["Eigener Wagen", "Renntaxi", "Early Dinner", "Überraschungsgast", "Charity-Auktion"].map((w, i) => (
             <span key={w}>
               {i > 0 && <span aria-hidden className="text-gold"> / </span>}
               {w}
@@ -99,7 +95,7 @@ export default async function Home() {
         <div className="flex flex-col gap-5 text-lg leading-[1.65] text-[#d1d1d1]">
           <p>Zweimal im Jahr bringt Frontline of Innovation Entscheiderinnen und Entscheider aus Wirtschaft, Sport, Wissenschaft und Politik an einen Tisch. Im Dezember feiern wir anders.</p>
           <p>
-            Gemeinsam mit Paul Muck und der School of Racing laden wir Sie auf den Hockenheimring ein. Sie fahren Ihren eigenen Wagen und lernen ihn unter Anleitung erfahrener Instruktoren an seiner Grenze kennen. Oder Sie steigen als Beifahrer ins Renntaxi – oder selbst ans Steuer eines Lamborghini.
+            Gemeinsam mit Paul Muck und der School of Racing laden wir Sie auf den Hockenheimring ein. Sie fahren Ihren eigenen Wagen und lernen ihn unter Anleitung erfahrener Instruktoren an seiner Grenze kennen. Oder Sie steigen als Beifahrer ins Renntaxi und erleben die Strecke im Renntempo.
           </p>
           <p>Danach geht es weiter wie an jedem FOI-Abend: mit einem frühen Dinner, einem Überraschungsgast und Gesprächen, die es ohne diesen Tag nie gegeben hätte.</p>
         </div>
@@ -133,10 +129,9 @@ export default async function Home() {
           <h2 id="teilnahme-h" className="h-section">Wählen Sie Ihre Linie</h2>
           <p className="max-w-[420px] text-base leading-relaxed text-muted">Die Plätze je Art sind begrenzt und werden in der Reihenfolge der Anmeldung vergeben.</p>
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2">
           <TypeCard type="own" image="/images/card-own-car.jpg" alt="Sportwagen bei einem Trackday der School of Racing" foot="Voraussetzungen: [Fahrzeug, Reifen, Helm]" free={slots?.own.free} />
           <TypeCard type="taxi" image="/images/card-taxi.jpg" alt="Blick aus dem Cockpit auf die Rennstrecke bei einem Training der School of Racing" foot="[Fahrzeug, Rundenzahl]" free={slots?.taxi.free} />
-          <TypeCard type="lambo" image="/images/card-lamborghini.jpg" alt="Lamborghini mit geöffneten Türen beim FOI-Dinner im Mai 2026" foot="[Modell, Runden]" free={slots?.lambo.free} gold />
         </div>
       </section>
 
@@ -259,11 +254,6 @@ export default async function Home() {
       <section aria-labelledby="partner-h" className="mx-auto max-w-[1240px] px-6 py-16">
         <h2 id="partner-h" className="mb-2 text-center font-display text-sm font-medium uppercase tracking-[0.24em] text-gold">Partner</h2>
         <p className="mb-8 text-center text-base text-muted">Dieser Tag wird von unseren Partnern getragen. Für Sie ist er kostenfrei.</p>
-        <div className="mb-5 flex flex-col items-center gap-3.5 border border-gold bg-card px-6 py-7">
-          <span className="font-display text-[13px] uppercase tracking-[0.24em] text-gold">Hauptpartner</span>
-          <Image src="/images/lamborghini-stuttgart.png" alt="Lamborghini Stuttgart, Autohaus Gohm" width={175} height={96} className="h-24 w-auto" />
-          <p className="text-center text-[15px] text-muted">Autohaus Gohm stellt die Lamborghini für die Fahrten auf der Strecke.</p>
-        </div>
         <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
           <PartnerTile><Image src="/images/billiger.png" alt="billiger.de" width={103} height={34} className="h-[34px] w-auto opacity-90" /></PartnerTile>
           <PartnerTile><Image src="/images/unzer.png" alt="UNZER" width={123} height={28} className="h-7 w-auto opacity-90" /></PartnerTile>
@@ -332,7 +322,7 @@ function AgendaItem({ mark, time, title, text, gold = false, last = false }: { m
   );
 }
 
-function TypeCard({ type, image, alt, foot, free, gold = false }: { type: "own" | "taxi" | "lambo"; image?: string; alt?: string; foot: string; free?: number; gold?: boolean }) {
+function TypeCard({ type, image, alt, foot, free, gold = false }: { type: "own" | "taxi"; image?: string; alt?: string; foot: string; free?: number; gold?: boolean }) {
   const p = PARTICIPATION[type];
   return (
     <article className={`flex flex-col border bg-card ${gold ? "border-gold" : "border-line-strong"}`}>
@@ -356,7 +346,6 @@ function TypeCard({ type, image, alt, foot, free, gold = false }: { type: "own" 
         <p className="text-base leading-relaxed text-[#c4c4c4]">{p.text}</p>
         <div className="mt-auto flex items-center justify-between gap-3 border-t border-line pt-4">
           <span className="text-[13px] text-dim">{foot}</span>
-          {type === "lambo" && <Image src="/images/lamborghini-stuttgart.png" alt="Lamborghini Stuttgart" width={73} height={40} className="h-10 w-auto" />}
         </div>
       </div>
     </article>

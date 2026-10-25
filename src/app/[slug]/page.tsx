@@ -8,7 +8,6 @@ const PAGES: Record<string, { title: string; body: React.ReactNode }> = {
   datenschutz: { title: "Datenschutz", body: <Datenschutz /> },
   teilnahmebedingungen: { title: "Teilnahmebedingungen", body: "[Teilnahmebedingungen FOI Racing]" },
   haftungsverzicht: { title: "Haftungsverzicht School of Racing", body: "[Text bzw. PDF der School of Racing]" },
-  "nutzungsbedingungen-gohm": { title: "Nutzungsbedingungen Autohaus Gohm", body: "[Text des Autohauses Gohm für die Lamborghini-Fahrten]" },
 };
 
 export const dynamicParams = false;

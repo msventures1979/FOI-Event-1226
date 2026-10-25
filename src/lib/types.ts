@@ -1,4 +1,4 @@
-export type ParticipationType = "own" | "taxi" | "lambo";
+export type ParticipationType = "own" | "taxi";
 
 export const PARTICIPATION: Record<ParticipationType, { num: string; title: string; short: string; text: string }> = {
   own: {
@@ -13,15 +13,9 @@ export const PARTICIPATION: Record<ParticipationType, { num: string; title: stri
     short: "Renntaxi",
     text: "Sie sitzen auf dem Beifahrersitz, am Steuer ein Profi. Mehrere Runden im Renntempo, ohne selbst fahren zu müssen.",
   },
-  lambo: {
-    num: "03",
-    title: "Lamborghini fahren",
-    short: "Lamborghini",
-    text: "Mit freundlicher Unterstützung des Autohauses Gohm steuern Sie einen Lamborghini selbst über die Strecke, begleitet von einem Instruktor.",
-  },
 };
 
-export const PARTICIPATION_TYPES: ParticipationType[] = ["own", "taxi", "lambo"];
+export const PARTICIPATION_TYPES: ParticipationType[] = ["own", "taxi"];
 
 export type GuestStatus =
   | "eingeladen"
@@ -103,7 +97,6 @@ export interface FreeSlots {
   free: number;
   own: { max: number | null; taken: number; free: number };
   taxi: { max: number | null; taken: number; free: number };
-  lambo: { max: number | null; taken: number; free: number };
 }
 
 /** „Sehr geehrter Herr Dr. Müller“ / „Sehr geehrte Frau Müller“ / „Guten Tag Max Müller“ */

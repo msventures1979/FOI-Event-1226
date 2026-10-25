@@ -50,7 +50,7 @@ export function Impressum() {
       </p>
 
       <H2>Bildnachweis</H2>
-      <p>School of Racing, Frontline of Innovation, Lamborghini Stuttgart / Autohaus Gohm.</p>
+      <p>School of Racing, Frontline of Innovation.</p>
     </>
   );
 }
@@ -87,7 +87,7 @@ export function Datenschutz() {
         Bei der Anmeldung verarbeiten wir zusätzlich Ihre Mobilnummer, die gewählte Teilnahmeart und einen eventuellen Zweitwunsch, Ihre Angaben zur
         Ernährung, den Status Ihrer Anmeldung sowie den Zeitpunkt Ihrer Zustimmung zu den Teilnahmebedingungen. Je nach Teilnahmeart kommen hinzu: Angaben
         zu Ihrem Fahrzeug (Marke, Modell, Baujahr, Leistung, Kennzeichen, Getriebe, Bereifung), das Jahr Ihres Führerscheins, Ihre
-        Rennstreckenerfahrung, Ihre Körpergröße für das Renntaxi und Ihre Bestätigung des Haftungsverzichts bzw. der Nutzungsbedingungen. Rechtsgrundlage
+        Rennstreckenerfahrung, Ihre Körpergröße für das Renntaxi und Ihre Bestätigung des Haftungsverzichts. Rechtsgrundlage
         ist die Durchführung der Veranstaltung, zu der Sie sich anmelden (Art. 6 Abs. 1 lit. b DSGVO).
       </p>
 
@@ -123,10 +123,6 @@ export function Datenschutz() {
         <li>
           <b className="text-white">School of Racing</b> (Mitveranstalter): Name, Mobilnummer, Teilnahmeart, Fahrzeug- und Fahrerangaben sowie
           Körpergröße – für Gruppeneinteilung, Sicherheitseinweisung und Ablauf auf der Strecke.
-        </li>
-        <li>
-          <b className="text-white">Autohaus Gohm / Lamborghini Stuttgart</b>: bei Lamborghini-Fahrten Name, Mobilnummer, Führerscheinjahr und
-          Rennstreckenerfahrung.
         </li>
         <li>
           <b className="text-white">Gastronomie am Veranstaltungsort</b>: Anzahl der Gäste sowie Ernährungswünsche und Allergien, soweit möglich ohne

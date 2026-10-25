@@ -42,13 +42,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ kind: s
         .filter(({ g, r }) => ACTIVE.includes(g.status) && (r?.participation_type === "own" || r?.participation_type === "taxi"))
         .map(({ g, r }) => [r?.start_number ?? "", name(g), r?.mobile ?? "", type(r), v(r, "marke"), v(r, "modell"), v(r, "baujahr"), v(r, "ps"), v(r, "getriebe"), v(r, "reifen"), v(r, "kennzeichen"), r?.experience ?? "", r?.license_since ?? "", r?.height_cm ?? "", r?.extra_ride ? "ja" : ""]);
       break;
-    case "lambo":
-      title = "Lamborghini-Fahrten Autohaus Gohm";
-      header = ["Startnummer", "Name", "Mobil", "E-Mail", "Führerschein seit", "Erfahrung"];
-      body = rows
-        .filter(({ g, r }) => ACTIVE.includes(g.status) && r?.participation_type === "lambo")
-        .map(({ g, r }) => [r?.start_number ?? "", name(g), r?.mobile ?? "", g.email, r?.license_since ?? "", r?.experience ?? ""]);
-      break;
     case "catering":
       title = "Ernährung Catering";
       header = ["Name", "Unternehmen", "Ernährung", "Allergien"];
