@@ -2,6 +2,7 @@ import Image from "next/image";
 import { PageShell } from "@/components/site";
 import { ANSWER_SHORT, type Interest } from "@/lib/interest";
 import { InterestForm } from "./form";
+import { ScrollIntoView } from "./scroll-into-view";
 
 export interface DabeiProps {
   token: string;
@@ -80,6 +81,8 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
 
       <main className="mx-auto max-w-[860px] px-6 pb-24 pt-14">
         {showThanks && mine ? (
+          <>
+          <ScrollIntoView id="danke" />
           <section id="danke" aria-labelledby="danke-h" className="scroll-mt-24 border-l-2 border-gold bg-card p-7">
             <h2 id="danke-h" className="font-display text-4xl font-bold uppercase leading-none">
               {mine.answer === "nicht" ? "Schade – danke für Ihre Antwort." : mine.answer === "interessiert" ? `Danke${first ? `, ${first}` : ""}!` : `Danke${first ? `, ${first}` : ""} – Sie sind vorgemerkt.`}
@@ -99,6 +102,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
               <a href={preview ? "/dabei/vorschau" : `/dabei/${token}?aendern=1`} className="inline-block py-2 text-gold">Antwort ändern</a>
             </p>
           </section>
+          </>
         ) : (
           <InterestForm
             token={token}
