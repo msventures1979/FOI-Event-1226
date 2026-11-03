@@ -13,7 +13,7 @@ export async function saveInterest(_prev: InterestState, form: FormData): Promis
   const token = s(form, "token", 80);
   if (token === "vorschau") {
     const a = s(form, "answer");
-    redirect(`/dabei/vorschau?demo=${encodeURIComponent(a)}`);
+    redirect(`/dabei/vorschau?demo=${encodeURIComponent(a)}#danke`);
   }
   const found = await guestByToken(token);
   if (!found) return { error: "Dieser Link ist nicht gültig. Bitte nutzen Sie den Link aus Ihrer Mail." };
@@ -42,5 +42,5 @@ export async function saveInterest(_prev: InterestState, form: FormData): Promis
   const { error } = await supa.from("event_interest").upsert(patch, { onConflict: "guest_id" });
   if (error) return { error: "Das hat leider nicht geklappt. Bitte versuchen Sie es noch einmal oder schreiben Sie an info@frontlineofinnovation.de." };
   await supa.from("status_log").insert({ guest_id: found.guest.id, from_status: before?.answer ?? null, to_status: `interesse:${answer}`, actor: "gast" }).then(() => undefined, () => undefined);
-  redirect(`/dabei/${token}?gespeichert=1`);
+  redirect(`/dabei/${token}?gespeichert=1#danke`);
 }

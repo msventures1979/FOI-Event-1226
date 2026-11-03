@@ -34,7 +34,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
           <div>
             <p className="eyebrow mb-5 !text-[14px] !tracking-[0.22em]">Save the Date · Montag, 14. Dezember 2026 · Hockenheimring</p>
             <p className="font-display text-2xl uppercase tracking-[0.04em] text-[#ddd]">{first ? `Hallo ${first},` : "Guten Tag,"}</p>
-            <h1 className="mt-2 font-display text-[clamp(46px,7.5vw,100px)] font-bold uppercase leading-[0.95]">
+            <h1 className="mt-2 font-display text-[clamp(40px,7.5vw,100px)] font-bold uppercase leading-[0.95]">
               Weihnachtsfeier
               <br />
               <span className="text-gold">mit Vollgas.</span>
@@ -80,7 +80,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
 
       <main className="mx-auto max-w-[860px] px-6 pb-24 pt-14">
         {showThanks && mine ? (
-          <section aria-labelledby="danke-h" className="border-l-2 border-gold bg-card p-7">
+          <section id="danke" aria-labelledby="danke-h" className="scroll-mt-24 border-l-2 border-gold bg-card p-7">
             <h2 id="danke-h" className="font-display text-4xl font-bold uppercase leading-none">
               {mine.answer === "nicht" ? "Schade – danke für Ihre Antwort." : mine.answer === "interessiert" ? `Danke${first ? `, ${first}` : ""}!` : `Danke${first ? `, ${first}` : ""} – Sie sind vorgemerkt.`}
             </h2>
@@ -96,7 +96,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
             <p className="mt-6 text-sm text-dim">
               Ihre Antwort: <span className="text-white">{ANSWER_SHORT[mine.answer]}</span>
               {" · "}
-              <a href={preview ? "/dabei/vorschau" : `/dabei/${token}?aendern=1`} className="text-gold">Antwort ändern</a>
+              <a href={preview ? "/dabei/vorschau" : `/dabei/${token}?aendern=1`} className="inline-block py-2 text-gold">Antwort ändern</a>
             </p>
           </section>
         ) : (
