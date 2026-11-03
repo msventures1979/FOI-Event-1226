@@ -14,12 +14,18 @@ export interface DabeiProps {
   showThanks: boolean;
   pos: number | null;
   antwort?: string;
+  preview?: boolean;
 }
 
-export function DabeiView({ token, first, fullName, email, cap, dabei, mine, showThanks, pos, antwort }: DabeiProps) {
+export function DabeiView({ token, first, fullName, email, cap, dabei, mine, showThanks, pos, antwort, preview = false }: DabeiProps) {
   const free = Math.max(0, cap - dabei);
   return (
     <PageShell plain>
+      {preview && (
+        <p className="border-b border-gold bg-[#141008] px-6 py-2.5 text-center text-sm text-gold">
+          Vorschau mit Beispieldaten – Antworten werden nicht gespeichert.
+        </p>
+      )}
       {/* Kopf */}
       <section className="relative border-b border-line">
         <Image src="/images/hero-track.jpg" alt="" aria-hidden fill priority sizes="100vw" className="photo object-cover object-[70%_50%]" />
@@ -90,7 +96,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
             <p className="mt-6 text-sm text-dim">
               Ihre Antwort: <span className="text-white">{ANSWER_SHORT[mine.answer]}</span>
               {" · "}
-              <a href={`/dabei/${token}?aendern=1`} className="text-gold">Antwort ändern</a>
+              <a href={preview ? "/dabei/vorschau" : `/dabei/${token}?aendern=1`} className="text-gold">Antwort ändern</a>
             </p>
           </section>
         ) : (

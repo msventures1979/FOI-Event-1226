@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getEvent, guestByToken } from "@/lib/event";
-import { dabeiPosition, interestCounts, interestOf } from "@/lib/interest";
+import { type Interest, dabeiPosition, interestCounts, interestOf } from "@/lib/interest";
 import { DabeiView } from "./view";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Sind Sie dabei? – FOI Weihnachtsfeier", robots: { index: false, follow: false }, referrer: "no-referrer" };
 
-export default async function Dabei({ params, searchParams }: { params: Promise<{ token: string }>; searchParams: Promise<{ antwort?: string; gespeichert?: string; aendern?: string }> }) {
+export default async function Dabei({ params, searchParams }: { params: Promise<{ token: string }>; searchParams: Promise<{ antwort?: string; gespeichert?: string; aendern?: string; demo?: string }> }) {
   const { token } = await params;
-  const { antwort, gespeichert, aendern } = await searchParams;
+  const { antwort, gespeichert, aendern, demo } = await searchParams;
+  // Vorschau ohne Gästedaten: /dabei/vorschau – nichts wird gespeichert
+  if (token === "vorschau") {
+    const answer = demo === "dabei" || demo === "interessiert" || demo === "nicht" ? demo : null;
+    const mine = answer ? ({ guest_id: "", event_id: "", answer, mode: "", vehicle: "", note: "", contact_email: "", created_at: "", updated_at: "" } as Interest) : null;
+    return <DabeiView token="vorschau" first="Max" fullName="Max Mustermann" email="max.mustermann@beispiel.de" cap={80} dabei={0} mine={mine} showThanks={Boolean(mine)} pos={1} antwort={antwort} preview />;
+  }
   const found = await guestByToken(token);
   if (!found) notFound();
   const { guest } = found;

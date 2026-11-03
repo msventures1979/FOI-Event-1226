@@ -11,6 +11,10 @@ const s = (f: FormData, k: string, max = 500) => String(f.get(k) ?? "").trim().s
 
 export async function saveInterest(_prev: InterestState, form: FormData): Promise<InterestState> {
   const token = s(form, "token", 80);
+  if (token === "vorschau") {
+    const a = s(form, "answer");
+    redirect(`/dabei/vorschau?demo=${encodeURIComponent(a)}`);
+  }
   const found = await guestByToken(token);
   if (!found) return { error: "Dieser Link ist nicht gültig. Bitte nutzen Sie den Link aus Ihrer Mail." };
   const answer = s(form, "answer") as InterestAnswer;
