@@ -100,7 +100,7 @@ export function InterestForm({
       )}
 
       <div className="mt-8 flex flex-wrap items-center gap-5">
-        <button type="submit" className="btn-gold" disabled={pending || !answer}>
+        <button type="submit" className="btn-gold" disabled={pending}>
           {pending ? "Wird gesendet …" : "Antwort senden"}
         </button>
         <span className="text-sm text-dim">Unverbindliche Vormerkung. Die verbindliche Einladung folgt, sobald das Event feststeht.</span>
