@@ -7,7 +7,7 @@ import { renderMail, type MailType } from "@/lib/mail/templates";
 import type { Guest, Registration } from "@/lib/types";
 
 /** Mails, die nur ein Mal pro Gast verschickt werden (außer manuell erzwungen). */
-const ONCE: MailType[] = ["save_the_date", "einladung", "erinnerung", "letzte_infos", "vorabend", "danke"];
+const ONCE: MailType[] = ["interesse", "save_the_date", "einladung", "erinnerung", "letzte_infos", "vorabend", "danke"];
 
 /** Puffer, der im Tageslimit für transaktionale Mails (Bestätigung, Warteliste …) frei bleibt. */
 const TRANSACTIONAL_RESERVE = 20;

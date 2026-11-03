@@ -1,6 +1,7 @@
 import { briefanrede, PARTICIPATION, type Guest, type ParticipationType } from "../types";
 
 export type MailType =
+  | "interesse"
   | "save_the_date"
   | "einladung"
   | "erinnerung"
@@ -13,6 +14,7 @@ export type MailType =
   | "danke";
 
 export const MAIL_LABEL: Record<MailType, string> = {
+  interesse: "0 · Save the Date mit Interessensabfrage (Nov.)",
   save_the_date: "1 · Save the Date",
   einladung: "2 · Einladung mit Code",
   erinnerung: "3 · Erinnerung Code",
@@ -45,6 +47,9 @@ export interface RenderedMail {
 export const TEASER_FROM = `"Matthias Storch | Frontline of Innovation" <info@frontlineofinnovation.de>`;
 const TEASER_ASSETS = "https://foi-event-1226.vercel.app";
 
+/** Absender der Interessensabfrage */
+export const INTEREST_FROM = "FOI Weihnachtsfeier <weihnachtsfeier@frontlineofinnovation.de>";
+
 const GRUSS = "Herzliche Grüße aus Mannheim\nMatthias Storch und Süleyman Acar";
 const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\n13:00 Eintreffen · 14:00 Racing · 17:00 Early Dinner in der Mercedes-Loge";
 
@@ -62,7 +67,7 @@ function fmtDate(iso: string): string {
 
 export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
   const g = ctx.guest;
-  const anrede = `${briefanrede(g)},`;
+  let anrede = `${briefanrede(g)},`;
   const anmelden = `${ctx.siteUrl}/anmeldung?code=${encodeURIComponent(g.code)}`;
   const absagen = `${ctx.siteUrl}/absage?code=${encodeURIComponent(g.code)}`;
   const verwalten = `${ctx.siteUrl}/meine-teilnahme/${g.manage_token}`;
@@ -74,8 +79,28 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
   let assets = ctx.siteUrl;
   let footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing";
   let blocks: Block[] = [];
+  let gruss = GRUSS;
 
   switch (type) {
+    case "interesse": {
+      const link = `${ctx.siteUrl}/dabei/${g.manage_token}`;
+      if (g.first_name?.trim()) anrede = `Hallo ${g.first_name.trim()},`;
+      subject = "Weihnachtsfeier mit Vollgas – sind Sie dabei?";
+      preheader = "14. Dezember, Hockenheimring: Ihre Runde auf der Strecke, danach Dinner in der Mercedes-Lodge.";
+      from = INTEREST_FROM;
+      footer = "Frontline of Innovation · gemeinsam mit School of Racing";
+      gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar\nmit Paul Muck, School of Racing";
+      blocks = [
+        { hero: { kicker: "Save the Date · Montag, 14. Dezember 2026", line1: "Weihnachtsfeier", line2: "mit Vollgas.", image: `${ctx.siteUrl}/images/mail-hero.jpg` } },
+        { p: "stellen Sie sich einen kalten Dezembernachmittag vor. Der Motor läuft warm, vor Ihnen liegt die Strecke des Hockenheimrings. Neben Ihnen sitzt ein Instruktor der School of Racing – oder Sie lassen sich von einem Profi im Renntaxi durch die Kurven tragen. Danach wird es warm: Dinner in der Mercedes-Lodge, mit einem Überraschungsgast und den Menschen, die Frontline of Innovation ausmachen." },
+        { p: "So stellen wir uns unsere erste FOI-Weihnachtsfeier vor. Und wir haben richtig Lust darauf." },
+        { p: "Noch ist nicht alles in trockenen Tüchern – und ehrlich gesagt hängt es auch an Ihnen. Sagen Sie uns mit einem Klick, ob Sie dabei sein möchten. Dann wissen wir, für wen wir Gas geben." },
+        { facts: "Montag, 14. Dezember 2026 · Hockenheimring\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend\nFür Sie kostenfrei · 80 Plätze" },
+        { buttons: [{ label: "Ich will auf die Strecke", href: link, primary: true }, { label: "Diesmal nicht", href: `${link}?antwort=nicht` }] },
+        { p: "Ihre Antwort ist unverbindlich. Sobald das Event steht, erhalten alle, die sich vorgemerkt haben, als Erste die verbindliche Einladung." },
+      ];
+      break;
+    }
     case "save_the_date": {
       // Bewusst neutral: kein Bild, kein Ort, kein Link zur Event-Seite
       const gcal =
@@ -177,11 +202,11 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       break;
   }
 
-  const text = toText(anrede, blocks);
+  const text = toText(anrede, blocks, gruss);
   // Sicherung: Mails mit offenen Platzhaltern wie „[Treffpunkt]“ werden nie verschickt
   const open = text.match(/\[[^\]\n]{2,}\]/g);
   if (open) throw new MailPlaceholderError(`Mail „${MAIL_LABEL[type]}“ enthält noch Platzhalter: ${[...new Set(open)].join(", ")}`);
-  return { subject, html: toHtml(anrede, blocks, assets, preheader, footer, type === "save_the_date"), text: text.replace("—\nFrontline of Innovation · info@frontlineofinnovation.de", `—\n${footer} · info@frontlineofinnovation.de`), from };
+  return { subject, html: toHtml(anrede, blocks, assets, preheader, footer, type === "save_the_date", gruss), text: text.replace("—\nFrontline of Innovation · info@frontlineofinnovation.de", `—\n${footer} · info@frontlineofinnovation.de`), from };
 }
 
 export class MailPlaceholderError extends Error {}
@@ -200,7 +225,7 @@ function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-function toText(anrede: string, blocks: Block[]): string {
+function toText(anrede: string, blocks: Block[], gruss = GRUSS): string {
   const hero = blocks.find((b) => "hero" in b) as { hero: { kicker: string; line1: string; line2: string } } | undefined;
   const parts = hero ? [`${hero.hero.kicker.toUpperCase()}\n${hero.hero.line1} ${hero.hero.line2}`, anrede] : [anrede];
   for (const b of blocks) {
@@ -209,13 +234,13 @@ function toText(anrede: string, blocks: Block[]): string {
     if ("code" in b) parts.push(`Ihr persönlicher Code: ${b.code}`);
     if ("buttons" in b) parts.push(b.buttons.map((x) => `${x.label}: ${x.href}`).join("\n"));
   }
-  parts.push(GRUSS);
+  parts.push(gruss);
   for (const b of blocks) if ("ps" in b) parts.push(b.ps);
   parts.push("—\nFrontline of Innovation · info@frontlineofinnovation.de");
   return parts.join("\n\n");
 }
 
-function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = "", footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing", neutral = false): string {
+function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = "", footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing", neutral = false, gruss = GRUSS): string {
   const heroBlock = blocks.find((b) => "hero" in b) as { hero: { kicker: string; line1: string; line2: string; image?: string } } | undefined;
   const hero = heroBlock
     ? `${heroBlock.hero.image ? `<tr><td style="background:#000;line-height:0"><img src="${esc(heroBlock.hero.image)}" width="600" alt="Sportwagen auf dem Hockenheimring" style="display:block;width:100%;max-width:600px;height:auto;border:0"></td></tr>` : ""}
@@ -255,7 +280,7 @@ ${neutral ? `<tr><td style="height:4px;background:#E6941A;line-height:4px;font-s
 <tr><td style="padding:28px 28px 8px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.55;color:#1a1a1a">
 <p style="margin:0 0 16px">${esc(anrede)}</p>
 ${body}
-<p style="margin:24px 0 0">${esc(GRUSS).replace(/\n/g, "<br>")}</p>
+<p style="margin:24px 0 0">${esc(gruss).replace(/\n/g, "<br>")}</p>
 ${ps}
 </td></tr>
 <tr><td style="padding:24px 28px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#888">${esc(footer)} · <a href="mailto:info@frontlineofinnovation.de" style="color:#888">info@frontlineofinnovation.de</a></td></tr>

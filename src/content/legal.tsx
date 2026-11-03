@@ -82,6 +82,15 @@ export function Datenschutz() {
         unseres Netzwerks (Art. 6 Abs. 1 lit. f DSGVO). Wenn Sie keine Einladungen mehr erhalten möchten, genügt eine kurze Nachricht an <Mail />.
       </p>
 
+      <H3>Unverbindliche Interessensabfrage</H3>
+      <p>
+        Vor der verbindlichen Einladung fragen wir über einen persönlichen Link ab, ob Sie teilnehmen möchten. Dabei speichern wir Ihre Antwort, Ihren
+        Wunsch für die Strecke (eigenes Fahrzeug oder Renntaxi), freiwillig Ihr Fahrzeug, eine Anmerkung und gegebenenfalls eine abweichende
+        E-Mail-Adresse. Wir nutzen die Angaben nur, um die Veranstaltung zu planen und die Plätze in der Reihenfolge der Antworten vorzumerken.
+        Rechtsgrundlage ist unser berechtigtes Interesse an der Planung (Art. 6 Abs. 1 lit. f DSGVO). Die Angaben löschen wir spätestens drei Monate
+        nach der Veranstaltung oder sobald feststeht, dass sie nicht stattfindet.
+      </p>
+
       <H3>Anmeldung und Durchführung der Veranstaltung</H3>
       <p>
         Bei der Anmeldung verarbeiten wir zusätzlich Ihre Mobilnummer, die gewählte Teilnahmeart und einen eventuellen Zweitwunsch, Ihre Angaben zur

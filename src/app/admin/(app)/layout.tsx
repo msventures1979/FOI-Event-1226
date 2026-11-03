@@ -6,6 +6,7 @@ export const metadata = { title: "Admin – FOI Racing", robots: { index: false 
 
 const NAV = [
   ["/admin", "Übersicht"],
+  ["/admin/interesse", "Interesse"],
   ["/admin/gaeste", "Gäste"],
   ["/admin/import", "Import"],
   ["/admin/versand", "Versand"],

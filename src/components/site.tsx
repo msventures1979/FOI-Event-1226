@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export function Header() {
+export function Header({ plain = false }: { plain?: boolean }) {
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-black/95 backdrop-blur">
       <nav aria-label="Hauptnavigation" className="mx-auto flex max-w-[1240px] items-center justify-between gap-x-6 px-4 py-2.5 sm:px-6 md:py-3.5">
@@ -14,6 +14,7 @@ export function Header() {
             <span className="font-semibold text-white">School of Racing</span>
           </span>
         </Link>
+        {plain ? null : (
         <div className="flex items-center gap-x-6 text-sm">
           {/* Auf dem Handy nur der Anmelde-Button, damit der feste Kopf flach bleibt */}
           <Link href="/#ablauf" className="hidden py-3 text-[#ccc] no-underline hover:text-white lg:inline">Ablauf</Link>
@@ -25,6 +26,7 @@ export function Header() {
             <span className="hidden sm:inline">Mit Code anmelden</span>
           </Link>
         </div>
+        )}
       </nav>
     </header>
   );
@@ -51,10 +53,10 @@ export function Footer() {
   );
 }
 
-export function PageShell({ children }: { children: React.ReactNode }) {
+export function PageShell({ children, plain = false }: { children: React.ReactNode; plain?: boolean }) {
   return (
     <div className="min-h-screen overflow-x-hidden bg-black text-white">
-      <Header />
+      <Header plain={plain} />
       {children}
       <Footer />
     </div>
