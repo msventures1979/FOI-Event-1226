@@ -54,9 +54,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
                 <span className="ml-2 text-2xl text-dim">/ {cap}</span>
               </p>
               <p className="mt-2 text-sm text-[#ccc]">{free > 0 ? "Plätze noch frei – vorgemerkt wird in der Reihenfolge der Antworten." : "Alle Plätze sind vorgemerkt. Wer jetzt zusagt, kommt auf die Warteliste."}</p>
-              <div className="mt-4 h-1.5 bg-[#1c1c1c]" aria-hidden>
-                <div className="h-full bg-gold" style={{ width: `${Math.min(100, (dabei / cap) * 100)}%` }} />
-              </div>
+              <Track pct={Math.min(100, (dabei / cap) * 100)} />
             </div>
           </div>
         </div>
@@ -113,5 +111,26 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
         )}
       </main>
     </PageShell>
+  );
+}
+
+/** Fortschritt als Rennstrecke: Das Auto fährt mit jeder Zusage ein Stück weiter Richtung Zielflagge. */
+function Track({ pct }: { pct: number }) {
+  return (
+    <div aria-hidden className="relative mt-7 pr-8">
+      <div className="relative h-1.5 bg-[#1c1c1c]">
+        <div className="track-fill h-full bg-gold" style={{ ["--p" as string]: `${pct}%` }} />
+        <svg viewBox="0 0 60 20" className="track-car absolute bottom-[2px] h-[18px] w-[54px] -translate-x-full" style={{ ["--p" as string]: `${pct}%` }}>
+          {/* flacher Sportwagen in Seitenansicht, fährt nach rechts */}
+          <path d="M2 14.6 3.6 11.4C5 9.9 8 9.3 12 9l8.6-3.8C23 4.2 25.8 3.9 29 3.9h6.2c3.4.1 6.2 1.3 9.2 4l7.6 1.4c3.6.7 5.8 2.2 6 4.3v1.8H2z" fill="#ffffff" />
+          <path d="M22.4 8.8 26 6.1c1-.6 2.1-.9 3.4-.9h5.2c2.3.1 4.3 1 6 3.6z" fill="#0a0a0a" />
+          <path d="M51.5 10.4h4.6" stroke="#E6941A" strokeWidth="1.2" strokeLinecap="round" />
+          <circle cx="14.5" cy="15.4" r="3.9" fill="#0a0a0a" stroke="#ffffff" strokeWidth="1.5" />
+          <circle cx="46" cy="15.4" r="3.9" fill="#0a0a0a" stroke="#ffffff" strokeWidth="1.5" />
+        </svg>
+      </div>
+      {/* Zielflagge */}
+      <div className="checker-sm absolute -top-3 right-0 h-[18px] w-4 opacity-90" />
+    </div>
   );
 }
