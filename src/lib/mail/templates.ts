@@ -91,11 +91,12 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       footer = "Frontline of Innovation · gemeinsam mit School of Racing";
       gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar\nmit Paul Muck, School of Racing";
       blocks = [
-        { hero: { kicker: "Save the Date · Montag, 14. Dezember 2026", line1: "Weihnachtsfeier", line2: "mit Vollgas.", image: `${ctx.siteUrl}/images/mail-hero.jpg` } },
-        { p: "stellen Sie sich einen kalten Dezembernachmittag vor. Der Motor läuft warm, vor Ihnen liegt die Strecke des Hockenheimrings. Neben Ihnen sitzt ein Instruktor der School of Racing – oder Sie lassen sich von einem Profi im Renntaxi durch die Kurven tragen. Danach wird es warm: Dinner in der Loge, mit einem Überraschungsgast und den Menschen, die Frontline of Innovation ausmachen." },
+        { hero: { kicker: "Persönliche Einladung · Save the Date · 14. Dezember 2026", line1: "Weihnachtsfeier", line2: "mit Vollgas.", image: `${ctx.siteUrl}/images/mail-hero.jpg` } },
+        { p: "stellen Sie sich einen kalten Dezembernachmittag vor. Der Motor läuft warm, vor Ihnen liegt die Strecke des Hockenheimrings. Neben Ihnen sitzt ein Instruktor der School of Racing – oder Sie lassen sich von einem Profi im Renntaxi durch die Kurven tragen. Danach wird es gemütlich: Dinner in der Loge, mit den Menschen, die Frontline of Innovation ausmachen." },
         { p: "So stellen wir uns unsere erste FOI-Weihnachtsfeier vor. Und wir haben richtig Lust darauf." },
+        { p: "Wir laden dazu ausschließlich persönlich ein – einen kleinen Kreis aus unserem Netzwerk. Für Sie entstehen keine Kosten: Strecke, Instruktoren und Dinner tragen wir gemeinsam mit unseren Partnern." },
         { p: "Noch ist nicht alles in trockenen Tüchern – und ehrlich gesagt hängt es auch an Ihnen. Sagen Sie uns mit einem Klick, ob Sie dabei sein möchten. Dann wissen wir, für wen wir Gas geben." },
-        { facts: "Montag, 14. Dezember 2026 · Hockenheimring\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend\nFür Sie kostenfrei · 100 Plätze" },
+        { facts: "Montag, 14. Dezember 2026 · Hockenheimring\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend\nNur auf persönliche Einladung · für Sie kostenfrei · 100 Plätze" },
         { buttons: [{ label: "Ich will auf die Strecke", href: link, primary: true }, { label: "Diesmal nicht", href: `${link}?antwort=nicht` }] },
         { p: "Ihre Antwort ist unverbindlich. Sobald das Event steht, erhalten alle, die sich vorgemerkt haben, als Erste die verbindliche Einladung." },
       ];

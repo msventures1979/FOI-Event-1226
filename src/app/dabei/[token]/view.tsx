@@ -33,7 +33,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
         <div aria-hidden className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,.96)_0%,rgba(0,0,0,.85)_55%,rgba(0,0,0,.45)_100%)]" />
         <div className="relative mx-auto grid max-w-[1240px] items-end gap-10 px-6 pb-14 pt-14 md:grid-cols-[1.4fr_1fr] md:pt-20">
           <div>
-            <p className="eyebrow mb-5 !text-[14px] !tracking-[0.22em]">Save the Date · Montag, 14. Dezember 2026 · Hockenheimring</p>
+            <p className="eyebrow mb-5 !text-[14px] !tracking-[0.22em]">Persönliche Einladung · Montag, 14. Dezember 2026 · Hockenheimring</p>
             <p className="font-display text-2xl uppercase tracking-[0.04em] text-[#ddd]">{first ? `Hallo ${first},` : "Guten Tag,"}</p>
             <h1 className="mt-2 font-display text-[clamp(40px,7.5vw,100px)] font-bold uppercase leading-[0.95]">
               Weihnachtsfeier
@@ -70,8 +70,8 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
         <ul className="mx-auto grid max-w-[1240px] gap-px bg-line md:grid-cols-3">
           {[
             { k: "Ab 14 Uhr", t: "Auf der Strecke", d: "Mit Ihrem eigenen Wagen und einem Instruktor der School of Racing an Ihrer Seite – oder als Beifahrer im Renntaxi." },
-            { k: "Früher Abend", t: "Dinner in der Loge", d: "Mit einem Überraschungsgast und den Menschen, die Frontline of Innovation ausmachen." },
-            { k: "Kostenfrei", t: `${cap} Plätze`, d: "Getragen von unseren Partnern. Eintreffen ab 13 Uhr am Hockenheimring." },
+            { k: "Früher Abend", t: "Dinner in der Loge", d: "Mit den Menschen, die Frontline of Innovation ausmachen." },
+            { k: "Exklusiv & kostenfrei", t: `${cap} Plätze`, d: "Nur auf persönliche Einladung. Für Sie entstehen keine Kosten – getragen von unseren Partnern. Eintreffen ab 13 Uhr." },
           ].map((x) => (
             <li key={x.t} className="bg-black px-6 py-8">
               <p className="eyebrow !text-[12px]">{x.k}</p>
