@@ -6,12 +6,15 @@ import { sentToday } from "@/lib/mail/queue";
 import { PARTICIPATION, PARTICIPATION_TYPES, STATUS_LABEL, type GuestStatus } from "@/lib/types";
 import { runQueue, saveCapacity } from "../actions";
 import { SubmitButton } from "@/components/submit-button";
+import { interestCounts } from "@/lib/interest";
+import Link from "next/link";
 
 export default async function Overview({ searchParams }: { searchParams: Promise<{ queue?: string; fehler?: string; gespeichert?: string }> }) {
   await requireAdmin();
   const { queue, fehler, gespeichert } = await searchParams;
   const ev = await getEvent();
-  const [slots, { data: guests }, { data: caps }, today, { count: pending }, { data: failedJobs }] = await Promise.all([
+  const [interest, slots, { data: guests }, { data: caps }, today, { count: pending }, { data: failedJobs }] = await Promise.all([
+    interestCounts(ev.id),
     getFreeSlots(ev.id),
     db().from("event_guests").select("status").eq("event_id", ev.id),
     db().from("event_capacity").select("*").eq("event_id", ev.id),
@@ -40,7 +43,23 @@ export default async function Overview({ searchParams }: { searchParams: Promise
       </section>
 
       <section>
-        <h2 className="mb-4 font-display text-xl font-semibold uppercase">Plätze</h2>
+        <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+          <h2 className="font-display text-xl font-semibold uppercase">Interessensabfrage · unverbindlich</h2>
+          <Link href="/admin/interesse" className="text-sm text-gold">
+            Alle Antworten →
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
+          <Tile label="Vorgemerkt / Plätze" value={`${interest.dabei} / ${ev.total_capacity}`} sub={`${Math.max(0, ev.total_capacity - interest.dabei)} frei`} gold />
+          <Tile label="Interessiert" value={interest.interessiert} />
+          <Tile label="Nicht dabei" value={interest.nicht} />
+          <Tile label="Ohne Antwort" value={Math.max(0, (guests?.length ?? 0) - interest.dabei - interest.interessiert - interest.nicht)} />
+        </div>
+      </section>
+
+      <section>
+        <h2 className="mb-1 font-display text-xl font-semibold uppercase">Plätze · verbindliche Anmeldung</h2>
+        <p className="mb-4 text-sm text-dim">Zählt erst, wenn die verbindliche Einladung mit Code verschickt ist und sich Gäste anmelden.</p>
         <div className="grid gap-px border border-line bg-line sm:grid-cols-4">
           <Tile label="Belegt / gesamt" value={`${slots.taken} / ${slots.total}`} sub={`${slots.free} frei`} gold />
           {PARTICIPATION_TYPES.map((t) => (
