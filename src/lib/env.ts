@@ -16,6 +16,10 @@ export const env = {
   get resendKey() {
     return req("RESEND_API_KEY");
   },
+  /** Optional: eigener Resend-Schlüssel mit Lesezugriff nur für die Zustellstatus-Abfrage (der Versandschlüssel bleibt „nur senden“). */
+  get resendStatusKey() {
+    return process.env.RESEND_STATUS_KEY || req("RESEND_API_KEY");
+  },
   get mailFrom() {
     return process.env.MAIL_FROM ?? "Frontline of Innovation <racing@frontlineofinnovation.de>";
   },

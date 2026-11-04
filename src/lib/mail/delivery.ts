@@ -37,7 +37,7 @@ function map(lastEvent: string | undefined): string {
  */
 export async function refreshDelivery(max = 240): Promise<{ checked: number; bounced: number; open: number; error?: string }> {
   const supa = db();
-  const resend = new Resend(env.resendKey);
+  const resend = new Resend(env.resendStatusKey);
   const since = new Date(Date.now() - 14 * 86400 * 1000).toISOString();
   const { data: rows } = await supa
     .from("email_log")

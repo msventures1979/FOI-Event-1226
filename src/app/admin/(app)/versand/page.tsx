@@ -47,7 +47,7 @@ export default async function Versand({ searchParams }: { searchParams: Promise<
         {fehler && (
           <p className="mb-4 border-l-2 border-red-500 bg-card p-3 text-sm text-red-300">
             Resend meldet: {fehler}
-            {/restricted|permission|unauthori|forbidden/i.test(fehler) ? " – der API-Schlüssel darf nur senden, nicht lesen. In Resend einen Schlüssel mit „Full access“ anlegen und in Vercel als RESEND_API_KEY hinterlegen." : ""}
+            {/restricted|permission|unauthori|forbidden/i.test(fehler) ? " – der API-Schlüssel darf nur senden, nicht lesen. In Resend einen zusätzlichen Schlüssel mit „Full access“ anlegen und in Vercel als RESEND_STATUS_KEY hinterlegen (der Versandschlüssel bleibt unverändert)." : ""}
           </p>
         )}
         {zustellung && (
