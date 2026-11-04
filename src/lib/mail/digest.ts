@@ -34,7 +34,8 @@ export async function sendDigest(eventId: string, capacity: number): Promise<{ s
   const changed = rows.filter((r) => r.updated_at >= since || r.created_at >= since).sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1));
   if (changed.length === 0) return { sent: false, changes: 0 };
   const { subject, html, text } = buildDigest({ rows, changed, guests: guests ?? 0, bounces: bounces ?? 0, capacity, siteUrl: env.siteUrl });
-  const to = (process.env.DIGEST_TO || env.mailReplyTo).split(",").map((s) => s.trim()).filter(Boolean);
+  // Empfänger: info@ und Süleyman (überschreibbar per DIGEST_TO, kommagetrennt)
+  const to = (process.env.DIGEST_TO || `${env.mailReplyTo},suele.acar@gmail.com`).split(",").map((s) => s.trim()).filter(Boolean);
   const { error } = await new Resend(env.resendKey).emails.send({ from: INTEREST_FROM, to, subject, html, text });
   if (error) throw new Error(error.message);
   return { sent: true, changes: changed.length };

@@ -30,12 +30,12 @@ export default async function InteressePage({ searchParams }: { searchParams: Pr
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-4xl font-bold uppercase">Interessensabfrage</h1>
         <form action={sendDigestNow}>
-          <SubmitButton className="btn-ghost" pendingText="Wird verschickt …">Tagesüberblick jetzt an info@ senden</SubmitButton>
+          <SubmitButton className="btn-ghost" pendingText="Wird verschickt …">Tagesüberblick jetzt senden</SubmitButton>
         </form>
       </div>
       {digest && (
         <p className="mt-3 border-l-2 border-gold bg-card p-3 text-sm">
-          {digest === "ok" ? "Tagesüberblick ist an info@ verschickt." : digest === "leer" ? "Seit gestern gab es keine neuen Antworten – kein Überblick verschickt." : "Der Überblick konnte nicht verschickt werden."}
+          {digest === "ok" ? "Tagesüberblick ist an info@ und Süleyman verschickt." : digest === "leer" ? "Seit gestern gab es keine neuen Antworten – kein Überblick verschickt." : "Der Überblick konnte nicht verschickt werden."}
         </p>
       )}
       <p className="mt-2 text-xs text-dim">Der Überblick kommt automatisch jeden Morgen um 8 Uhr, wenn es seit dem Vortag neue oder geänderte Antworten gibt.</p>
