@@ -42,12 +42,12 @@ export function SendForm({ labels }: { labels: Record<string, string> }) {
         </div>
       </div>
       <label className="chk">
-        <input type="checkbox" name="test" defaultChecked /> Nur Testmail (mit Daten eines echten Gastes)
+        <input type="checkbox" name="test" defaultChecked /> Nur Testmail
       </label>
       <div className="max-w-md">
         <label className="lbl" htmlFor="testTo">Testmail an (leer = an mich)</label>
         <input id="testTo" name="testTo" type="email" className="field" placeholder="z. B. kollege@firma.de" autoComplete="off" />
-        <p className="mt-1 text-xs text-dim">Steht die Adresse auf der Gästeliste, zeigt die Testmail deren Namen und persönlichen Link.</p>
+        <p className="mt-1 text-xs text-dim">Steht die Adresse auf der Gästeliste, zeigt die Testmail deren Namen und persönlichen Link – sonst „Max“ mit Vorschau-Link, über den nichts gespeichert wird.</p>
       </div>
       <label className="chk">
         <input type="checkbox" name="force" /> Erneut senden, auch wenn der Gast diese Mail schon bekommen hat

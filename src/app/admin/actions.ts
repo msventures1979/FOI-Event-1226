@@ -160,8 +160,9 @@ export async function queueMails(_prev: unknown, form: FormData): Promise<{ msg:
   // Testempfänger auf der Gästeliste: dessen Daten verwenden, sonst den ersten Gast
   const { data: own } = testTo ? await db().from("event_guests").select("*").eq("event_id", ev.id).eq("email", testTo).limit(1).maybeSingle() : { data: null };
   const { data: first } = own ? { data: null } : await db().from("event_guests").select("*").eq("event_id", ev.id).limit(1).maybeSingle();
-  const sample = own ?? first;
-  const g: Guest = (sample as Guest) ?? ({ salutation: "Herr", title: "", first_name: "Max", last_name: "Mustermann", code: "FOI-TEST0101", manage_token: "test" } as Guest);
+  // Testmail ohne eigenen Gasteintrag: Beispieldaten mit Vorschau-Link, damit kein Klick die Antwort eines echten Gastes verändert
+  const sample = own ?? (test ? null : first);
+  const g: Guest = (sample as Guest) ?? ({ salutation: "Herr", title: "", first_name: "Max", last_name: "Mustermann", code: "FOI-TEST0101", manage_token: "vorschau" } as Guest);
   const notReady = mailReady(type, { guest: g, siteUrl: env.siteUrl, participationType: "own", freeSlots: 12 });
   if (notReady) return { msg: `Nicht versandbereit – ${notReady}. Bitte zuerst die Texte ergänzen.` };
 
