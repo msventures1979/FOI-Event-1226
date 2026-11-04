@@ -51,7 +51,7 @@ const TEASER_ASSETS = "https://foi-event-1226.vercel.app";
 export const INTEREST_FROM = "FOI Weihnachtsfeier <weihnachtsfeier@frontlineofinnovation.de>";
 
 const GRUSS = "Herzliche Grüße aus Mannheim\nMatthias Storch und Süleyman Acar";
-const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\n13:00 Eintreffen · 14:00 Racing · 17:00 Early Dinner in der Mercedes-Loge";
+const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\n13:00 Eintreffen · 14:00 Racing · 17:00 Early Dinner in der Loge";
 
 type Block =
   | { p: string }
@@ -86,16 +86,16 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       const link = `${ctx.siteUrl}/dabei/${g.manage_token}`;
       if (g.first_name?.trim()) anrede = `Hallo ${g.first_name.trim()},`;
       subject = "Weihnachtsfeier mit Vollgas – sind Sie dabei?";
-      preheader = "14. Dezember, Hockenheimring: Ihre Runde auf der Strecke, danach Dinner in der Mercedes-Lodge.";
+      preheader = "14. Dezember, Hockenheimring: Ihre Runde auf der Strecke, danach Dinner in der Loge.";
       from = INTEREST_FROM;
       footer = "Frontline of Innovation · gemeinsam mit School of Racing";
       gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar\nmit Paul Muck, School of Racing";
       blocks = [
         { hero: { kicker: "Save the Date · Montag, 14. Dezember 2026", line1: "Weihnachtsfeier", line2: "mit Vollgas.", image: `${ctx.siteUrl}/images/mail-hero.jpg` } },
-        { p: "stellen Sie sich einen kalten Dezembernachmittag vor. Der Motor läuft warm, vor Ihnen liegt die Strecke des Hockenheimrings. Neben Ihnen sitzt ein Instruktor der School of Racing – oder Sie lassen sich von einem Profi im Renntaxi durch die Kurven tragen. Danach wird es warm: Dinner in der Mercedes-Lodge, mit einem Überraschungsgast und den Menschen, die Frontline of Innovation ausmachen." },
+        { p: "stellen Sie sich einen kalten Dezembernachmittag vor. Der Motor läuft warm, vor Ihnen liegt die Strecke des Hockenheimrings. Neben Ihnen sitzt ein Instruktor der School of Racing – oder Sie lassen sich von einem Profi im Renntaxi durch die Kurven tragen. Danach wird es warm: Dinner in der Loge, mit einem Überraschungsgast und den Menschen, die Frontline of Innovation ausmachen." },
         { p: "So stellen wir uns unsere erste FOI-Weihnachtsfeier vor. Und wir haben richtig Lust darauf." },
         { p: "Noch ist nicht alles in trockenen Tüchern – und ehrlich gesagt hängt es auch an Ihnen. Sagen Sie uns mit einem Klick, ob Sie dabei sein möchten. Dann wissen wir, für wen wir Gas geben." },
-        { facts: "Montag, 14. Dezember 2026 · Hockenheimring\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend\nFür Sie kostenfrei · 80 Plätze" },
+        { facts: "Montag, 14. Dezember 2026 · Hockenheimring\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend\nFür Sie kostenfrei · 100 Plätze" },
         { buttons: [{ label: "Ich will auf die Strecke", href: link, primary: true }, { label: "Diesmal nicht", href: `${link}?antwort=nicht` }] },
         { p: "Ihre Antwort ist unverbindlich. Sobald das Event steht, erhalten alle, die sich vorgemerkt haben, als Erste die verbindliche Einladung." },
       ];
@@ -117,7 +117,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { hero: { kicker: "Save the Date · Montag, 14. Dezember 2026", line1: "Die Weihnachtsfeier", line2: "der anderen Art." } },
         { p: "das Jahr neigt sich dem Ende zu – und wir möchten es gern gemeinsam mit Ihnen ausklingen lassen. Allerdings nicht ganz so, wie man es von einer Weihnachtsfeier erwartet." },
         { p: "Was genau wir vorhaben, verraten wir noch nicht. Nur so viel: Es wird ein Nachmittag und Abend, wie Sie ihn mit der Frontline of Innovation noch nicht erlebt haben – mit guten Gesprächen, ein paar Überraschungen und einem Zweck, der über den Tag hinausgeht." },
-        { facts: "Montag, 14. Dezember 2026 · Nachmittag und Abend\nIn der Region Rhein-Neckar\nDie Teilnahme ist auf 80 Gäste beschränkt\nIhre persönliche Einladung mit allen Details folgt im November" },
+        { facts: "Montag, 14. Dezember 2026 · Nachmittag und Abend\nIn der Region Rhein-Neckar\nDie Teilnahme ist auf 100 Gäste beschränkt\nIhre persönliche Einladung mit allen Details folgt im November" },
         { p: "Bitte merken Sie sich den Termin schon heute vor – wir würden uns sehr freuen, wenn Sie dabei sind. Den Kalendereintrag finden Sie auch im Anhang dieser Mail." },
         { buttons: [{ label: "In Outlook / Apple Kalender eintragen", href: `${TEASER_ASSETS}/api/ics/save-the-date`, primary: true }, { label: "Google Kalender", href: gcal }] },
         { ps: "P.S. Einen kleinen Hinweis, was Sie erwartet, schicken wir Ihnen kurzfristig. Und wenn Sie sich den Termin schon notiert haben, freuen wir uns über eine kurze Antwort auf diese Mail." },
@@ -129,7 +129,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       blocks = [
         { p: "wir laden Sie herzlich zur Weihnachtsfeier der anderen Art ein: FOI Racing auf dem Hockenheimring." },
         { facts: FAKTEN + ", mit einem Überraschungsgast und einer Charity-Auktion" },
-        { p: "Sie fahren Ihren eigenen Wagen unter Anleitung, oder Sie steigen ins Renntaxi. Die Teilnahme ist für Sie kostenfrei. Es gibt 80 Plätze; sie werden in der Reihenfolge der Anmeldung vergeben." },
+        { p: "Sie fahren Ihren eigenen Wagen unter Anleitung, oder Sie steigen ins Renntaxi. Die Teilnahme ist für Sie kostenfrei. Es gibt 100 Plätze; sie werden in der Reihenfolge der Anmeldung vergeben." },
         { code: g.code },
         { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
       ];
@@ -196,7 +196,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
     case "danke":
       subject = "Danke für einen besonderen Tag – FOI Racing";
       blocks = [
-        { p: "vielen Dank, dass Sie dabei waren. Wir hoffen, der Tag auf der Strecke und der Abend in der Mercedes-Loge bleiben Ihnen in Erinnerung." },
+        { p: "vielen Dank, dass Sie dabei waren. Wir hoffen, der Tag auf der Strecke und der Abend in der Loge bleiben Ihnen in Erinnerung." },
         { p: "Die Fotos des Tages finden Sie hier: [Link zur Galerie]" },
       ];
       break;

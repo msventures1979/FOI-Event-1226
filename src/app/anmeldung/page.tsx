@@ -74,7 +74,7 @@ function CodeEntry({ code = "", error, info }: { code?: string; error?: string; 
               )}
               <div className="mt-5 flex flex-wrap items-center gap-4">
                 <button type="submit" className="btn-gold">Weiter</button>
-                <span className="text-sm text-[#a6a6a6]">Die Plätze sind auf 80 begrenzt.</span>
+                <span className="text-sm text-[#a6a6a6]">Die Plätze sind auf 100 begrenzt.</span>
               </div>
             </form>
           )}

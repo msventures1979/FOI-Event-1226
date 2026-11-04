@@ -20,7 +20,7 @@ export default async function InteressePage({ searchParams }: { searchParams: Pr
   const rows = a ? all.filter((r) => r.answer === a) : all;
   const answered = counts.dabei + counts.interessiert + counts.nicht;
   const modes = (k: string) => all.filter((r) => r.answer !== "nicht" && r.mode === k).length;
-  const cap = ev.total_capacity ?? 80;
+  const cap = ev.total_capacity ?? 100;
   let pos = 0;
 
   return (

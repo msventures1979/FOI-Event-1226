@@ -47,7 +47,7 @@ export async function saveCapacity(form: FormData) {
     if (error) errors.push(error.message);
   }
   // Durch mehr Kapazität können Wartende nachrücken – und sollen es sofort erfahren
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 200; i++) {
     const { data } = await db().rpc("promote_next", { p_event: ev.id });
     if (!data) break;
   }

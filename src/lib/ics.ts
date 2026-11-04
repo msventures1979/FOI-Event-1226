@@ -13,7 +13,7 @@ export function buildIcs(opts: { uid: string; url: string; title?: string }): st
     "DTEND:20261214T200000Z",
     `SUMMARY:${opts.title ?? "FOI Racing – Die Weihnachtsfeier der anderen Art"}`,
     "LOCATION:Hockenheimring\\, Am Motodrom\\, 68766 Hockenheim",
-    "DESCRIPTION:13:00 Eintreffen · 14:00 Racing · 17:00 Early Dinner in der Mercedes-Loge.\\nFrontline of Innovation in Zusammenarbeit mit School of Racing.",
+    "DESCRIPTION:13:00 Eintreffen · 14:00 Racing · 17:00 Early Dinner in der Loge.\\nFrontline of Innovation in Zusammenarbeit mit School of Racing.",
     `URL:${opts.url}`,
     "END:VEVENT",
     "END:VCALENDAR",

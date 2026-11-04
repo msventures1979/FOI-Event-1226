@@ -70,8 +70,8 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
         <ul className="mx-auto grid max-w-[1240px] gap-px bg-line md:grid-cols-3">
           {[
             { k: "Ab 14 Uhr", t: "Auf der Strecke", d: "Mit Ihrem eigenen Wagen und einem Instruktor der School of Racing an Ihrer Seite – oder als Beifahrer im Renntaxi." },
-            { k: "Früher Abend", t: "Dinner in der Mercedes-Lodge", d: "Mit einem Überraschungsgast und den Menschen, die Frontline of Innovation ausmachen." },
-            { k: "Kostenfrei", t: "80 Plätze", d: "Getragen von unseren Partnern. Eintreffen ab 13 Uhr am Hockenheimring." },
+            { k: "Früher Abend", t: "Dinner in der Loge", d: "Mit einem Überraschungsgast und den Menschen, die Frontline of Innovation ausmachen." },
+            { k: "Kostenfrei", t: `${cap} Plätze`, d: "Getragen von unseren Partnern. Eintreffen ab 13 Uhr am Hockenheimring." },
           ].map((x) => (
             <li key={x.t} className="bg-black px-6 py-8">
               <p className="eyebrow !text-[12px]">{x.k}</p>
@@ -96,7 +96,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
                 : mine.answer === "interessiert"
                   ? "Wir haben Sie als interessiert notiert. Sobald das Event steht, bekommen Sie die verbindliche Einladung."
                   : pos !== null && pos > cap
-                    ? `Alle 80 Plätze sind bereits vorgemerkt – Sie stehen auf Platz ${pos - cap} der Warteliste. Sobald das Event steht, melden wir uns.`
+                    ? `Alle ${cap} Plätze sind bereits vorgemerkt – Sie stehen auf Platz ${pos - cap} der Warteliste. Sobald das Event steht, melden wir uns.`
                     : "Sobald das Event steht, gehören Sie zu den Ersten, die die verbindliche Einladung bekommen. Bis dahin: Termin schon mal freihalten."}
             </p>
             <p className="mt-6 text-sm text-dim">

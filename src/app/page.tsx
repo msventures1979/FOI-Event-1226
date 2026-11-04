@@ -39,7 +39,7 @@ export default async function Home() {
               <span className="text-gold">der anderen Art.</span>
             </h1>
             <p className="mt-8 max-w-[560px] text-[19px] leading-relaxed text-[#ddd]">
-              Ein Nachmittag auf der Strecke, ein Abend in der Mercedes-Loge. Für die Gäste der Frontline of Innovation – auf persönliche Einladung.
+              Ein Nachmittag auf der Strecke, ein Abend in der Loge. Für die Gäste der Frontline of Innovation – auf persönliche Einladung.
             </p>
             <form action="/anmeldung" method="get" className="mt-10 flex max-w-[560px] flex-wrap gap-3">
               <label htmlFor="code-hero" className="sr-only">Einladungscode</label>
@@ -58,7 +58,7 @@ export default async function Home() {
             <div aria-hidden className="checker-sm h-2.5 opacity-90" />
             <h2 className="px-7 pb-2.5 pt-6 font-display text-[13px] font-medium uppercase tracking-[0.2em] text-dim">Startaufstellung</h2>
             <dl className="grid grid-cols-2">
-              <Stat value={showFree ? `${slots!.free}` : "80"} label={showFree ? "Plätze noch frei" : "Plätze, nicht mehr"} border="br" />
+              <Stat value={showFree ? `${slots!.free}` : "100"} label={showFree ? "Plätze noch frei" : "Plätze, nicht mehr"} border="br" />
               <Stat value="2" label="Arten, die Strecke zu erleben" border="b" />
               <Stat value="0 €" label="für Sie, getragen von Partnern" border="r" />
               <Stat value="1" label="Überraschungsgast zum Dinner" gold />
@@ -117,7 +117,7 @@ export default async function Home() {
           <ol className="grid border-t-2 border-white md:grid-cols-3">
             <AgendaItem mark="Sektor 1" time="13:00" title="Eintreffen" text="Empfang, Fahrerbesprechung, Einteilung in die Gruppen." />
             <AgendaItem mark="Sektor 2" time="14:00" title="Racing" text="Fahrten in Gruppen, nach Teilnahmeart und Erfahrung, begleitet von der School of Racing." />
-            <AgendaItem mark="Ziel" time="17:00" title="Early Dinner & Networking" text="In der Mercedes-Loge, mit Überraschungsgast und Charity-Auktion. Ende gegen [Uhrzeit]." gold last />
+            <AgendaItem mark="Ziel" time="17:00" title="Early Dinner & Networking" text="In der Loge, mit Überraschungsgast und Charity-Auktion. Ende gegen [Uhrzeit]." gold last />
           </ol>
         </div>
       </section>
@@ -142,14 +142,14 @@ export default async function Home() {
             <Image src="/images/dinner.jpg" alt="Gäste an gedeckten Tischen beim FOI-Dinner im Mai 2026" fill sizes="(min-width:768px) 50vw, 100vw" className="photo object-cover object-[60%_50%]" />
           </div>
           <div className="flex flex-col justify-center gap-6 bg-card px-6 py-14 md:px-14">
-            <p className="eyebrow">Ab 17:00 · Mercedes-Loge</p>
+            <p className="eyebrow">Ab 17:00 · Loge</p>
             <h2 id="dinner-h" className="h-section">Nach der Zielflagge beginnt der Abend</h2>
-            <p className="text-lg leading-relaxed text-[#d1d1d1]">Ein frühes Dinner in der Mercedes-Loge, Zeit für Gespräche – und ein Gast, den wir erst am Abend vorstellen.</p>
+            <p className="text-lg leading-relaxed text-[#d1d1d1]">Ein frühes Dinner in der Loge, Zeit für Gespräche – und ein Gast, den wir erst am Abend vorstellen.</p>
             <div className="mt-2 flex items-center gap-5 border border-dashed border-gold p-6">
               <span aria-hidden className="font-display text-6xl font-bold leading-none text-gold">?</span>
               <div>
                 <h3 className="font-display text-xl font-semibold uppercase tracking-[0.04em]">Überraschungsgast</h3>
-                <p className="mt-1 text-[15px] text-muted">Wer es ist, verraten wir in der Mercedes-Loge.</p>
+                <p className="mt-1 text-[15px] text-muted">Wer es ist, verraten wir in der Loge.</p>
               </div>
             </div>
           </div>
@@ -181,7 +181,7 @@ export default async function Home() {
             <p className="eyebrow mb-3">Ort &amp; Anreise</p>
             <h2 id="ort-h" className="h-section mb-5">Hockenheimring</h2>
             <p className="mb-8 text-[17px] leading-relaxed text-[#d1d1d1]">
-              Über Jahrzehnte Austragungsort der Formel 1, südlich von Mannheim gelegen. Gefahren wird auf [Streckenvariante]; das Dinner findet in der Mercedes-Loge statt.
+              Über Jahrzehnte Austragungsort der Formel 1, südlich von Mannheim gelegen. Gefahren wird auf [Streckenvariante]; das Dinner findet in der Loge statt.
             </p>
             <dl className="grid grid-cols-[minmax(110px,auto)_1fr] border-t border-line-strong text-base">
               {[
@@ -288,7 +288,7 @@ export default async function Home() {
             <span className="text-gold">auf der Strecke.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-[520px] text-lg leading-relaxed text-[#d1d1d1]">
-            80 Plätze, vergeben in der Reihenfolge der Anmeldung. Wer absagt, gibt seinen Platz an die Warteliste weiter.
+            100 Plätze, vergeben in der Reihenfolge der Anmeldung. Wer absagt, gibt seinen Platz an die Warteliste weiter.
           </p>
           <div className="mt-10">
             <Link href="/anmeldung" className="btn-gold">Mit Code anmelden</Link>

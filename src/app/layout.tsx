@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://racing.frontlineofinnovation.de"),
   title: "FOI Racing – Die Weihnachtsfeier der anderen Art",
   description:
-    "Frontline of Innovation und School of Racing: ein Nachmittag auf dem Hockenheimring, ein Abend in der Mercedes-Loge. Montag, 14. Dezember 2026. Nur auf persönliche Einladung.",
+    "Frontline of Innovation und School of Racing: ein Nachmittag auf dem Hockenheimring, ein Abend in der Loge. Montag, 14. Dezember 2026. Nur auf persönliche Einladung.",
   robots: { index: false, follow: false },
   openGraph: {
     title: "FOI Racing – Die Weihnachtsfeier der anderen Art",
