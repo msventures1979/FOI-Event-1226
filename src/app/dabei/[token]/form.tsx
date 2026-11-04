@@ -73,7 +73,7 @@ export function InterestForm({
           {MODES.map((m) => option("mode", m.value, m.label, mode === m.value, () => setMode(m.value)))}
           {mode === "own" && (
             <fieldset className="mt-4 flex flex-col gap-3">
-              <legend className="lbl mb-3">In welcher Gruppe möchten Sie fahren?</legend>
+              <legend className="mb-3 mt-4 font-display text-xl font-semibold uppercase text-gold">In welcher Gruppe möchten Sie fahren?</legend>
               {GROUPS.map((gr) => (
                 <label key={gr.value} className={`flex cursor-pointer items-start gap-4 border p-5 transition-colors ${group === gr.value ? "border-gold bg-[#141008]" : "border-line hover:border-line-strong"}`}>
                   <input type="radio" name="track_group" value={gr.value} checked={group === gr.value} onChange={() => setGroup(gr.value)} required className="mt-1 h-5 w-5 shrink-0 accent-[#E6941A]" />
