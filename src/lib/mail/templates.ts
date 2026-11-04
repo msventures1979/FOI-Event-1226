@@ -47,6 +47,16 @@ export interface RenderedMail {
 export const TEASER_FROM = `"Matthias Storch | Frontline of Innovation" <info@frontlineofinnovation.de>`;
 const TEASER_ASSETS = "https://foi-event-1226.vercel.app";
 
+function gcalWeihnachtsfeier(link: string) {
+  return (
+    "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    "&text=" + encodeURIComponent("FOI Weihnachtsfeier · Hockenheimring (Save the Date)") +
+    "&dates=20261214T120000Z/20261214T200000Z" +
+    "&location=" + encodeURIComponent("Hockenheimring, Am Motodrom, 68766 Hockenheim") +
+    "&details=" + encodeURIComponent("Persönliche Einladung von Frontline of Innovation und School of Racing.\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend in der Loge.\nNoch unverbindlich – die verbindliche Einladung folgt.\n\nIhre Antwort: " + link)
+  );
+}
+
 /** Absender der Interessensabfrage */
 export const INTEREST_FROM = "FOI Weihnachtsfeier <weihnachtsfeier@frontlineofinnovation.de>";
 
@@ -99,6 +109,8 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { facts: "Montag, 14. Dezember 2026 · Hockenheimring\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend\nNur auf persönliche Einladung · für Sie kostenfrei · 100 Plätze" },
         { buttons: [{ label: "Ich will auf die Strecke", href: link, primary: true }, { label: "Diesmal nicht", href: `${link}?antwort=nicht` }] },
         { p: "Ihre Antwort ist unverbindlich. Sobald das Event steht, erhalten alle, die sich vorgemerkt haben, als Erste die verbindliche Einladung." },
+        { p: "Den Termin können Sie sich gleich im Kalender freihalten:" },
+        { buttons: [{ label: "Outlook / Apple Kalender", href: `${ctx.siteUrl}/api/ics/weihnachtsfeier?t=${encodeURIComponent(g.manage_token)}` }, { label: "Google Kalender", href: gcalWeihnachtsfeier(link) }] },
       ];
       break;
     }

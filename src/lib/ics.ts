@@ -43,6 +43,29 @@ export function buildTeaserIcs(): string {
   return lines.map(fold).join("\r\n") + "\r\n";
 }
 
+/** Save the Date Weihnachtsfeier (Interessensabfrage): fester Termin mit Ort, noch unverbindlich. */
+export function buildWeihnachtsfeierIcs(url: string): string {
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Frontline of Innovation//Weihnachtsfeier//DE",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    "UID:foi-weihnachtsfeier-2026-12-14@frontlineofinnovation.de",
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`,
+    "DTSTART:20261214T120000Z",
+    "DTEND:20261214T200000Z",
+    "SUMMARY:FOI Weihnachtsfeier · Hockenheimring (Save the Date)",
+    "LOCATION:Hockenheimring\\, Am Motodrom\\, 68766 Hockenheim",
+    `DESCRIPTION:Persönliche Einladung von Frontline of Innovation und School of Racing.\\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend in der Loge.\\nNoch unverbindlich – die verbindliche Einladung folgt.\\n\\nIhre Antwort: ${url}`,
+    `URL:${url}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return lines.map(fold).join("\r\n") + "\r\n";
+}
+
 /** RFC 5545 §3.1: Zeilen über 75 Oktette umbrechen (Fortsetzung beginnt mit einem Leerzeichen). */
 function fold(line: string): string {
   const enc = new TextEncoder();
