@@ -3,14 +3,14 @@ import { ANSWER_SHORT, interestCounts, GROUP_SHORT, MODE_SHORT, type Interest } 
 import { db } from "@/lib/supabase/admin";
 import type { Guest } from "@/lib/types";
 import { SubmitButton } from "@/components/submit-button";
-import { sendDigestNow } from "../../actions";
+import { sendDigestNow, sendMissingConfirmations } from "../../actions";
 
 export const metadata = { title: "Interesse – Admin" };
 
 type Row = Interest & { event_guests: Pick<Guest, "first_name" | "last_name" | "title" | "email" | "company"> };
 
-export default async function InteressePage({ searchParams }: { searchParams: Promise<{ a?: string; digest?: string }> }) {
-  const { a = "", digest } = await searchParams;
+export default async function InteressePage({ searchParams }: { searchParams: Promise<{ a?: string; digest?: string; bestaetigt?: string }> }) {
+  const { a = "", digest, bestaetigt } = await searchParams;
   const ev = await getEvent();
   const supa = db();
   const [counts, { count: invited }, { data }] = await Promise.all([
@@ -29,10 +29,21 @@ export default async function InteressePage({ searchParams }: { searchParams: Pr
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-4xl font-bold uppercase">Interessensabfrage</h1>
+        <form action={sendMissingConfirmations}>
+          <SubmitButton className="btn-ghost" pendingText="Wird verschickt … (bis 2 Min.)">Fehlende Bestätigungen senden</SubmitButton>
+        </form>
         <form action={sendDigestNow}>
           <SubmitButton className="btn-ghost" pendingText="Wird verschickt …">Tagesüberblick jetzt senden</SubmitButton>
         </form>
       </div>
+      {bestaetigt && (
+        <p className="mt-3 border-l-2 border-gold bg-card p-3 text-sm">
+          {(() => {
+            const [q, s, f] = bestaetigt.split("-").map(Number);
+            return q === 0 ? "Alle Vorgemerkten haben ihre Bestätigung schon." : `${s} Bestätigungen verschickt${f ? `, ${f} Fehler` : ""}${q > s + f ? ` – ${q - s - f} warten noch in der Warteschlange` : ""}.`;
+          })()}
+        </p>
+      )}
       {digest && (
         <p className="mt-3 border-l-2 border-gold bg-card p-3 text-sm">
           {digest === "ok" ? "Tagesüberblick ist an info@ und Süleyman verschickt." : digest === "leer" ? "Seit gestern gab es keine neuen Antworten – kein Überblick verschickt." : "Der Überblick konnte nicht verschickt werden."}

@@ -276,3 +276,18 @@ export async function sendDigestNow() {
   const r = await sendDigest(ev.id, ev.total_capacity).catch((e) => ({ sent: false, changes: -1, error: String(e) }));
   redirect(`/admin/interesse?digest=${r.sent ? "ok" : r.changes === 0 ? "leer" : "fehler"}`);
 }
+
+/** Bestätigung an alle Vorgemerkten (dabei/interessiert), die noch keine bekommen haben – z. B. für Antworten vor Einführung der Bestätigungsmail. */
+export async function sendMissingConfirmations() {
+  await requireAdmin();
+  const ev = await getEvent();
+  const supa = db();
+  const { data: open } = await supa.from("event_interest").select("guest_id").eq("event_id", ev.id).in("answer", ["dabei", "interessiert"]);
+  const { data: done } = await supa.from("email_log").select("guest_id").eq("event_id", ev.id).eq("type", "interesse_danke").eq("status", "gesendet");
+  const { data: queued } = await supa.from("email_queue").select("guest_id").eq("type", "interesse_danke").is("sent_at", null);
+  const skip = new Set([...(done ?? []), ...(queued ?? [])].map((r) => r.guest_id as string));
+  const ids = (open ?? []).map((r) => r.guest_id as string).filter((id) => !skip.has(id));
+  const q = await enqueue(ev.id, ids, "interesse_danke", { priority: 2, force: true });
+  const r = await processQueue({ max: 200 });
+  redirect(`/admin/interesse?bestaetigt=${q.queued}-${r.sent}-${r.failed}`);
+}
