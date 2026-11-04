@@ -9,9 +9,10 @@ export const DELIVERY_LABEL: Record<string, string> = {
   unzustellbar: "Unzustellbar",
   beschwerde: "Als Spam markiert",
   verzoegert: "Verzögert",
+  unbekannt: "Nicht bei Resend gefunden",
 };
 
-const FINAL = ["zugestellt", "unzustellbar", "beschwerde"];
+const FINAL = ["zugestellt", "unzustellbar", "beschwerde", "unbekannt"];
 
 function map(lastEvent: string | undefined): string {
   switch (lastEvent) {
@@ -55,9 +56,15 @@ export async function refreshDelivery(max = 240): Promise<{ checked: number; bou
   for (const r of rows ?? []) {
     const { data, error } = await resend.emails.get(r.resend_id as string);
     if (error) {
+      // z. B. Mails aus dem früheren Resend-Konto: als „unbekannt“ abschließen, damit sie nicht immer wieder abgefragt werden
+      if (/not found/i.test(error.message)) {
+        await supa.from("email_log").update({ delivery: "unbekannt", delivery_checked_at: new Date().toISOString() }).eq("id", r.id);
+        await new Promise((res) => setTimeout(res, 520));
+        continue;
+      }
       lastError = error.message;
-      // fehlende Leserechte des API-Schlüssels oder Rate-Limit: abbrechen statt alle Mails durchzuprobieren
-      if (/rate|limit|restricted|permission|unauthori[sz]ed|forbidden/i.test(error.message) || checked === 0) break;
+      // fehlende Leserechte oder Rate-Limit: abbrechen statt alle Mails durchzuprobieren
+      if (/rate|limit|restricted|permission|unauthori[sz]ed|forbidden/i.test(error.message)) break;
       continue;
     }
     const d = map((data as { last_event?: string } | null)?.last_event);
