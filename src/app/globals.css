@@ -175,9 +175,9 @@ body {
 
 /* Abfrage: Auto fährt beim Laden bis zum aktuellen Stand */
 .track-fill { width: var(--p); animation: track-fill 1.6s cubic-bezier(.2,.7,.2,1) both; }
-.track-car { left: max(54px, var(--p)); animation: track-car 1.6s cubic-bezier(.2,.7,.2,1) both; }
+.track-car { left: max(60px, var(--p)); animation: track-car 1.6s cubic-bezier(.2,.7,.2,1) both; }
 @keyframes track-fill { from { width: 0; } }
-@keyframes track-car { from { left: 54px; } }
+@keyframes track-car { from { left: 60px; } }
 @media (prefers-reduced-motion: reduce) {
   .track-fill, .track-car { animation: none; }
 }

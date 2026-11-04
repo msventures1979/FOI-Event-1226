@@ -117,16 +117,33 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
 /** Fortschritt als Rennstrecke: Das Auto fährt mit jeder Zusage ein Stück weiter Richtung Zielflagge. */
 function Track({ pct }: { pct: number }) {
   return (
-    <div aria-hidden className="relative mt-7 pr-8">
+    <div aria-hidden className="relative mt-10 pr-8">
       <div className="relative h-1.5 bg-[#1c1c1c]">
         <div className="track-fill h-full bg-gold" style={{ ["--p" as string]: `${pct}%` }} />
-        <svg viewBox="0 0 60 20" className="track-car absolute bottom-[2px] h-[18px] w-[54px] -translate-x-full" style={{ ["--p" as string]: `${pct}%` }}>
-          {/* flacher Sportwagen in Seitenansicht, fährt nach rechts */}
-          <path d="M2 14.6 3.6 11.4C5 9.9 8 9.3 12 9l8.6-3.8C23 4.2 25.8 3.9 29 3.9h6.2c3.4.1 6.2 1.3 9.2 4l7.6 1.4c3.6.7 5.8 2.2 6 4.3v1.8H2z" fill="#ffffff" />
-          <path d="M22.4 8.8 26 6.1c1-.6 2.1-.9 3.4-.9h5.2c2.3.1 4.3 1 6 3.6z" fill="#0a0a0a" />
-          <path d="M51.5 10.4h4.6" stroke="#E6941A" strokeWidth="1.2" strokeLinecap="round" />
-          <circle cx="14.5" cy="15.4" r="3.9" fill="#0a0a0a" stroke="#ffffff" strokeWidth="1.5" />
-          <circle cx="46" cy="15.4" r="3.9" fill="#0a0a0a" stroke="#ffffff" strokeWidth="1.5" />
+        <svg viewBox="0 0 64 32" className="track-car absolute -bottom-[1px] h-[30px] w-[60px] -translate-x-full" style={{ ["--p" as string]: `${pct}%` }}>
+          {/* rundlicher Kleinwagen mit Weihnachtsbaum auf dem Dach – eigene Zeichnung */}
+          <g transform="translate(-1 1.4) scale(1.04 1)">
+            {/* Baum: Stamm hinten, Spitze nach vorn */}
+            <rect x="11" y="8.6" width="6" height="2.2" rx="0.6" fill="#7a4a24" />
+            <path d="M16 11.2 19.5 4.6l2.2 2.6 3.4-5 2.6 3.7 3.4-4.2 2.6 3.9 3.4-3.1 2 3.6 3.6-1.4-.6 3.2 5.2 1.6-5 1.9.6 1.6-6.6.4-2.8.9-5.2-.4-3.9.8-5-.6z" fill="#1f6b3a" />
+            <path d="M21 9.5l4-1.6 3.2 1M30 8.2l4.4-1 3.6 1.2M38.6 9l4-.8" stroke="#2f8a4e" strokeWidth="0.9" fill="none" strokeLinecap="round" />
+            <circle cx="23.6" cy="7.6" r="1.1" fill="#E6941A" />
+            <circle cx="30.4" cy="5.4" r="1" fill="#e2412f" />
+            <circle cx="35.6" cy="9.4" r="1.1" fill="#E6941A" />
+            <circle cx="41.2" cy="6.8" r="1" fill="#e2412f" />
+            <circle cx="46.4" cy="9.2" r="0.9" fill="#E6941A" />
+            {/* Spanngurte */}
+            <path d="M26.5 6.5v6.2M39.5 6.5v6.2" stroke="#111" strokeWidth="1" />
+          </g>
+          {/* Karosserie */}
+          <path d="M3 24.6c0-2.8 1.9-4.4 4.8-4.9l8.2-1.3 5.2-5.4c.9-.9 2.1-1.4 3.4-1.4h15.3c1.5 0 2.9.7 3.8 1.9l4 5 6.6 1.1c3.2.5 5.7 2.4 5.7 5v1.3c0 .9-.7 1.6-1.6 1.6H4.6c-.9 0-1.6-.7-1.6-1.6z" fill="#c8202f" />
+          <path d="M22.6 18.6l3.4-4.4c.5-.6 1.2-.9 2-.9h4.2v5.3zM34 18.6v-5.3h5.6c.9 0 1.7.4 2.2 1.1l3.2 4.2z" fill="#111" />
+          <path d="M5 22.2h53.5" stroke="#8f1420" strokeWidth="0.8" />
+          <circle cx="59.6" cy="21.4" r="1.3" fill="#ffe7a8" />
+          <circle cx="15.5" cy="27" r="4.6" fill="#111" />
+          <circle cx="15.5" cy="27" r="2" fill="#ddd" />
+          <circle cx="49.5" cy="27" r="4.6" fill="#111" />
+          <circle cx="49.5" cy="27" r="2" fill="#ddd" />
         </svg>
       </div>
       {/* Zielflagge */}
