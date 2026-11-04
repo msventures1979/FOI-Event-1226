@@ -35,19 +35,32 @@ export function Header({ plain = false }: { plain?: boolean }) {
 export function Footer() {
   return (
     <footer className="border-t border-line">
-      <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-6 px-6 py-10 text-sm text-dim">
-        <div className="flex flex-wrap items-center gap-4">
+      <div className="mx-auto grid max-w-[1240px] gap-10 px-6 py-12 text-sm text-dim md:grid-cols-[1.4fr_1fr_1fr]">
+        <div>
           <Image src="/images/foi-logo.png" alt="Frontline of Innovation" width={78} height={32} className="h-8 w-auto" />
-          <span>in Zusammenarbeit mit School of Racing</span>
+          <p className="mt-4 max-w-sm leading-relaxed">
+            Die FOI-Weihnachtsfeier am Hockenheimring – gemeinsam mit der School of Racing. Auf persönliche Einladung.
+          </p>
         </div>
-        <span>
-          <a href="mailto:info@frontlineofinnovation.de">info@frontlineofinnovation.de</a>
-        </span>
-        <span className="flex flex-wrap gap-5">
-          <Link href="/impressum" className="inline-block py-2.5 text-dim">Impressum</Link>
-          <Link href="/datenschutz" className="inline-block py-2.5 text-dim">Datenschutz</Link>
-          <span>Bildnachweis: School of Racing, Frontline of Innovation</span>
-        </span>
+        <div>
+          <p className="text-[12px] uppercase tracking-[0.18em] text-dim">Kontakt</p>
+          <p className="mt-3">
+            <a href="mailto:info@frontlineofinnovation.de">info@frontlineofinnovation.de</a>
+          </p>
+          <p className="mt-2">
+            <a href="https://frontlineofinnovation.de" className="inline-block py-1.5 text-dim hover:text-white">frontlineofinnovation.de</a>
+          </p>
+        </div>
+        <div>
+          <p className="text-[12px] uppercase tracking-[0.18em] text-dim">Rechtliches</p>
+          <p className="mt-3 flex flex-col">
+            <Link href="/impressum" className="inline-block py-1.5 text-dim hover:text-white">Impressum</Link>
+            <Link href="/datenschutz" className="inline-block py-1.5 text-dim hover:text-white">Datenschutz</Link>
+          </p>
+        </div>
+      </div>
+      <div className="border-t border-[#1a1a1a]">
+        <p className="mx-auto max-w-[1240px] px-6 py-5 text-xs text-[#666]">© 2026 Frontline of Innovation</p>
       </div>
     </footer>
   );
