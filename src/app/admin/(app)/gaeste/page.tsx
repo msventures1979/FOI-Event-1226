@@ -43,6 +43,7 @@ export default async function Gaeste({ searchParams }: { searchParams: Promise<{
   const { data } = await query.limit(2000);
   let rows = (data ?? []) as Row[];
   if (antwort === "keine") rows = rows.filter((g) => !one(g.event_interest));
+  else if (antwort === "bounce") rows = rows.filter((g) => g.bounced);
   else if (antwort) rows = rows.filter((g) => one(g.event_interest)?.answer === antwort);
 
   // Sortierung (serverseitig, damit sie mit Filtern und Links kombinierbar bleibt)
@@ -105,6 +106,7 @@ export default async function Gaeste({ searchParams }: { searchParams: Promise<{
             <option value="interessiert">Interessiert</option>
             <option value="nicht">Nicht dabei</option>
             <option value="keine">Noch keine Antwort</option>
+            <option value="bounce">Unzustellbar (Bounce)</option>
           </select>
         </div>
         <div>

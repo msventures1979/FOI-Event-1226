@@ -8,6 +8,7 @@ import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/supabase/admin";
 import { generateCode, getEvent } from "@/lib/event";
 import { enqueue, processQueue, sendNow } from "@/lib/mail/queue";
+import { refreshDelivery } from "@/lib/mail/delivery";
 import { mailReady, renderMail, type MailType } from "@/lib/mail/templates";
 import { env } from "@/lib/env";
 import { Resend } from "resend";
@@ -215,4 +216,11 @@ export async function guestAction(form: FormData) {
 
   revalidatePath("/admin/gaeste");
   revalidatePath("/admin/checkin");
+}
+
+export async function checkDelivery() {
+  await requireAdmin();
+  const r = await refreshDelivery();
+  revalidatePath("/admin/versand");
+  redirect(`/admin/versand?zustellung=${r.checked}-${r.bounced}-${r.open}#zustellung`);
 }
