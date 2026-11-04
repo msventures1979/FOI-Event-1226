@@ -155,15 +155,20 @@ export async function queueMails(_prev: unknown, form: FormData): Promise<{ msg:
   const test = form.get("test") === "on";
   const ev = await getEvent();
 
-  const { data: sample } = await db().from("event_guests").select("*").eq("event_id", ev.id).limit(1).maybeSingle();
+  const testToRaw = String(form.get("testTo") ?? "").trim().toLowerCase();
+  const testTo = test && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(testToRaw) ? testToRaw : "";
+  // Testempfänger auf der Gästeliste: dessen Daten verwenden, sonst den ersten Gast
+  const { data: own } = testTo ? await db().from("event_guests").select("*").eq("event_id", ev.id).eq("email", testTo).limit(1).maybeSingle() : { data: null };
+  const { data: first } = own ? { data: null } : await db().from("event_guests").select("*").eq("event_id", ev.id).limit(1).maybeSingle();
+  const sample = own ?? first;
   const g: Guest = (sample as Guest) ?? ({ salutation: "Herr", title: "", first_name: "Max", last_name: "Mustermann", code: "FOI-TEST0101", manage_token: "test" } as Guest);
   const notReady = mailReady(type, { guest: g, siteUrl: env.siteUrl, participationType: "own", freeSlots: 12 });
   if (notReady) return { msg: `Nicht versandbereit – ${notReady}. Bitte zuerst die Texte ergänzen.` };
 
   if (test) {
     const mail = renderMail(type, { guest: g, siteUrl: env.siteUrl, participationType: "own", freeSlots: 12 });
-    const r = await new Resend(env.resendKey).emails.send({ from: mail.from ?? env.mailFrom, to: admin, replyTo: env.mailReplyTo, subject: `[TEST] ${mail.subject}`, html: mail.html, text: mail.text });
-    return { msg: r.error ? `Fehler: ${r.error.message}` : `Testmail an ${admin} gesendet (Daten von ${g.first_name} ${g.last_name}).` };
+    const r = await new Resend(env.resendKey).emails.send({ from: mail.from ?? env.mailFrom, to: testTo || admin, replyTo: env.mailReplyTo, subject: `[TEST] ${mail.subject}`, html: mail.html, text: mail.text });
+    return { msg: r.error ? `Fehler: ${r.error.message}` : `Testmail an ${testTo || admin} gesendet (Daten von ${g.first_name} ${g.last_name}).` };
   }
 
   const statuses: Record<string, string[]> = {
