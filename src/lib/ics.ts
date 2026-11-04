@@ -81,3 +81,14 @@ function fold(line: string): string {
   out.push(cur);
   return out.join("\r\n ");
 }
+
+/** Google-Kalender-Link zur Weihnachtsfeier (läuft über unsere Domain, damit alle Links der Mail zur Absenderdomain passen). */
+export function gcalWeihnachtsfeier(link: string) {
+  return (
+    "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    "&text=" + encodeURIComponent("FOI Weihnachtsfeier · Hockenheimring (Save the Date)") +
+    "&dates=20261214T120000Z/20261214T200000Z" +
+    "&location=" + encodeURIComponent("Hockenheimring, Am Motodrom, 68766 Hockenheim") +
+    "&details=" + encodeURIComponent("Persönliche Einladung von Frontline of Innovation und School of Racing.\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend in der Loge.\nNoch unverbindlich – die verbindliche Einladung folgt.\n\nIhre Antwort: " + link)
+  );
+}
