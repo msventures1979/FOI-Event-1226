@@ -3,6 +3,8 @@ import { db } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
 import { getEvent } from "@/lib/event";
 import { enqueue, processQueue } from "@/lib/mail/queue";
+import { sendDigest } from "@/lib/mail/digest";
+import { refreshDelivery } from "@/lib/mail/delivery";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -12,6 +14,7 @@ export const maxDuration = 300;
  * 1. abgelaufene Nachrück-Angebote freigeben (→ nächster Gast)
  * 2. automatische Erinnerungen einreihen – nur wenn AUTO_REMINDERS=true
  * 3. Warteschlange im Rahmen des Tageslimits abarbeiten
+ * 4. Zustellstatus abrufen und Tagesüberblick an info@ schicken
  */
 export async function GET(req: Request) {
   if (!env.cronSecret || req.headers.get("authorization") !== `Bearer ${env.cronSecret}`) {
@@ -52,6 +55,11 @@ export async function GET(req: Request) {
     if (berlinDate >= "2026-12-11" && berlinDate < "2026-12-14") report.vorabend = await enqueue(ev.id, await registered(), "vorabend");
   }
 
-  report.queue = await processQueue();
+  // Zustellstatus der letzten Mails aktualisieren, damit der Überblick auch Rückläufer kennt (begrenzt, damit der Job im Zeitlimit bleibt)
+  report.delivery = await refreshDelivery(80).catch((e) => String(e));
+  // Tagesüberblick der Interessensabfrage an info@ (nur bei Änderungen seit gestern)
+  report.digest = await sendDigest(ev.id, ev.total_capacity).catch((e) => String(e));
+
+  report.queue = await processQueue({ max: 150 });
   return NextResponse.json(report);
 }

@@ -1,6 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { after } from "next/server";
+import { sendNow } from "@/lib/mail/queue";
 import { getEvent, guestByToken } from "@/lib/event";
 import { db } from "@/lib/supabase/admin";
 import { ANSWERS, GROUPS, MODES, type InterestAnswer, type InterestMode, type TrackGroup } from "@/lib/interest";
@@ -46,5 +48,11 @@ export async function saveInterest(_prev: InterestState, form: FormData): Promis
   const { error } = await supa.from("event_interest").upsert(patch, { onConflict: "guest_id" });
   if (error) return { error: "Das hat leider nicht geklappt. Bitte versuchen Sie es noch einmal oder schreiben Sie an info@frontlineofinnovation.de." };
   await supa.from("status_log").insert({ guest_id: found.guest.id, from_status: before?.answer ?? null, to_status: `interesse:${answer}`, actor: "gast" }).then(() => undefined, () => undefined);
+  // Bestätigungsmail – nur bei neuer Vormerkung oder Wechsel zwischen „dabei“ und „interessiert“, nicht bei jeder kleinen Änderung
+  if (answer !== "nicht" && before?.answer !== answer) {
+    const guestId = found.guest.id;
+    const eventId = found.guest.event_id;
+    after(() => sendNow(eventId, guestId, "interesse_danke"));
+  }
   redirect(`/dabei/${token}?gespeichert=1#danke`);
 }

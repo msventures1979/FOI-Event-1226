@@ -2,6 +2,7 @@ import { briefanrede, PARTICIPATION, type Guest, type ParticipationType } from "
 
 export type MailType =
   | "interesse"
+  | "interesse_danke"
   | "save_the_date"
   | "einladung"
   | "erinnerung"
@@ -15,6 +16,7 @@ export type MailType =
 
 export const MAIL_LABEL: Record<MailType, string> = {
   interesse: "0 · Save the Date mit Interessensabfrage (Nov.)",
+  interesse_danke: "0b · Bestätigung der Vormerkung (automatisch)",
   save_the_date: "1 · Save the Date",
   einladung: "2 · Einladung mit Code",
   erinnerung: "3 · Erinnerung Code",
@@ -33,6 +35,8 @@ export interface MailContext {
   participationType?: ParticipationType | null;
   offerExpiresAt?: string | null;
   freeSlots?: number | null;
+  /** Für die Bestätigung der Interessensabfrage */
+  interest?: { answer: string; mode: string; track_group: string; vehicle: string; waitlist?: number } | null;
 }
 
 export interface RenderedMail {
@@ -102,6 +106,37 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { p: "Ihre Antwort ist unverbindlich. Sobald das Event steht, erhalten alle, die sich vorgemerkt haben, als Erste die verbindliche Einladung." },
         { p: "Den Termin können Sie sich gleich im Kalender freihalten:" },
         { buttons: [{ label: "Outlook / Apple Kalender", href: `${ctx.siteUrl}/api/ics/weihnachtsfeier?t=${encodeURIComponent(g.manage_token)}` }, { label: "Google Kalender", href: `${ctx.siteUrl}/api/ics/google?t=${encodeURIComponent(g.manage_token)}` }] },
+      ];
+      break;
+    }
+    case "interesse_danke": {
+      const link = `${ctx.siteUrl}/dabei/${g.manage_token}`;
+      const i = ctx.interest;
+      if (!i || i.answer === "nicht") throw new Error("Keine Vormerkung vorhanden");
+      if (g.first_name?.trim()) anrede = `Hallo ${g.first_name.trim()},`;
+      const dabei = i.answer === "dabei";
+      subject = dabei && i.waitlist ? "Sie stehen auf der Warteliste – FOI-Weihnachtsfeier am 14. Dezember" : dabei ? "Sie sind vorgemerkt – FOI-Weihnachtsfeier am 14. Dezember" : "Danke für Ihr Interesse – FOI-Weihnachtsfeier am 14. Dezember";
+      preheader = dabei ? "Ihr Platz ist vorgemerkt. Die verbindliche Einladung bekommen Sie als Erste." : "Wir halten Sie auf dem Laufenden.";
+      from = INTEREST_FROM;
+      footer = "Frontline of Innovation · gemeinsam mit School of Racing";
+      gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar\nmit Paul Muck, School of Racing";
+      const MODE: Record<string, string> = { own: "Mit eigenem Fahrzeug", taxi: "Im Renntaxi", offen: "Entscheiden Sie später" };
+      const GROUP: Record<string, string> = { rookie: "Rookie", performance: "Performance", race: "Race / Drift" };
+      const strecke = [MODE[i.mode], GROUP[i.track_group]].filter(Boolean).join(" · ");
+      const angaben = [`Ihre Antwort: ${dabei ? "Ich bin dabei" : "Interessiert, noch nicht sicher"}`, strecke && `Auf der Strecke: ${strecke}`, i.vehicle && `Fahrzeug: ${i.vehicle}`].filter(Boolean).join("\n");
+      blocks = [
+        {
+          p: !dabei
+            ? "danke für Ihre Rückmeldung – schön, dass Sie Interesse haben. Wir haben Sie vorgemerkt und halten Sie auf dem Laufenden."
+            : i.waitlist
+              ? `danke für Ihre Zusage – wir freuen uns sehr! Alle Plätze sind bereits vorgemerkt; Sie stehen auf Platz ${i.waitlist} der Warteliste. Wird ein Platz frei, rücken Sie automatisch nach.`
+              : "danke für Ihre Zusage – wir freuen uns sehr! Ihr Platz für die FOI-Weihnachtsfeier am Hockenheimring ist vorgemerkt.",
+        },
+        { facts: angaben },
+        { p: "Sobald das Event steht, bekommen Sie als Erste die verbindliche Einladung. Bis dahin halten Sie sich den Termin am besten schon frei:" },
+        { buttons: [{ label: "Outlook / Apple Kalender", href: `${ctx.siteUrl}/api/ics/weihnachtsfeier?t=${encodeURIComponent(g.manage_token)}`, primary: true }, { label: "Google Kalender", href: `${ctx.siteUrl}/api/ics/google?t=${encodeURIComponent(g.manage_token)}` }] },
+        { p: "Sie möchten etwas ändern? Über Ihren persönlichen Link können Sie Ihre Antwort jederzeit anpassen:" },
+        { buttons: [{ label: "Antwort ändern", href: `${link}?aendern=1` }] },
       ];
       break;
     }

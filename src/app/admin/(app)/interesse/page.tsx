@@ -2,13 +2,15 @@ import { getEvent } from "@/lib/event";
 import { ANSWER_SHORT, interestCounts, GROUP_SHORT, MODE_SHORT, type Interest } from "@/lib/interest";
 import { db } from "@/lib/supabase/admin";
 import type { Guest } from "@/lib/types";
+import { SubmitButton } from "@/components/submit-button";
+import { sendDigestNow } from "../../actions";
 
 export const metadata = { title: "Interesse – Admin" };
 
 type Row = Interest & { event_guests: Pick<Guest, "first_name" | "last_name" | "title" | "email" | "company"> };
 
-export default async function InteressePage({ searchParams }: { searchParams: Promise<{ a?: string }> }) {
-  const { a = "" } = await searchParams;
+export default async function InteressePage({ searchParams }: { searchParams: Promise<{ a?: string; digest?: string }> }) {
+  const { a = "", digest } = await searchParams;
   const ev = await getEvent();
   const supa = db();
   const [counts, { count: invited }, { data }] = await Promise.all([
@@ -25,7 +27,18 @@ export default async function InteressePage({ searchParams }: { searchParams: Pr
 
   return (
     <div>
-      <h1 className="font-display text-4xl font-bold uppercase">Interessensabfrage</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-display text-4xl font-bold uppercase">Interessensabfrage</h1>
+        <form action={sendDigestNow}>
+          <SubmitButton className="btn-ghost" pendingText="Wird verschickt …">Tagesüberblick jetzt an info@ senden</SubmitButton>
+        </form>
+      </div>
+      {digest && (
+        <p className="mt-3 border-l-2 border-gold bg-card p-3 text-sm">
+          {digest === "ok" ? "Tagesüberblick ist an info@ verschickt." : digest === "leer" ? "Seit gestern gab es keine neuen Antworten – kein Überblick verschickt." : "Der Überblick konnte nicht verschickt werden."}
+        </p>
+      )}
+      <p className="mt-2 text-xs text-dim">Der Überblick kommt automatisch jeden Morgen um 8 Uhr, wenn es seit dem Vortag neue oder geänderte Antworten gibt.</p>
       <p className="mt-2 text-sm text-dim">
         {invited ?? 0} Gäste in der Liste · {answered} geantwortet · {Math.max(0, cap - counts.dabei)} von {cap} Plätzen frei
       </p>

@@ -224,3 +224,55 @@ export async function checkDelivery() {
   revalidatePath("/admin/versand");
   redirect(`/admin/versand?zustellung=${r.checked}-${r.bounced}-${r.open}${r.error ? `&fehler=${encodeURIComponent(r.error)}` : ""}#zustellung`);
 }
+
+const s = (f: FormData, k: string, max = 200) => String(f.get(k) ?? "").trim().slice(0, max);
+
+export async function updateGuest(form: FormData) {
+  await requireAdmin();
+  const id = s(form, "id", 64);
+  const { data: g } = await db().from("event_guests").select("email,bounced").eq("id", id).single();
+  if (!g) redirect("/admin/gaeste");
+  const email = s(form, "email").toLowerCase();
+  const last = s(form, "last_name");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !last) redirect(`/admin/gaeste/${id}?fehler=${encodeURIComponent("Bitte gültige E-Mail-Adresse und Nachname angeben.")}`);
+  const sal = s(form, "salutation");
+  const emailChanged = email !== String(g.email).toLowerCase();
+  const patch = {
+    salutation: sal === "Herr" || sal === "Frau" ? sal : "",
+    title: s(form, "title", 40),
+    first_name: s(form, "first_name", 80),
+    last_name: last,
+    email,
+    company: s(form, "company"),
+    position: s(form, "position"),
+    note: s(form, "note", 2000),
+    bounced: emailChanged || form.get("unbounce") === "on" ? false : g.bounced,
+  };
+  const { error } = await db().from("event_guests").update(patch).eq("id", id);
+  if (error) {
+    const msg = /duplicate|unique/i.test(error.message) ? "Diese E-Mail-Adresse gehört schon zu einem anderen Gast." : error.message;
+    redirect(`/admin/gaeste/${id}?fehler=${encodeURIComponent(msg)}`);
+  }
+  await db().from("status_log").insert({ guest_id: id, from_status: emailChanged ? String(g.email) : null, to_status: emailChanged ? `email:${email}` : "bearbeitet", actor: "admin" }).then(() => undefined, () => undefined);
+  revalidatePath("/admin/gaeste");
+  redirect(`/admin/gaeste/${id}?ok=1`);
+}
+
+export async function resendInterestMail(form: FormData) {
+  await requireAdmin();
+  const id = s(form, "id", 64);
+  const ev = await getEvent();
+  const { data: g } = await db().from("event_guests").select("bounced").eq("id", id).single();
+  if (!g || g.bounced) redirect(`/admin/gaeste/${id}?fehler=${encodeURIComponent("Adresse ist als unzustellbar markiert.")}`);
+  await sendNow(ev.id, id, "interesse");
+  revalidatePath(`/admin/gaeste/${id}`);
+  redirect(`/admin/gaeste/${id}?ok=mail`);
+}
+
+export async function sendDigestNow() {
+  await requireAdmin();
+  const ev = await getEvent();
+  const { sendDigest } = await import("@/lib/mail/digest");
+  const r = await sendDigest(ev.id, ev.total_capacity).catch((e) => ({ sent: false, changes: -1, error: String(e) }));
+  redirect(`/admin/interesse?digest=${r.sent ? "ok" : r.changes === 0 ? "leer" : "fehler"}`);
+}

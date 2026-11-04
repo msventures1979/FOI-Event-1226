@@ -153,7 +153,9 @@ export default async function Gaeste({ searchParams }: { searchParams: Promise<{
                   <td className="px-4 py-3 text-right font-mono text-xs tabular-nums text-[#666]">{idx + 1}</td>
                   <td className="px-4 py-3">
                     <div className="font-medium text-white">
-                      {[g.title, g.first_name, g.last_name].filter(Boolean).join(" ")}
+                      <Link href={`/admin/gaeste/${g.id}`} className="text-white no-underline hover:text-gold">
+                        {[g.title, g.first_name, g.last_name].filter(Boolean).join(" ")}
+                      </Link>
                       {g.bounced && <span className="ml-2"><Badge tone="border-red-500/60 text-red-400">Bounce</Badge></span>}
                     </div>
                     <div className="mt-0.5 text-[13px] text-dim">{g.email}</div>
@@ -197,6 +199,7 @@ export default async function Gaeste({ searchParams }: { searchParams: Promise<{
                           Mehr ▾
                         </summary>
                         <div className="absolute right-0 z-10 mt-1 flex w-48 flex-col gap-1 border border-line-strong bg-black p-2 shadow-xl">
+                          <Link href={`/admin/gaeste/${g.id}`} className="px-2 py-1.5 text-xs text-[#ddd] no-underline hover:bg-[#1a1a1a]">Bearbeiten</Link>
                           <Act id={g.id} what="einladung" label="Verbindliche Einladung senden" />
                           {["angemeldet", "bestaetigt", "warteliste", "angeboten", "eingeladen"].includes(g.status) && <Act id={g.id} what="absagen" label="Absagen" />}
                           {g.status === "eingeladen" && <Act id={g.id} what="loeschen" label="Löschen" danger />}

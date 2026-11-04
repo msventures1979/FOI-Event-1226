@@ -111,9 +111,27 @@ export async function processQueue(opts: { guestId?: string; max?: number } = {}
       free = (fs as { free: number } | null)?.free ?? null;
     }
 
+    let interest = null;
+    if (job.type === "interesse_danke") {
+      const { data: ir } = await supa.from("event_interest").select("answer,mode,track_group,vehicle,created_at,event_id").eq("guest_id", job.guest_id).maybeSingle();
+      if (ir) {
+        let waitlist = 0;
+        if (ir.answer === "dabei") {
+          const [{ count }, { data: ev }] = await Promise.all([
+            supa.from("event_interest").select("guest_id", { count: "exact", head: true }).eq("event_id", ir.event_id).eq("answer", "dabei").lte("created_at", ir.created_at),
+            supa.from("events").select("total_capacity").eq("id", ir.event_id).single(),
+          ]);
+          const cap = (ev as { total_capacity: number } | null)?.total_capacity ?? 100;
+          if ((count ?? 0) > cap) waitlist = (count ?? 0) - cap;
+        }
+        interest = { answer: ir.answer, mode: ir.mode, track_group: ir.track_group, vehicle: ir.vehicle, waitlist };
+      }
+    }
+
     let mail;
     try {
       mail = renderMail(job.type as MailType, {
+        interest,
         guest: guest as Guest,
         siteUrl: env.siteUrl,
         participationType: reg?.participation_type ?? null,

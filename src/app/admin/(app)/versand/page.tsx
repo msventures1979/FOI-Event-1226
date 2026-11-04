@@ -32,7 +32,7 @@ export default async function Versand({ searchParams }: { searchParams: Promise<
         <p className="mb-6 text-muted">
           Mails werden in eine Warteschlange gelegt und im Rahmen des Tageslimits verschickt. Jeder Gast bekommt jede Mail nur einmal – außer Sie setzen „Erneut senden“.
         </p>
-        <SendForm labels={MAIL_LABEL} />
+        <SendForm labels={Object.fromEntries(Object.entries(MAIL_LABEL).filter(([k]) => k !== "interesse_danke")) as typeof MAIL_LABEL} />
       </section>
       <section id="zustellung" className="scroll-mt-24">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">

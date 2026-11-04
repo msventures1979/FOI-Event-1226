@@ -116,6 +116,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
                     ? `Alle ${cap} Plätze sind bereits vorgemerkt – Sie stehen auf Platz ${pos - cap} der Warteliste. Sobald das Event steht, melden wir uns.`
                     : "Sobald das Event steht, gehören Sie zu den Ersten, die die verbindliche Einladung bekommen. Bis dahin: Termin schon mal freihalten."}
             </p>
+            {mine.answer !== "nicht" && !preview && <p className="mt-3 text-sm text-dim">Eine Bestätigung mit allen Angaben ist per Mail an Sie unterwegs.</p>}
             {mine.answer !== "nicht" && (
               <a href={`/api/ics/weihnachtsfeier${preview ? "" : `?t=${token}`}`} className="btn-gold mt-6 inline-flex min-h-12 items-center">
                 Termin in den Kalender
