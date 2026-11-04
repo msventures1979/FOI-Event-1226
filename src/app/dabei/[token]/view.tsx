@@ -1,3 +1,4 @@
+import { Person } from "@/components/person";
 import Image from "next/image";
 import { PageShell } from "@/components/site";
 import { ANSWER_SHORT, type Interest } from "@/lib/interest";
@@ -80,6 +81,22 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* Gastgeber */}
+      <section aria-labelledby="gastgeber-h" className="border-b border-line">
+        <div className="mx-auto max-w-[1240px] px-6 py-12">
+          <h2 id="gastgeber-h" className="font-display text-sm font-medium uppercase tracking-[0.24em] text-gold">Ihre Gastgeber</h2>
+          <p className="mt-3 max-w-[760px] text-[17px] leading-relaxed text-[#ddd]">
+            Wir, Matthias Storch und Süleyman Acar, laden Sie gemeinsam mit Paul Muck von der School of Racing ein. Wir kennen jeden Gast persönlich oder über
+            jemanden, dem wir vertrauen – und würden uns freuen, Sie am 14. Dezember auf der Strecke zu sehen.
+          </p>
+          <ul className="mt-7 grid gap-4 md:grid-cols-3">
+            <Person name="Matthias Storch" role="Gastgeber, Frontline of Innovation" img="/images/matthias-storch.jpg" href="https://www.linkedin.com/in/matthiasstorch/" />
+            <Person name="Süleyman Acar" role="Gastgeber, Frontline of Innovation" img="/images/sueleyman-acar.jpg" href="https://www.linkedin.com/in/sueleyman-acar/" />
+            <Person name="Paul Muck" role="Chef-Instruktor, School of Racing" img="/images/paul-muck.jpg" href="https://www.linkedin.com/in/paul-muck-46a189152/" />
+          </ul>
+        </div>
       </section>
 
       <main id="antwort" className="mx-auto max-w-[860px] scroll-mt-6 px-6 pb-24 pt-14">
