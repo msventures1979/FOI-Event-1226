@@ -57,7 +57,7 @@ const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\n13:00 Eintreffen ·
 type Block =
   | { p: string }
   | { ps: string }
-  | { hero: { kicker: string; line1: string; line2: string; image?: string } }
+  | { hero: { kicker: string; line1: string; line2: string; image?: string; href?: string } }
   | { facts: string }
   | { code: string }
   | { buttons: { label: string; href: string; primary?: boolean }[] };
@@ -92,7 +92,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       footer = "Frontline of Innovation · gemeinsam mit School of Racing";
       gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar\nmit Paul Muck, School of Racing";
       blocks = [
-        { hero: { kicker: "Persönliche Einladung · Save the Date · 14. Dezember 2026", line1: "Weihnachtsfeier", line2: "mit Vollgas.", image: `${ctx.siteUrl}/images/mail-hero.jpg` } },
+        { hero: { kicker: "Persönliche Einladung · Save the Date · 14. Dezember 2026", line1: "Weihnachtsfeier", line2: "mit Vollgas.", image: `${ctx.siteUrl}/images/mail-hero.jpg`, href: link } },
         { p: "stellen Sie sich einen kalten Dezembernachmittag vor. Der Motor läuft warm, vor Ihnen liegt der Hockenheimring: Sie fahren mit Ihrem eigenen Auto auf die Strecke. Für alle, die zum ersten Mal Rennstreckenluft schnuppern, bieten wir geführtes Fahren mit Funkgeräten an – mit hilfreichen Tipps direkt ins Auto, damit Sie sich Runde für Runde mit der Strecke vertraut machen. Oder Sie lassen sich von einem Profi im Renntaxi durch die Kurven tragen. Danach wird es gemütlich: Dinner in der Loge, mit den Menschen, die Frontline of Innovation ausmachen." },
         { p: "So stellen wir uns unsere erste FOI-Weihnachtsfeier vor. Und wir haben richtig Lust darauf." },
         { p: "Wir laden dazu ausschließlich persönlich ein – einen kleinen Kreis aus unserem Netzwerk. Für Sie entstehen keine Kosten: Strecke, Renntaxi und Dinner tragen wir gemeinsam mit unseren Partnern." },
@@ -245,9 +245,12 @@ function toText(anrede: string, blocks: Block[], gruss = GRUSS): string {
 }
 
 function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = "", footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing", neutral = false, gruss = GRUSS): string {
-  const heroBlock = blocks.find((b) => "hero" in b) as { hero: { kicker: string; line1: string; line2: string; image?: string } } | undefined;
+  const heroBlock = blocks.find((b) => "hero" in b) as { hero: { kicker: string; line1: string; line2: string; image?: string; href?: string } } | undefined;
+  const heroImg = heroBlock?.hero.image
+    ? `<img src="${esc(heroBlock.hero.image)}" width="600" alt="Sportwagen auf dem Hockenheimring – jetzt antworten" style="display:block;width:100%;max-width:600px;height:auto;border:0">`
+    : "";
   const hero = heroBlock
-    ? `${heroBlock.hero.image ? `<tr><td style="background:#000;line-height:0"><img src="${esc(heroBlock.hero.image)}" width="600" alt="Sportwagen auf dem Hockenheimring" style="display:block;width:100%;max-width:600px;height:auto;border:0"></td></tr>` : ""}
+    ? `${heroBlock.hero.image ? `<tr><td style="background:#000;line-height:0">${heroBlock.hero.href ? `<a href="${esc(heroBlock.hero.href)}" style="display:block;line-height:0">${heroImg}</a>` : heroImg}</td></tr>` : ""}
 <tr><td style="background:#000;padding:22px 28px 28px;font-family:Arial,Helvetica,sans-serif">
 <p style="margin:0 0 10px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#E6941A">${esc(heroBlock.hero.kicker)}</p>
 <p style="margin:0;font-family:Impact,'Arial Narrow Bold','Arial Black',Arial,sans-serif;font-size:38px;line-height:1.05;text-transform:uppercase;color:#ffffff">${esc(heroBlock.hero.line1)}<br><span style="color:#E6941A">${esc(heroBlock.hero.line2)}</span></p>
