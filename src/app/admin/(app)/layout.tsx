@@ -2,6 +2,8 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
+// „Warteschlange abarbeiten“ verschickt bis zu 200 Mails (ca. 1 s je Mail wegen Resend-Rate-Limit)
+export const maxDuration = 300;
 export const metadata = { title: "Admin – FOI Racing", robots: { index: false } };
 
 const NAV = [
