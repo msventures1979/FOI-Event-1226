@@ -10,7 +10,7 @@ const GROUP: Record<string, string> = { rookie: "Rookie", performance: "Performa
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 
-type Row = {
+export type DigestRow = {
   answer: string;
   mode: string;
   track_group: string;
@@ -30,17 +30,26 @@ export async function sendDigest(eventId: string, capacity: number): Promise<{ s
     supa.from("event_guests").select("id", { count: "exact", head: true }).eq("event_id", eventId),
     supa.from("event_guests").select("id", { count: "exact", head: true }).eq("event_id", eventId).eq("bounced", true),
   ]);
-  const rows = (all ?? []) as Row[];
+  const rows = (all ?? []) as DigestRow[];
   const changed = rows.filter((r) => r.updated_at >= since || r.created_at >= since).sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1));
   if (changed.length === 0) return { sent: false, changes: 0 };
+  const { subject, html, text } = buildDigest({ rows, changed, guests: guests ?? 0, bounces: bounces ?? 0, capacity, siteUrl: env.siteUrl });
+  const to = (process.env.DIGEST_TO || env.mailReplyTo).split(",").map((s) => s.trim()).filter(Boolean);
+  const { error } = await new Resend(env.resendKey).emails.send({ from: INTEREST_FROM, to, subject, html, text });
+  if (error) throw new Error(error.message);
+  return { sent: true, changes: changed.length };
+}
 
-  const c = (f: (r: Row) => boolean) => rows.filter(f).length;
+/** Baut den Überblick (ohne Datenbank – auch für Vorschauen nutzbar). */
+export function buildDigest({ rows, changed, guests, bounces, capacity, siteUrl }: { rows: DigestRow[]; changed: DigestRow[]; guests: number; bounces: number; capacity: number; siteUrl: string }) {
+
+  const c = (f: (r: DigestRow) => boolean) => rows.filter(f).length;
   const dabei = c((r) => r.answer === "dabei");
   const kpis: [string, string | number][] = [
     ["Vorgemerkt", `${dabei} / ${capacity}`],
     ["Interessiert", c((r) => r.answer === "interessiert")],
     ["Nicht dabei", c((r) => r.answer === "nicht")],
-    ["Ohne Antwort", Math.max(0, (guests ?? 0) - rows.length)],
+    ["Ohne Antwort", Math.max(0, guests - rows.length)],
   ];
   const active = rows.filter((r) => r.answer !== "nicht");
   const plan: [string, number][] = [
@@ -51,11 +60,11 @@ export async function sendDigest(eventId: string, capacity: number): Promise<{ s
     ["Noch offen", active.filter((r) => r.mode === "offen").length],
   ];
 
-  const name = (r: Row) => {
+  const name = (r: DigestRow) => {
     const g = Array.isArray(r.event_guests) ? r.event_guests[0] : r.event_guests;
     return g ? `${g.first_name} ${g.last_name}${g.company ? ` (${g.company})` : ""}` : "–";
   };
-  const detail = (r: Row) => [MODE[r.mode], GROUP[r.track_group], r.vehicle].filter(Boolean).join(" · ");
+  const detail = (r: DigestRow) => [MODE[r.mode], GROUP[r.track_group], r.vehicle].filter(Boolean).join(" · ");
 
   const subject = `Weihnachtsfeier: ${changed.length} neue Antwort${changed.length === 1 ? "" : "en"} · ${dabei}/${capacity} vorgemerkt`;
   const td = "padding:8px 10px;border-bottom:1px solid #eee;font-size:14px;vertical-align:top";
@@ -74,7 +83,7 @@ ${changed
     .map((r) => `<tr><td style="${td}"><b>${esc(name(r))}</b>${r.note ? `<div style="color:#777;font-size:13px">„${esc(r.note)}“</div>` : ""}</td><td style="${td};white-space:nowrap"><b style="color:${r.answer === "dabei" ? "#c97a0c" : r.answer === "nicht" ? "#999" : "#111"}">${ANSWER[r.answer]}</b></td><td style="${td};color:#555">${esc(detail(r))}</td></tr>`)
     .join("")}
 </table>
-<p style="margin:24px 0 0"><a href="${env.siteUrl}/admin/interesse" style="background:#000;color:#fff;padding:12px 18px;text-decoration:none;font-size:14px">Alle Antworten ansehen</a></p>
+<p style="margin:24px 0 0"><a href="${siteUrl}/admin/interesse" style="background:#000;color:#fff;padding:12px 18px;text-decoration:none;font-size:14px">Alle Antworten ansehen</a></p>
 </td></tr></table></td></tr></table></body></html>`;
   const text = [
     subject,
@@ -85,11 +94,8 @@ ${changed
     "Neu oder geändert seit gestern:",
     ...changed.map((r) => `- ${name(r)}: ${ANSWER[r.answer]}${detail(r) ? ` (${detail(r)})` : ""}${r.note ? ` – „${r.note}“` : ""}`),
     "",
-    `${env.siteUrl}/admin/interesse`,
+    `${siteUrl}/admin/interesse`,
   ].join("\n");
 
-  const to = (process.env.DIGEST_TO || env.mailReplyTo).split(",").map((s) => s.trim()).filter(Boolean);
-  const { error } = await new Resend(env.resendKey).emails.send({ from: INTEREST_FROM, to, subject, html, text });
-  if (error) throw new Error(error.message);
-  return { sent: true, changes: changed.length };
+  return { subject, html, text };
 }
