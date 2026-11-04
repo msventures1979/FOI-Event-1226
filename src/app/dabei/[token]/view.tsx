@@ -44,6 +44,11 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
               Wir planen für den 14. Dezember eine FOI-Weihnachtsfeier auf dem Hockenheimring – und haben richtig Lust darauf. Noch steht nicht alles fest.
               Sagen Sie uns, ob Sie dabei sein möchten, dann wissen wir, für wen wir Gas geben.
             </p>
+            {!(showThanks && mine) && (
+              <a href="#antwort" className="btn-gold mt-8 inline-flex min-h-12 items-center gap-3">
+                Jetzt antworten <span aria-hidden>↓</span>
+              </a>
+            )}
           </div>
           <div className="border border-line-strong bg-[rgba(10,10,10,.92)]">
             <div aria-hidden className="checker-sm h-2.5 opacity-90" />
@@ -77,7 +82,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
         </ul>
       </section>
 
-      <main className="mx-auto max-w-[860px] px-6 pb-24 pt-14">
+      <main id="antwort" className="mx-auto max-w-[860px] scroll-mt-6 px-6 pb-24 pt-14">
         {showThanks && mine ? (
           <>
           <ScrollIntoView id="danke" />
