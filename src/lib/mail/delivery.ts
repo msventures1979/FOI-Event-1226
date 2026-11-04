@@ -35,7 +35,7 @@ function map(lastEvent: string | undefined): string {
  * Unzustellbare Adressen und Spam-Beschwerden werden beim Gast als „Bounce“ markiert – diese Gäste bekommen keine Massenmails mehr.
  * Resend erlaubt etwa 2 Anfragen pro Sekunde; daher höchstens `max` Abfragen je Lauf.
  */
-export async function refreshDelivery(max = 240): Promise<{ checked: number; bounced: number; open: number }> {
+export async function refreshDelivery(max = 240): Promise<{ checked: number; bounced: number; open: number; error?: string }> {
   const supa = db();
   const resend = new Resend(env.resendKey);
   const since = new Date(Date.now() - 14 * 86400 * 1000).toISOString();
@@ -50,11 +50,14 @@ export async function refreshDelivery(max = 240): Promise<{ checked: number; bou
     .limit(max);
 
   let checked = 0,
-    bounced = 0;
+    bounced = 0,
+    lastError: string | undefined;
   for (const r of rows ?? []) {
     const { data, error } = await resend.emails.get(r.resend_id as string);
     if (error) {
-      if (/rate|limit/i.test(error.message)) break;
+      lastError = error.message;
+      // fehlende Leserechte des API-Schlüssels oder Rate-Limit: abbrechen statt alle Mails durchzuprobieren
+      if (/rate|limit|restricted|permission|unauthori[sz]ed|forbidden/i.test(error.message) || checked === 0) break;
       continue;
     }
     const d = map((data as { last_event?: string } | null)?.last_event);
@@ -73,5 +76,5 @@ export async function refreshDelivery(max = 240): Promise<{ checked: number; bou
     .eq("status", "gesendet")
     .not("delivery", "in", `(${FINAL.join(",")})`)
     .gte("created_at", since);
-  return { checked, bounced, open: count ?? 0 };
+  return { checked, bounced, open: count ?? 0, error: lastError };
 }

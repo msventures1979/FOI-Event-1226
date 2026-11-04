@@ -222,5 +222,5 @@ export async function checkDelivery() {
   await requireAdmin();
   const r = await refreshDelivery();
   revalidatePath("/admin/versand");
-  redirect(`/admin/versand?zustellung=${r.checked}-${r.bounced}-${r.open}#zustellung`);
+  redirect(`/admin/versand?zustellung=${r.checked}-${r.bounced}-${r.open}${r.error ? `&fehler=${encodeURIComponent(r.error)}` : ""}#zustellung`);
 }

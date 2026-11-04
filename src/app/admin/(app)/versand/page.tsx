@@ -6,9 +6,9 @@ import { DELIVERY_LABEL } from "@/lib/mail/delivery";
 import { SubmitButton } from "@/components/submit-button";
 import { checkDelivery } from "../../actions";
 
-export default async function Versand({ searchParams }: { searchParams: Promise<{ zustellung?: string }> }) {
+export default async function Versand({ searchParams }: { searchParams: Promise<{ zustellung?: string; fehler?: string }> }) {
   await requireAdmin();
-  const { zustellung } = await searchParams;
+  const { zustellung, fehler } = await searchParams;
   const { data: log } = await db().from("email_log").select("type,status,delivery").limit(5000);
   const { data: bounces } = await db()
     .from("email_log")
@@ -44,6 +44,12 @@ export default async function Versand({ searchParams }: { searchParams: Promise<
         <p className="mb-4 text-sm text-dim">
           Fragt bei Resend ab, ob die Mails angekommen sind. Unzustellbare Adressen werden beim Gast als „Bounce“ markiert und bekommen keine weiteren Massenmails. Je Klick bis zu 240 Mails – bei offenen Mails einfach erneut klicken.
         </p>
+        {fehler && (
+          <p className="mb-4 border-l-2 border-red-500 bg-card p-3 text-sm text-red-300">
+            Resend meldet: {fehler}
+            {/restricted|permission|unauthori|forbidden/i.test(fehler) ? " – der API-Schlüssel darf nur senden, nicht lesen. In Resend einen Schlüssel mit „Full access“ anlegen und in Vercel als RESEND_API_KEY hinterlegen." : ""}
+          </p>
+        )}
         {zustellung && (
           <p className="mb-4 border-l-2 border-gold bg-card p-3 text-sm">
             {zc} Mails geprüft, davon {zb} unzustellbar. {zo > 0 ? `Noch ${zo} ohne endgültigen Status – bitte erneut abrufen.` : "Alle Mails haben einen endgültigen Status."}
