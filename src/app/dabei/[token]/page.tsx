@@ -13,7 +13,7 @@ export default async function Dabei({ params, searchParams }: { params: Promise<
   // Vorschau ohne Gästedaten: /dabei/vorschau – nichts wird gespeichert
   if (token === "vorschau") {
     const answer = demo === "dabei" || demo === "interessiert" || demo === "nicht" ? demo : null;
-    const mine = answer ? ({ guest_id: "", event_id: "", answer, mode: "", vehicle: "", note: "", contact_email: "", created_at: "", updated_at: "" } as Interest) : null;
+    const mine = answer ? ({ guest_id: "", event_id: "", answer, mode: "", track_group: "", vehicle: "", note: "", contact_email: "", created_at: "", updated_at: "" } as Interest) : null;
     return <DabeiView token="vorschau" first="Max" fullName="Max Mustermann" email="max.mustermann@beispiel.de" cap={100} dabei={Math.min(110, Math.max(0, Number(stand) || 0))} mine={mine} showThanks={Boolean(mine)} pos={1} antwort={antwort} preview />;
   }
   const found = await guestByToken(token);

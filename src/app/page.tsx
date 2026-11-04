@@ -96,7 +96,7 @@ export default async function Home() {
         <div className="flex flex-col gap-5 text-lg leading-[1.65] text-[#d1d1d1]">
           <p>Zweimal im Jahr bringt Frontline of Innovation Entscheiderinnen und Entscheider aus Wirtschaft, Sport, Wissenschaft und Politik an einen Tisch. Im Dezember feiern wir anders.</p>
           <p>
-            Gemeinsam mit Paul Muck und der School of Racing laden wir Sie auf den Hockenheimring ein. Sie fahren Ihren eigenen Wagen und lernen ihn unter Anleitung erfahrener Instruktoren an seiner Grenze kennen. Oder Sie steigen als Beifahrer ins Renntaxi und erleben die Strecke im Renntempo.
+            Gemeinsam mit Paul Muck und der School of Racing laden wir Sie auf den Hockenheimring ein. Sie fahren mit Ihrem eigenen Auto auf die Strecke. Wer zum ersten Mal Rennstreckenluft schnuppert, fährt geführt – mit Tipps per Funk direkt ins Auto, Runde für Runde. Oder Sie steigen als Beifahrer ins Renntaxi und erleben die Strecke im Renntempo.
           </p>
           <p>Danach geht es weiter wie an jedem FOI-Abend: mit einem frühen Dinner, einem Überraschungsgast und Gesprächen, die es ohne diesen Tag nie gegeben hätte.</p>
         </div>

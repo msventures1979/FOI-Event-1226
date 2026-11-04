@@ -10,9 +10,14 @@ const ANSWERS = [
   { value: "nicht", label: "Diesmal leider nicht – halten Sie mich für das nächste Event auf dem Laufenden." },
 ] as const;
 const MODES = [
-  { value: "own", label: "Mit meinem eigenen Fahrzeug – mit Instruktor an meiner Seite." },
+  { value: "own", label: "Mit meinem eigenen Fahrzeug." },
   { value: "taxi", label: "Als Beifahrer im Renntaxi, mit einem Profi am Steuer." },
   { value: "offen", label: "Das entscheide ich später." },
+] as const;
+const GROUPS = [
+  { value: "rookie", label: "Rookie", text: "Mit wenig oder keiner Rennstreckenerfahrung drehen Sie hier dank Überholverbot entspannt Ihre Runden – auf Wunsch geführt, mit Tipps per Funk direkt ins Auto." },
+  { value: "performance", label: "Performance", text: "Sie haben Trackday-Erfahrung, kennen die Strecke und beherrschen Ihr Fahrzeug auch unter Stress." },
+  { value: "race", label: "Race / Drift", text: "Sie haben viel Rennstreckenerfahrung und können auch mit Fahrzeugen ohne Straßenzulassung teilnehmen." },
 ] as const;
 
 export function InterestForm({
@@ -24,11 +29,12 @@ export function InterestForm({
   token: string;
   name: string;
   email: string;
-  initial: { answer: string; mode: string; vehicle: string; note: string };
+  initial: { answer: string; mode: string; track_group: string; vehicle: string; note: string };
 }) {
   const [state, action, pending] = useActionState<InterestState, FormData>(saveInterest, undefined);
   const [answer, setAnswer] = useState(initial.answer);
   const [mode, setMode] = useState(initial.mode);
+  const [group, setGroup] = useState(initial.track_group);
   const errRef = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
     if (state?.error) errRef.current?.focus();
@@ -65,6 +71,20 @@ export function InterestForm({
         <fieldset className="mt-10 flex flex-col gap-3">
           <legend className="mb-4 font-display text-2xl font-semibold uppercase">Wie möchten Sie auf die Strecke?</legend>
           {MODES.map((m) => option("mode", m.value, m.label, mode === m.value, () => setMode(m.value)))}
+          {mode === "own" && (
+            <fieldset className="mt-4 flex flex-col gap-3">
+              <legend className="lbl mb-3">In welcher Gruppe möchten Sie fahren?</legend>
+              {GROUPS.map((gr) => (
+                <label key={gr.value} className={`flex cursor-pointer items-start gap-4 border p-5 transition-colors ${group === gr.value ? "border-gold bg-[#141008]" : "border-line hover:border-line-strong"}`}>
+                  <input type="radio" name="track_group" value={gr.value} checked={group === gr.value} onChange={() => setGroup(gr.value)} required className="mt-1 h-5 w-5 shrink-0 accent-[#E6941A]" />
+                  <span>
+                    <span className="block font-display text-xl font-semibold uppercase leading-tight">{gr.label}</span>
+                    <span className="mt-1 block text-[15px] leading-snug text-[#bbb]">{gr.text}</span>
+                  </span>
+                </label>
+              ))}
+            </fieldset>
+          )}
           {mode === "own" && (
             <div className="mt-2">
               <label className="lbl" htmlFor="vehicle">

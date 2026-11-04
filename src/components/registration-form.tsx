@@ -104,7 +104,7 @@ export function RegistrationForm({
                 </span>
                 <span className="text-sm leading-normal text-muted">
                   {t === "own"
-                    ? "Mit Instruktor der School of Racing."
+                    ? "Für Einsteiger geführt per Funk."
                     : "Beifahrer, am Steuer ein Profi."}
                 </span>
               </label>

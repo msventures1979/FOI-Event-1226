@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { getEvent, guestByToken } from "@/lib/event";
 import { db } from "@/lib/supabase/admin";
-import { ANSWERS, MODES, type InterestAnswer, type InterestMode } from "@/lib/interest";
+import { ANSWERS, GROUPS, MODES, type InterestAnswer, type InterestMode, type TrackGroup } from "@/lib/interest";
 
 export type InterestState = { error?: string } | undefined;
 
@@ -22,6 +22,9 @@ export async function saveInterest(_prev: InterestState, form: FormData): Promis
   let mode = s(form, "mode") as InterestMode;
   if (answer === "nicht") mode = "";
   else if (!MODES.some((m) => m.value === mode)) return { error: "Bitte sagen Sie uns noch, wie Sie auf die Strecke möchten." };
+  let track_group = s(form, "track_group") as TrackGroup;
+  if (mode !== "own") track_group = "";
+  else if (!GROUPS.some((g) => g.value === track_group)) return { error: "Bitte wählen Sie noch Ihre Gruppe auf der Strecke." };
   const email = s(form, "email", 200).toLowerCase();
   if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { error: "Bitte prüfen Sie die Mailadresse." };
 
@@ -31,6 +34,7 @@ export async function saveInterest(_prev: InterestState, form: FormData): Promis
     event_id: ev.id,
     answer,
     mode,
+    track_group,
     vehicle: mode === "own" ? s(form, "vehicle", 120) : "",
     note: s(form, "note", 1000),
     contact_email: email && email !== found.guest.email.toLowerCase() ? email : "",

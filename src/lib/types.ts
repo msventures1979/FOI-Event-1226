@@ -5,7 +5,7 @@ export const PARTICIPATION: Record<ParticipationType, { num: string; title: stri
     num: "01",
     title: "Mit dem eigenen Wagen",
     short: "Eigener Wagen",
-    text: "Sie fahren Ihr eigenes Fahrzeug, begleitet von einem Instruktor der School of Racing. So lernen Sie Ihr Auto auf eine Weise kennen, die im Alltag nicht möglich ist.",
+    text: "Sie fahren Ihr eigenes Fahrzeug, in einer von drei Gruppen von Rookie bis Race. Wer zum ersten Mal auf der Rennstrecke ist, fährt geführt – mit Tipps per Funk direkt ins Auto.",
   },
   taxi: {
     num: "02",

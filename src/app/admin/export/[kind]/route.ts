@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/supabase/admin";
 import { getEvent } from "@/lib/event";
-import { ANSWER_SHORT, MODE_SHORT, type Interest } from "@/lib/interest";
+import { ANSWER_SHORT, GROUP_SHORT, MODE_SHORT, type Interest } from "@/lib/interest";
 import { PARTICIPATION, STATUS_LABEL, type Guest, type Registration } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -57,13 +57,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ kind: s
       title = "Interessensabfrage";
       const { data: ints } = await db().from("event_interest").select("*").eq("event_id", ev.id).order("created_at");
       const byGuest = new Map(((ints ?? []) as Interest[]).map((i) => [i.guest_id, i]));
-      header = ["Antwort", "Strecke", "Fahrzeug", "Anmerkung", "Titel", "Vorname", "Nachname", "E-Mail", "Abweichende Mail", "Unternehmen", "Geantwortet am"];
+      header = ["Antwort", "Strecke", "Gruppe", "Fahrzeug", "Anmerkung", "Titel", "Vorname", "Nachname", "E-Mail", "Abweichende Mail", "Unternehmen", "Geantwortet am"];
       const order = { dabei: 0, interessiert: 1, nicht: 2 } as const;
       body = rows
         .map(({ g }) => ({ g, i: byGuest.get(g.id) }))
         .sort((x, y) => (x.i ? order[x.i.answer] : 3) - (y.i ? order[y.i.answer] : 3) || (x.i?.created_at ?? "").localeCompare(y.i?.created_at ?? ""))
         .map(({ g, i }) => [
-          i ? ANSWER_SHORT[i.answer] : "keine Antwort", i ? MODE_SHORT[i.mode] : "", i?.vehicle ?? "", i?.note ?? "",
+          i ? ANSWER_SHORT[i.answer] : "keine Antwort", i ? MODE_SHORT[i.mode] : "", i ? GROUP_SHORT[i.track_group] ?? "" : "", i?.vehicle ?? "", i?.note ?? "",
           g.title, g.first_name, g.last_name, g.email, i?.contact_email ?? "", g.company,
           i ? new Date(i.updated_at).toLocaleString("de-DE", { timeZone: "Europe/Berlin" }) : "",
         ]);

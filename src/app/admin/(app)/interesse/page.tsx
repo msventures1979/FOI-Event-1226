@@ -1,5 +1,5 @@
 import { getEvent } from "@/lib/event";
-import { ANSWER_SHORT, interestCounts, MODE_SHORT, type Interest } from "@/lib/interest";
+import { ANSWER_SHORT, interestCounts, GROUP_SHORT, MODE_SHORT, type Interest } from "@/lib/interest";
 import { db } from "@/lib/supabase/admin";
 import type { Guest } from "@/lib/types";
 
@@ -86,7 +86,7 @@ export default async function InteressePage({ searchParams }: { searchParams: Pr
                   </td>
                   <td className="py-2 pr-3">{g.company}</td>
                   <td className="py-2 pr-3">{ANSWER_SHORT[r.answer]}</td>
-                  <td className="py-2 pr-3">{MODE_SHORT[r.mode]}</td>
+                  <td className="py-2 pr-3">{MODE_SHORT[r.mode]}{r.track_group ? ` · ${GROUP_SHORT[r.track_group]}` : ""}</td>
                   <td className="py-2 pr-3">{r.vehicle}</td>
                   <td className="max-w-[260px] py-2 pr-3 text-xs">{r.note}</td>
                   <td className="whitespace-nowrap py-2 text-xs text-dim">{new Date(r.updated_at).toLocaleString("de-DE", { timeZone: "Europe/Berlin", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</td>

@@ -9,6 +9,7 @@ export interface Interest {
   event_id: string;
   answer: InterestAnswer;
   mode: InterestMode;
+  track_group: TrackGroup;
   vehicle: string;
   note: string;
   contact_email: string;
@@ -23,10 +24,18 @@ export const ANSWERS: { value: InterestAnswer; label: string; hint?: string }[] 
 ];
 
 export const MODES: { value: Exclude<InterestMode, "">; label: string }[] = [
-  { value: "own", label: "Mit meinem eigenen Fahrzeug – mit Instruktor an meiner Seite." },
+  { value: "own", label: "Mit meinem eigenen Fahrzeug." },
   { value: "taxi", label: "Als Beifahrer im Renntaxi, mit einem Profi am Steuer." },
   { value: "offen", label: "Das entscheide ich später." },
 ];
+
+export type TrackGroup = "" | "rookie" | "performance" | "race";
+export const GROUPS: { value: Exclude<TrackGroup, "">; label: string; text: string }[] = [
+  { value: "rookie", label: "Rookie", text: "Mit wenig oder keiner Rennstreckenerfahrung drehen Sie hier dank Überholverbot entspannt Ihre Runden – auf Wunsch geführt, mit Tipps per Funk direkt ins Auto." },
+  { value: "performance", label: "Performance", text: "Sie haben Trackday-Erfahrung, kennen die Strecke und beherrschen Ihr Fahrzeug auch unter Stress." },
+  { value: "race", label: "Race / Drift", text: "Sie haben viel Rennstreckenerfahrung und können auch mit Fahrzeugen ohne Straßenzulassung teilnehmen." },
+];
+export const GROUP_SHORT: Record<TrackGroup, string> = { "": "", rookie: "Rookie", performance: "Performance", race: "Race / Drift" };
 
 export const ANSWER_SHORT: Record<InterestAnswer, string> = { dabei: "Dabei", interessiert: "Interessiert", nicht: "Nicht dabei" };
 export const MODE_SHORT: Record<InterestMode, string> = { "": "", own: "Eigener Wagen", taxi: "Renntaxi", offen: "Noch offen" };

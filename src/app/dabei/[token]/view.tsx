@@ -70,7 +70,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
       <section aria-label="Was Sie erwartet" className="border-b border-line">
         <ul className="mx-auto grid max-w-[1240px] gap-px bg-line md:grid-cols-3">
           {[
-            { k: "Ab 14 Uhr", t: "Auf der Strecke", d: "Mit Ihrem eigenen Wagen und einem Instruktor der School of Racing an Ihrer Seite – oder als Beifahrer im Renntaxi." },
+            { k: "Ab 14 Uhr", t: "Auf der Strecke", d: "Mit Ihrem eigenen Wagen in einer von drei Gruppen, von Rookie bis Race – für Einsteiger geführt per Funk. Oder als Beifahrer im Renntaxi." },
             { k: "Früher Abend", t: "Dinner in der Loge", d: "Mit den Menschen, die Frontline of Innovation ausmachen." },
             { k: "Exklusiv & kostenfrei", t: `${cap} Plätze`, d: "Nur auf persönliche Einladung. Für Sie entstehen keine Kosten – getragen von unseren Partnern. Eintreffen ab 13 Uhr." },
           ].map((x) => (
@@ -133,7 +133,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
             token={token}
             name={fullName}
             email={email}
-            initial={{ answer: (antwort === "nicht" ? "nicht" : mine?.answer) ?? "", mode: mine?.mode ?? "", vehicle: mine?.vehicle ?? "", note: mine?.note ?? "" }}
+            initial={{ answer: (antwort === "nicht" ? "nicht" : mine?.answer) ?? "", mode: mine?.mode ?? "", track_group: mine?.track_group ?? "", vehicle: mine?.vehicle ?? "", note: mine?.note ?? "" }}
           />
         )}
       </main>
