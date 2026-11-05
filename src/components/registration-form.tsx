@@ -17,13 +17,16 @@ import {
   type ParticipationType,
 } from "@/lib/types";
 
+/** Nur diese Felder gehen an den Browser – interne Angaben (Notiz, LinkedIn, Status) bleiben auf dem Server. */
+export type FormGuest = Pick<Guest, "code" | "salutation" | "title" | "first_name" | "last_name" | "company" | "position" | "email">;
+
 const req = <span className="text-gold">*</span>;
 
 export function RegistrationForm({
   guest,
   slots,
 }: {
-  guest: Guest;
+  guest: FormGuest;
   slots: FreeSlots;
 }) {
   const [state, action, pending] = useActionState<RegisterState, FormData>(

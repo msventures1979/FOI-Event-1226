@@ -33,7 +33,19 @@ export default async function Anmeldung({ searchParams }: { searchParams: Promis
     <PageShell>
       <main className="mx-auto max-w-[1040px] px-6 pb-24 pt-16">
         <Progress step={2} />
-        <RegistrationForm guest={guest} slots={slots} />
+        <RegistrationForm
+          guest={{
+            code: guest.code,
+            salutation: guest.salutation,
+            title: guest.title,
+            first_name: guest.first_name,
+            last_name: guest.last_name,
+            company: guest.company,
+            position: guest.position,
+            email: guest.email,
+          }}
+          slots={slots}
+        />
       </main>
     </PageShell>
   );
