@@ -156,6 +156,11 @@ export default async function Gaeste({ searchParams }: { searchParams: Promise<{
                       <Link href={`/admin/gaeste/${g.id}`} className="text-white no-underline hover:text-gold">
                         {[g.title, g.first_name, g.last_name].filter(Boolean).join(" ")}
                       </Link>
+                      {g.linkedin && (
+                        <a href={g.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn-Profil" className="ml-2 inline-block rounded-sm bg-[#0a66c2] px-1 text-[10px] font-bold leading-4 text-white no-underline">
+                          in
+                        </a>
+                      )}
                       {g.bounced && <span className="ml-2"><Badge tone="border-red-500/60 text-red-400">Bounce</Badge></span>}
                     </div>
                     <div className="mt-0.5 text-[13px] text-dim">{g.email}</div>

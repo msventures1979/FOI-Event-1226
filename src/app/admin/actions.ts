@@ -68,6 +68,7 @@ export async function importGuests(_prev: unknown, form: FormData): Promise<{ ms
   await requireAdmin();
   const file = form.get("file") as File | null;
   const dry = form.get("dry") === "on";
+  const update = form.get("update") === "on";
   if (!file || file.size === 0) return { msg: "Bitte eine Datei wählen." };
 
   let records: Record<string, string>[] = [];
@@ -98,8 +99,10 @@ export async function importGuests(_prev: unknown, form: FormData): Promise<{ ms
   };
 
   const ev = await getEvent();
-  const { data: existing } = await db().from("event_guests").select("email").eq("event_id", ev.id);
+  const { data: existing } = await db().from("event_guests").select("id,email,company,position,linkedin,note").eq("event_id", ev.id);
   const known = new Set((existing ?? []).map((g) => String(g.email).toLowerCase()));
+  const byEmail = new Map((existing ?? []).map((g) => [String(g.email).toLowerCase(), g]));
+  const updates: { id: string; patch: Record<string, string> }[] = [];
 
   const toInsert: Record<string, string>[] = [];
   const preview: string[][] = [];
@@ -114,6 +117,22 @@ export async function importGuests(_prev: unknown, form: FormData): Promise<{ ms
       continue;
     }
     if (known.has(email)) {
+      // Abgleich: vorhandene Gäste mit Unternehmen, Position und LinkedIn aus der Datei ergänzen
+      const ex = byEmail.get(email);
+      if (update && ex) {
+        const patch: Record<string, string> = {};
+        const company = pick(r, "unternehmen", "firma", "company");
+        const position = pick(r, "position", "funktion");
+        const li = cleanLinkedin(pick(r, "linkedin", "linkedin-profil", "url"));
+        if (company && company !== ex.company) {
+          patch.company = company;
+          // bisherige (oft handschriftliche) Firmenangabe nicht verlieren
+          if (ex.company && !company.toLowerCase().includes(String(ex.company).toLowerCase())) patch.note = [ex.note, `Früher erfasst: ${ex.company}`].filter(Boolean).join(" · ");
+        }
+        if (position && position !== ex.position) patch.position = position;
+        if (li && li !== ex.linkedin) patch.linkedin = li;
+        if (Object.keys(patch).length) updates.push({ id: ex.id as string, patch });
+      }
       dupes++;
       continue;
     }
@@ -129,12 +148,16 @@ export async function importGuests(_prev: unknown, form: FormData): Promise<{ ms
       company: pick(r, "unternehmen", "firma", "company"),
       position: pick(r, "position", "funktion"),
       note: pick(r, "notiz", "note", "bemerkung"),
+      linkedin: cleanLinkedin(pick(r, "linkedin", "linkedin-profil")),
       code: generateCode(),
     };
     toInsert.push(row);
     if (preview.length < 15) preview.push([row.salutation, row.title, row.first_name, row.last_name, row.email, row.company, row.code]);
   }
 
+  if (!dry && updates.length) {
+    for (const u of updates) await db().from("event_guests").update(u.patch).eq("id", u.id);
+  }
   if (!dry && toInsert.length) {
     for (let i = 0; i < toInsert.length; i += 200) {
       const { error } = await db().from("event_guests").insert(toInsert.slice(i, i + 200));
@@ -143,7 +166,7 @@ export async function importGuests(_prev: unknown, form: FormData): Promise<{ ms
     revalidatePath("/admin/gaeste");
   }
   return {
-    msg: `${dry ? "Vorschau – noch nichts gespeichert. " : ""}${toInsert.length} neue Gäste${dry ? " würden importiert" : " importiert"}, ${dupes} schon vorhanden, ${invalid} ohne gültige E-Mail/Nachname übersprungen.`,
+    msg: `${dry ? "Vorschau – noch nichts gespeichert. " : ""}${toInsert.length} neue Gäste${dry ? " würden importiert" : " importiert"}, ${dupes} schon vorhanden${update ? ` (davon ${updates.length} ${dry ? "würden aktualisiert" : "aktualisiert"})` : ""}, ${invalid} ohne gültige E-Mail/Nachname übersprungen.`,
     rows: preview,
   };
 }
@@ -241,6 +264,12 @@ export async function checkDelivery() {
 
 const s = (f: FormData, k: string, max = 200) => String(f.get(k) ?? "").trim().slice(0, max);
 
+/** Nur echte LinkedIn-Profil-Links übernehmen, ohne Tracking-Parameter */
+function cleanLinkedin(v: string): string {
+  const m = v.trim().match(/^(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/in\/([^/?#\s]+)/i);
+  return m ? `https://www.linkedin.com/in/${m[1]}` : "";
+}
+
 export async function updateGuest(form: FormData) {
   await requireAdmin();
   const id = s(form, "id", 64);
@@ -259,6 +288,7 @@ export async function updateGuest(form: FormData) {
     email,
     company: s(form, "company"),
     position: s(form, "position"),
+    linkedin: cleanLinkedin(s(form, "linkedin", 300)),
     note: s(form, "note", 2000),
     bounced: emailChanged || form.get("unbounce") === "on" ? false : g.bounced,
   };

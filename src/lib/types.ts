@@ -50,6 +50,7 @@ export interface Guest {
   email: string;
   company: string;
   position: string;
+  linkedin: string;
   note: string;
   code: string;
   manage_token: string;

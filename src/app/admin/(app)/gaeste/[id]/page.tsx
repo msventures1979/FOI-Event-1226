@@ -70,6 +70,15 @@ export default async function GastBearbeiten({ params, searchParams }: { params:
           <input id="position" name="position" defaultValue={g.position} className="field" />
         </div>
         <div className="sm:col-span-2">
+          <label className="lbl" htmlFor="linkedin">LinkedIn-Profil</label>
+          <input id="linkedin" name="linkedin" type="url" defaultValue={g.linkedin} placeholder="https://www.linkedin.com/in/…" className="field" />
+          {g.linkedin && (
+            <a href={g.linkedin} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-xs">
+              Profil öffnen ↗
+            </a>
+          )}
+        </div>
+        <div className="sm:col-span-2">
           <label className="lbl" htmlFor="note">Notiz (intern)</label>
           <textarea id="note" name="note" defaultValue={g.note} rows={3} className="field" />
         </div>

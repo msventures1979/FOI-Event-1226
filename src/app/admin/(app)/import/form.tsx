@@ -17,6 +17,9 @@ export function ImportForm() {
       <label className="chk">
         <input type="checkbox" name="dry" defaultChecked /> Nur Vorschau (nichts speichern)
       </label>
+      <label className="chk">
+        <input type="checkbox" name="update" /> Vorhandene Gäste (gleiche E-Mail) mit Unternehmen, Position und LinkedIn aus der Datei aktualisieren
+      </label>
       <button className="btn-gold self-start" disabled={pending}>{pending ? "Wird verarbeitet …" : "Datei verarbeiten"}</button>
       {state.msg && <p className="text-gold">{state.msg}</p>}
       {state.rows && state.rows.length > 0 && (
