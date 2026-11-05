@@ -20,7 +20,6 @@ export default async function Versand({ searchParams }: { searchParams: Promise<
   const withGuest = (bounces ?? []).map((b) => ({ ...b, g: (Array.isArray(b.event_guests) ? b.event_guests[0] : b.event_guests) as BounceGuest | null }));
   // Offen = beim Gast steht noch genau die Adresse, die zurückkam. Wurde sie korrigiert, ist der Rückläufer erledigt.
   const openBounces = withGuest.filter((b) => b.g && b.g.email.toLowerCase() === String(b.to_email).toLowerCase());
-  const doneBounces = withGuest.filter((b) => !openBounces.includes(b));
   const del: Record<string, number> = {};
   for (const l of log ?? []) if (l.status === "gesendet") del[l.delivery ?? ""] = (del[l.delivery ?? ""] ?? 0) + 1;
   const [zc, zb, zo] = (zustellung ?? "").split("-").map(Number);
@@ -70,7 +69,8 @@ export default async function Versand({ searchParams }: { searchParams: Promise<
         </div>
         {openBounces.length > 0 && (
           <>
-            <h3 className="mb-2 mt-2 text-sm font-semibold uppercase tracking-wide text-red-400">Offen – neue Adresse nötig ({openBounces.length})</h3>
+            <p className="mb-2 text-xs text-dim">Nach einer Korrektur verschwindet der Gast hier. Kommt auch die neue Adresse zurück, erscheint er wieder. Der Verlauf steht beim Gast unter „Mails an diesen Gast“.</p>
+            <h3 className="mb-2 mt-2 text-sm font-semibold uppercase tracking-wide text-red-400">Rückläufer – neue Adresse nötig ({openBounces.length})</h3>
             <div className="overflow-x-auto border border-line">
               <table className="admin-table w-full min-w-[640px]">
                 <thead>
@@ -101,18 +101,6 @@ export default async function Versand({ searchParams }: { searchParams: Promise<
           </>
         )}
         {openBounces.length === 0 && (bounces ?? []).length > 0 && <p className="text-sm text-dim">Keine offenen Rückläufer – alle unzustellbaren Adressen sind korrigiert.</p>}
-        {doneBounces.length > 0 && (
-          <details className="mt-4">
-            <summary className="cursor-pointer text-sm text-dim">Erledigt – Adresse inzwischen korrigiert ({doneBounces.length})</summary>
-            <ul className="mt-2 flex flex-col gap-1 text-sm text-[#bbb]">
-              {doneBounces.map((b) => (
-                <li key={b.id}>
-                  {b.g ? <a href={`/admin/gaeste/${b.g.id}`}>{`${b.g.first_name} ${b.g.last_name}`}</a> : "–"}: <s className="text-dim">{b.to_email}</s> → {b.g?.email ?? "Gast gelöscht"}
-                </li>
-              ))}
-            </ul>
-          </details>
-        )}
       </section>
 
       <section>
