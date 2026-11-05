@@ -290,7 +290,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
   // Sicherung: Mails mit offenen Platzhaltern wie „[Treffpunkt]“ werden nie verschickt
   const open = text.match(/\[[^\]\n]{2,}\]/g);
   if (open) throw new MailPlaceholderError(`Mail „${MAIL_LABEL[type]}“ enthält noch Platzhalter: ${[...new Set(open)].join(", ")}`);
-  return { subject, html: toHtml(anrede, blocks, assets, preheader, footer, type === "save_the_date", gruss), text: text.replace("—\nFrontline of Innovation · info@frontlineofinnovation.de", `—\n${footer} · info@frontlineofinnovation.de`), from };
+  return { subject, html: toHtml(anrede, blocks, assets, preheader, footer, type === "save_the_date", gruss), text: text.replace("—\nFrontline of Innovation · info@frontlineofinnovation.de", `—\n${footer} · info@frontlineofinnovation.de${type === "save_the_date" ? "" : " · https://frontlineofinnovation.de"}`), from };
 }
 
 export class MailPlaceholderError extends Error {}
@@ -322,6 +322,17 @@ function toText(anrede: string, blocks: Block[], gruss = GRUSS): string {
   for (const b of blocks) if ("ps" in b) parts.push(b.ps);
   parts.push("—\nFrontline of Innovation · info@frontlineofinnovation.de");
   return parts.join("\n\n");
+}
+
+/** LinkedIn-Profile der Gastgeber – Namen in der Grußzeile werden verlinkt */
+const PROFILES: [string, string][] = [
+  ["Matthias Storch", "https://www.linkedin.com/in/matthiasstorch/"],
+  ["Süleyman Acar", "https://www.linkedin.com/in/sueleyman-acar/"],
+  ["Paul Muck", "https://www.linkedin.com/in/paul-muck-46a189152/"],
+];
+function linkNames(html: string, neutral: boolean): string {
+  if (neutral) return html;
+  return PROFILES.reduce((h, [name, url]) => h.replace(name, `<a href="${url}" style="color:#E6941A;text-decoration:underline">${name}</a>`), html);
 }
 
 function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = "", footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing", neutral = false, gruss = GRUSS): string {
@@ -367,9 +378,9 @@ ${neutral ? `<tr><td style="height:4px;background:#E6941A;line-height:4px;font-s
 <tr><td style="padding:28px 28px 8px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.55;color:#1a1a1a">
 <p style="margin:0 0 16px">${esc(anrede)}</p>
 ${body}
-<p style="margin:24px 0 0">${esc(gruss).replace(/\n/g, "<br>")}</p>
+<p style="margin:24px 0 0">${linkNames(esc(gruss), neutral).replace(/\n/g, "<br>")}</p>${neutral ? "" : `<p style="margin:14px 0 0;font-size:14px"><a href="https://frontlineofinnovation.de" style="color:#E6941A;text-decoration:underline">frontlineofinnovation.de</a></p>`}
 ${ps}
 </td></tr>
-<tr><td style="padding:24px 28px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#888">${esc(footer)} · <a href="mailto:info@frontlineofinnovation.de" style="color:#888">info@frontlineofinnovation.de</a></td></tr>
+<tr><td style="padding:24px 28px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#888">${esc(footer)} · <a href="mailto:info@frontlineofinnovation.de" style="color:#888">info@frontlineofinnovation.de</a>${neutral ? "" : ` · <a href="https://frontlineofinnovation.de" style="color:#888">frontlineofinnovation.de</a>`}</td></tr>
 </table></td></tr></table></body></html>`;
 }
