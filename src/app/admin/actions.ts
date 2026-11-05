@@ -253,6 +253,9 @@ export async function guestAction(form: FormData) {
 
   revalidatePath("/admin/gaeste");
   revalidatePath("/admin/checkin");
+  // Aktionen von der Gast-Detailseite: zurück dorthin bzw. nach dem Löschen zur Liste
+  const back = String(form.get("back") ?? "");
+  if (back === "detail") redirect(what === "loeschen" ? "/admin/gaeste" : `/admin/gaeste/${id}?ok=aktion`);
 }
 
 export async function checkDelivery() {

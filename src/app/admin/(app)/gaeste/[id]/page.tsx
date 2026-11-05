@@ -7,7 +7,7 @@ import { ANSWER_SHORT, GROUP_SHORT, MODE_SHORT, type Interest } from "@/lib/inte
 import { DELIVERY_LABEL } from "@/lib/mail/delivery";
 import { MAIL_LABEL, type MailType } from "@/lib/mail/templates";
 import { SubmitButton } from "@/components/submit-button";
-import { resendInterestMail, updateGuest } from "../../../actions";
+import { guestAction, resendInterestMail, updateGuest } from "../../../actions";
 
 export default async function GastBearbeiten({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string; fehler?: string }> }) {
   await requireAdmin();
@@ -31,7 +31,7 @@ export default async function GastBearbeiten({ params, searchParams }: { params:
         {g.bounced && <span className="ml-2 text-red-400">· Adresse unzustellbar</span>}
       </p>
 
-      {ok && <p className="mt-6 border-l-2 border-gold bg-card p-3 text-sm">{ok === "mail" ? "Die Save-the-Date-Mail ist verschickt." : "Gespeichert."}</p>}
+      {ok && <p className="mt-6 border-l-2 border-gold bg-card p-3 text-sm">{ok === "mail" ? "Die Save-the-Date-Mail ist verschickt." : ok === "aktion" ? "Erledigt." : "Gespeichert."}</p>}
       {fehler && <p className="mt-6 border-l-2 border-red-500 bg-card p-3 text-sm text-red-300">{fehler}</p>}
 
       <form action={updateGuest} className="mt-8 grid gap-5 sm:grid-cols-2">
@@ -105,6 +105,17 @@ export default async function GastBearbeiten({ params, searchParams }: { params:
       </section>
 
       <section className="mt-12 border-t border-line pt-8">
+        <h2 className="font-display text-xl font-semibold uppercase">Weitere Aktionen</h2>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <Link href={`/dabei/${g.manage_token}`} target="_blank" className="btn-ghost">Abfrage ansehen</Link>
+          <Link href={`/meine-teilnahme/${g.manage_token}`} target="_blank" className="btn-ghost">Gastansicht</Link>
+          <GuestAct id={g.id} what="einladung" label="Verbindliche Einladung senden" />
+          {["angemeldet", "bestaetigt", "warteliste", "angeboten", "eingeladen"].includes(g.status) && <GuestAct id={g.id} what="absagen" label="Absagen" />}
+          {g.status === "eingeladen" && <GuestAct id={g.id} what="loeschen" label="Gast löschen" danger />}
+        </div>
+      </section>
+
+      <section className="mt-12 border-t border-line pt-8">
         <h2 className="mb-3 font-display text-xl font-semibold uppercase">Mails an diesen Gast</h2>
         {(log ?? []).length === 0 ? (
           <p className="text-sm text-dim">Noch keine Mails.</p>
@@ -127,5 +138,18 @@ export default async function GastBearbeiten({ params, searchParams }: { params:
         )}
       </section>
     </div>
+  );
+}
+
+function GuestAct({ id, what, label, danger = false }: { id: string; what: string; label: string; danger?: boolean }) {
+  return (
+    <form action={guestAction}>
+      <input type="hidden" name="id" value={id} />
+      <input type="hidden" name="what" value={what} />
+      <input type="hidden" name="back" value="detail" />
+      <SubmitButton className={danger ? "btn-ghost border-red-500/60 text-red-400" : "btn-ghost"} pendingText="…">
+        {label}
+      </SubmitButton>
+    </form>
   );
 }

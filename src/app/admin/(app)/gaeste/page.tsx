@@ -4,7 +4,6 @@ import { db } from "@/lib/supabase/admin";
 import { getEvent } from "@/lib/event";
 import { ANSWER_SHORT, GROUP_SHORT, MODE_SHORT, type Interest } from "@/lib/interest";
 import { PARTICIPATION, STATUS_LABEL, type Guest, type GuestStatus, type Registration } from "@/lib/types";
-import { guestAction } from "../../actions";
 
 type Row = Guest & {
   event_registrations: Registration | Registration[] | null;
@@ -199,17 +198,9 @@ export default async function Gaeste({ searchParams }: { searchParams: Promise<{
                       <Link href={`/meine-teilnahme/${g.manage_token}`} target="_blank" className="text-xs">
                         Gastansicht
                       </Link>
-                      <details className="relative">
-                        <summary className="cursor-pointer list-none border border-[#3a3a3a] px-2 py-0.5 text-xs text-[#ccc] hover:border-white hover:text-white [&::-webkit-details-marker]:hidden">
-                          Mehr ▾
-                        </summary>
-                        <div className="absolute right-0 z-10 mt-1 flex w-48 flex-col gap-1 border border-line-strong bg-black p-2 shadow-xl">
-                          <Link href={`/admin/gaeste/${g.id}`} className="px-2 py-1.5 text-xs text-[#ddd] no-underline hover:bg-[#1a1a1a]">Bearbeiten</Link>
-                          <Act id={g.id} what="einladung" label="Verbindliche Einladung senden" />
-                          {["angemeldet", "bestaetigt", "warteliste", "angeboten", "eingeladen"].includes(g.status) && <Act id={g.id} what="absagen" label="Absagen" />}
-                          {g.status === "eingeladen" && <Act id={g.id} what="loeschen" label="Löschen" danger />}
-                        </div>
-                      </details>
+                      <Link href={`/admin/gaeste/${g.id}`} className="border border-[#3a3a3a] px-2 py-0.5 text-xs text-[#ccc] no-underline hover:border-white hover:text-white">
+                        Bearbeiten
+                      </Link>
                     </div>
                   </td>
                 </tr>
@@ -226,15 +217,5 @@ export default async function Gaeste({ searchParams }: { searchParams: Promise<{
         </table>
       </div>
     </div>
-  );
-}
-
-function Act({ id, what, label, danger = false }: { id: string; what: string; label: string; danger?: boolean }) {
-  return (
-    <form action={guestAction}>
-      <input type="hidden" name="id" value={id} />
-      <input type="hidden" name="what" value={what} />
-      <button className={`w-full px-2 py-1.5 text-left text-xs hover:bg-[#1a1a1a] ${danger ? "text-red-400" : "text-[#ddd]"}`}>{label}</button>
-    </form>
   );
 }
