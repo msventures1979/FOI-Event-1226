@@ -7,7 +7,7 @@ import { renderMail, type MailType } from "@/lib/mail/templates";
 import type { Guest, Registration } from "@/lib/types";
 
 /** Mails, die nur ein Mal pro Gast verschickt werden (außer manuell erzwungen). */
-const ONCE: MailType[] = ["interesse", "save_the_date", "einladung", "erinnerung", "letzte_infos", "vorabend", "danke"];
+const ONCE: MailType[] = ["interesse", "interesse_erinnerung", "save_the_date", "einladung", "erinnerung", "letzte_infos", "vorabend", "danke"];
 
 /** Puffer, der im Tageslimit für transaktionale Mails (Bestätigung, Warteliste …) frei bleibt. */
 const TRANSACTIONAL_RESERVE = 20;
@@ -100,12 +100,27 @@ export async function processQueue(opts: { guestId?: string; max?: number } = {}
       (["einladung", "erinnerung"].includes(job.type) && st !== "eingeladen") ||
       (["letzte_infos", "vorabend"].includes(job.type) && !["angemeldet", "bestaetigt"].includes(st)) ||
       (job.type === "platz_frei" && st !== "angeboten");
+    // Erinnerung an die Abfrage: verwerfen, wenn der Gast inzwischen geantwortet hat
+    if (!stale && job.type === "interesse_erinnerung") {
+      const { data: answered } = await supa.from("event_interest").select("guest_id").eq("guest_id", job.guest_id).maybeSingle();
+      if (answered) {
+        await supa.from("email_queue").update({ sent_at: new Date().toISOString(), last_error: "übersprungen (hat inzwischen geantwortet)" }).eq("id", job.id);
+        continue;
+      }
+    }
     if (stale) {
       await supa.from("email_queue").update({ sent_at: new Date().toISOString(), last_error: `übersprungen (Status ${st})` }).eq("id", job.id);
       continue;
     }
 
     let free: number | null = null;
+    if (job.type === "interesse_erinnerung") {
+      const [{ count }, { data: evc }] = await Promise.all([
+        supa.from("event_interest").select("guest_id", { count: "exact", head: true }).eq("event_id", job.event_id).eq("answer", "dabei"),
+        supa.from("events").select("total_capacity").eq("id", job.event_id).single(),
+      ]);
+      free = ((evc as { total_capacity: number } | null)?.total_capacity ?? 100) - (count ?? 0);
+    }
     if (job.type === "erinnerung") {
       const { data: fs } = await supa.rpc("free_slots", { p_event: job.event_id });
       free = (fs as { free: number } | null)?.free ?? null;

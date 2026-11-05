@@ -164,11 +164,13 @@ export async function queueMails(_prev: unknown, form: FormData): Promise<{ msg:
   // Testmail ohne eigenen Gasteintrag: Beispieldaten mit Vorschau-Link, damit kein Klick die Antwort eines echten Gastes verändert
   const sample = own ?? (test ? null : first);
   const g: Guest = (sample as Guest) ?? ({ salutation: "Herr", title: "", first_name: "Max", last_name: "Mustermann", code: "FOI-TEST0101", manage_token: "vorschau" } as Guest);
-  const notReady = mailReady(type, { guest: g, siteUrl: env.siteUrl, participationType: "own", freeSlots: 12 });
+  const notReady = mailReady(type, { guest: g, siteUrl: env.siteUrl, participationType: "own", freeSlots: 12, interest: { answer: "dabei", mode: "own", track_group: "rookie", vehicle: "" } });
   if (notReady) return { msg: `Nicht versandbereit – ${notReady}. Bitte zuerst die Texte ergänzen.` };
 
   if (test) {
-    const mail = renderMail(type, { guest: g, siteUrl: env.siteUrl, participationType: "own", freeSlots: 12 });
+    const { count: dabeiCount } = await db().from("event_interest").select("guest_id", { count: "exact", head: true }).eq("event_id", ev.id).eq("answer", "dabei");
+    const testFree = type === "interesse_erinnerung" ? (ev.total_capacity ?? 100) - (dabeiCount ?? 0) : 12;
+    const mail = renderMail(type, { guest: g, siteUrl: env.siteUrl, participationType: "own", freeSlots: testFree, interest: { answer: "dabei", mode: "own", track_group: "rookie", vehicle: "" } });
     const r = await new Resend(env.resendKey).emails.send({ from: mail.from ?? env.mailFrom, to: testTo || admin, replyTo: env.mailReplyTo, subject: `[TEST] ${mail.subject}`, html: mail.html, text: mail.text });
     return { msg: r.error ? `Fehler: ${r.error.message}` : `Testmail an ${testTo || admin} gesendet (Daten von ${g.first_name} ${g.last_name}).` };
   }
@@ -180,8 +182,20 @@ export async function queueMails(_prev: unknown, form: FormData): Promise<{ msg:
     warteliste: ["warteliste"],
     eingecheckt: ["eingecheckt"],
   };
-  const { data: guests } = await db().from("event_guests").select("id").eq("event_id", ev.id).in("status", statuses[group] ?? []);
-  const r = await enqueue(ev.id, (guests ?? []).map((g) => g.id), type, { force });
+  let ids: string[];
+  if (group === "ohne_antwort") {
+    // Interessensabfrage: Gäste ohne Antwort (unabhängig vom Anmeldestatus)
+    const [{ data: gs }, { data: answered }] = await Promise.all([
+      db().from("event_guests").select("id").eq("event_id", ev.id).eq("status", "eingeladen"),
+      db().from("event_interest").select("guest_id").eq("event_id", ev.id),
+    ]);
+    const done = new Set((answered ?? []).map((a) => a.guest_id as string));
+    ids = (gs ?? []).map((g) => g.id as string).filter((id) => !done.has(id));
+  } else {
+    const { data: guests } = await db().from("event_guests").select("id").eq("event_id", ev.id).in("status", statuses[group] ?? []);
+    ids = (guests ?? []).map((g) => g.id as string);
+  }
+  const r = await enqueue(ev.id, ids, type, { force });
   revalidatePath("/admin/versand");
   return { msg: `${r.queued} Mails eingereiht, ${r.skipped} übersprungen (schon erhalten oder Bounce). Versand im Tageslimit über „Warteschlange abarbeiten“ oder den täglichen Job.` };
 }

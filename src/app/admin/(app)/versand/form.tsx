@@ -4,6 +4,7 @@ import { startTransition, useActionState, useState } from "react";
 import { queueMails } from "../../actions";
 
 const GROUPS: [string, string][] = [
+  ["ohne_antwort", "Interessensabfrage: noch keine Antwort"],
   ["eingeladen", "Noch nicht reagiert (eingeladen)"],
   ["angemeldet", "Angemeldet / bestätigt"],
   ["warteliste", "Warteliste"],

@@ -3,6 +3,7 @@ import { briefanrede, PARTICIPATION, type Guest, type ParticipationType } from "
 export type MailType =
   | "interesse"
   | "interesse_danke"
+  | "interesse_erinnerung"
   | "save_the_date"
   | "einladung"
   | "erinnerung"
@@ -17,6 +18,7 @@ export type MailType =
 export const MAIL_LABEL: Record<MailType, string> = {
   interesse: "0 · Save the Date mit Interessensabfrage (Nov.)",
   interesse_danke: "0b · Bestätigung der Vormerkung (automatisch)",
+  interesse_erinnerung: "0c · Erinnerung an die Interessensabfrage",
   save_the_date: "1 · Save the Date",
   einladung: "2 · Einladung mit Code",
   erinnerung: "3 · Erinnerung Code",
@@ -106,6 +108,49 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { p: "Ihre Antwort ist unverbindlich. Sobald das Event steht, erhalten alle, die sich vorgemerkt haben, als Erste die verbindliche Einladung." },
         { p: "Den Termin können Sie sich gleich im Kalender freihalten:" },
         { buttons: [{ label: "Outlook / Apple Kalender", href: `${ctx.siteUrl}/api/ics/weihnachtsfeier?t=${encodeURIComponent(g.manage_token)}` }, { label: "Google Kalender", href: `${ctx.siteUrl}/api/ics/google?t=${encodeURIComponent(g.manage_token)}` }] },
+      ];
+      break;
+    }
+    case "interesse_erinnerung": {
+      const link = `${ctx.siteUrl}/dabei/${g.manage_token}`;
+      if (g.first_name?.trim()) anrede = `Hallo ${g.first_name.trim()},`;
+      const cap = 100;
+      const free = typeof ctx.freeSlots === "number" ? Math.max(0, ctx.freeSlots) : null;
+      const taken = free === null ? null : cap - free;
+      subject =
+        free === null
+          ? "Erinnerung: Weihnachtsfeier mit Vollgas – sind Sie dabei?"
+          : free === 0
+            ? "Alle Plätze sind vorgemerkt – die Warteliste ist offen"
+            : free <= 20
+            ? `Nur noch ${free === 1 ? "ein Platz" : `${free} Plätze`} – sind Sie am 14. Dezember dabei?`
+            : (taken ?? 0) >= cap / 2
+              ? "Über die Hälfte der Plätze ist vergeben – sind Sie dabei?"
+              : `Noch ${free} Plätze frei – sind Sie am 14. Dezember dabei?`;
+      preheader = "Ein Klick genügt: unverbindlich vormerken für die FOI-Weihnachtsfeier am Hockenheimring.";
+      from = INTEREST_FROM;
+      footer = "Frontline of Innovation · gemeinsam mit School of Racing";
+      gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar\nmit Paul Muck, School of Racing";
+      blocks = [
+        {
+          hero: {
+            kicker: "Erinnerung · Montag, 14. Dezember 2026 · Hockenheimring",
+            line1: free === null ? "Sind Sie" : free === 0 ? "Warteliste" : free === 1 ? "Noch ein Platz" : `Noch ${free} Plätze`,
+            line2: free === null ? "dabei?" : free === 0 ? "ist offen." : "frei.",
+            image: `${ctx.siteUrl}/images/mail-hero.jpg`,
+            href: link,
+          },
+        },
+        { p: "vor ein paar Tagen haben wir Sie zu unserer ersten FOI-Weihnachtsfeier eingeladen: am 14. Dezember auf dem Hockenheimring – mit Ihrem eigenen Auto auf der Strecke oder als Beifahrer im Renntaxi, danach Dinner in der Loge." },
+        {
+          p:
+            taken !== null && taken > 0
+              ? `Die Resonanz ist großartig: ${taken} Gäste haben sich bereits vorgemerkt, ${free === 0 ? "alle Plätze sind vergeben – wer jetzt zusagt, kommt auf die Warteliste." : free === 1 ? `es ist noch ein Platz von ${cap} frei.` : `es sind noch ${free} von ${cap} Plätzen frei.`}`
+              : "Die Resonanz ist großartig – die Plätze sind begrenzt.",
+        },
+        { p: "Falls unsere Mail untergegangen ist: Mit einem Klick sagen Sie uns, ob Sie dabei sein möchten – unverbindlich und für Sie kostenfrei." },
+        { buttons: [{ label: "Ich will auf die Strecke", href: link, primary: true }, { label: "Diesmal nicht", href: `${link}?antwort=nicht` }] },
+        { p: "Wenn es diesmal nicht passt, freuen wir uns auch über ein kurzes „Diesmal nicht“ – dann wissen wir Bescheid und planen entsprechend." },
       ];
       break;
     }
