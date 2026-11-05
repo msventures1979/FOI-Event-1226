@@ -12,10 +12,15 @@ export default async function Versand({ searchParams }: { searchParams: Promise<
   const { data: log } = await db().from("email_log").select("type,status,delivery").limit(5000);
   const { data: bounces } = await db()
     .from("email_log")
-    .select("id,to_email,type,delivery,created_at,event_guests(first_name,last_name,company)")
+    .select("id,to_email,type,delivery,created_at,event_guests(id,first_name,last_name,company,email)")
     .in("delivery", ["unzustellbar", "beschwerde"])
     .order("created_at", { ascending: false })
     .limit(500);
+  type BounceGuest = { id: string; first_name: string; last_name: string; company: string; email: string };
+  const withGuest = (bounces ?? []).map((b) => ({ ...b, g: (Array.isArray(b.event_guests) ? b.event_guests[0] : b.event_guests) as BounceGuest | null }));
+  // Offen = beim Gast steht noch genau die Adresse, die zurückkam. Wurde sie korrigiert, ist der Rückläufer erledigt.
+  const openBounces = withGuest.filter((b) => b.g && b.g.email.toLowerCase() === String(b.to_email).toLowerCase());
+  const doneBounces = withGuest.filter((b) => !openBounces.includes(b));
   const del: Record<string, number> = {};
   for (const l of log ?? []) if (l.status === "gesendet") del[l.delivery ?? ""] = (del[l.delivery ?? ""] ?? 0) + 1;
   const [zc, zb, zo] = (zustellung ?? "").split("-").map(Number);
@@ -63,37 +68,50 @@ export default async function Versand({ searchParams }: { searchParams: Promise<
             </div>
           ))}
         </div>
-        {(bounces ?? []).length > 0 && (
-          <div className="overflow-x-auto border border-line">
-            <table className="admin-table w-full min-w-[640px]">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Gast</th>
-                  <th>Adresse</th>
-                  <th>Mail</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(bounces ?? []).map((b, i) => {
-                  const g = (Array.isArray(b.event_guests) ? b.event_guests[0] : b.event_guests) as { first_name: string; last_name: string; company: string } | null;
-                  return (
+        {openBounces.length > 0 && (
+          <>
+            <h3 className="mb-2 mt-2 text-sm font-semibold uppercase tracking-wide text-red-400">Offen – neue Adresse nötig ({openBounces.length})</h3>
+            <div className="overflow-x-auto border border-line">
+              <table className="admin-table w-full min-w-[640px]">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Gast</th>
+                    <th>Adresse</th>
+                    <th>Mail</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {openBounces.map((b, i) => (
                     <tr key={b.id}>
                       <td className="text-dim">{i + 1}</td>
                       <td>
-                        {g ? `${g.first_name} ${g.last_name}` : "–"}
-                        {g?.company ? <div className="text-xs text-dim">{g.company}</div> : null}
+                        {b.g ? <a href={`/admin/gaeste/${b.g.id}`}>{`${b.g.first_name} ${b.g.last_name}`}</a> : "–"}
+                        {b.g?.company ? <div className="text-xs text-dim">{b.g.company}</div> : null}
                       </td>
                       <td>{b.to_email}</td>
                       <td className="text-xs">{MAIL_LABEL[b.type as keyof typeof MAIL_LABEL] ?? b.type}</td>
                       <td className="text-red-400">{DELIVERY_LABEL[b.delivery]}</td>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+        {openBounces.length === 0 && (bounces ?? []).length > 0 && <p className="text-sm text-dim">Keine offenen Rückläufer – alle unzustellbaren Adressen sind korrigiert.</p>}
+        {doneBounces.length > 0 && (
+          <details className="mt-4">
+            <summary className="cursor-pointer text-sm text-dim">Erledigt – Adresse inzwischen korrigiert ({doneBounces.length})</summary>
+            <ul className="mt-2 flex flex-col gap-1 text-sm text-[#bbb]">
+              {doneBounces.map((b) => (
+                <li key={b.id}>
+                  {b.g ? <a href={`/admin/gaeste/${b.g.id}`}>{`${b.g.first_name} ${b.g.last_name}`}</a> : "–"}: <s className="text-dim">{b.to_email}</s> → {b.g?.email ?? "Gast gelöscht"}
+                </li>
+              ))}
+            </ul>
+          </details>
         )}
       </section>
 
