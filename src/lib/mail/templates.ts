@@ -47,12 +47,17 @@ export interface RenderedMail {
   text: string;
   /** Abweichender Absender (z. B. neutral für das Save the Date) */
   from?: string;
+  /** Abmelde-Link für die Kopfzeilen List-Unsubscribe (Massenmails) */
+  unsubscribe?: string;
 }
 
 /** Für das Save the Date: nichts darf auf Auto/Rennen hindeuten – auch nicht Absender, Links oder Bildadressen. */
 export const TEASER_FROM = `"Matthias Storch | Frontline of Innovation" <info@frontlineofinnovation.de>`;
 const TEASER_ASSETS = "https://foi-event-1226.vercel.app";
 
+
+/** Absender der Erinnerung: persönlich, echtes Postfach (= Antwortadresse) */
+export const PERSONAL_FROM = `"Matthias Storch | Frontline of Innovation" <info@frontlineofinnovation.de>`;
 
 /** Absender der Interessensabfrage */
 export const INTEREST_FROM = "FOI Weihnachtsfeier <weihnachtsfeier@frontlineofinnovation.de>";
@@ -87,6 +92,8 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
   let footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing";
   let blocks: Block[] = [];
   let gruss = GRUSS;
+  let unsubscribe: string | undefined;
+  let plain = false;
 
   switch (type) {
     case "interesse": {
@@ -112,46 +119,31 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       break;
     }
     case "interesse_erinnerung": {
+      // Bewusst schlicht wie eine persönliche Mail: kein Bild, ein Link, kein Druck im Betreff (Spamfilter)
       const link = `${ctx.siteUrl}/dabei/${g.manage_token}`;
       if (g.first_name?.trim()) anrede = `Hallo ${g.first_name.trim()},`;
       const cap = 100;
       const free = typeof ctx.freeSlots === "number" ? Math.max(0, ctx.freeSlots) : null;
       const taken = free === null ? null : cap - free;
-      subject =
-        free === null
-          ? "Erinnerung: Weihnachtsfeier mit Vollgas – sind Sie dabei?"
-          : free === 0
-            ? "Alle Plätze sind vorgemerkt – die Warteliste ist offen"
-            : free <= 20
-            ? `Nur noch ${free === 1 ? "ein Platz" : `${free} Plätze`} – sind Sie am 14. Dezember dabei?`
-            : (taken ?? 0) >= cap / 2
-              ? "Über die Hälfte der Plätze ist vergeben – sind Sie dabei?"
-              : `Noch ${free} Plätze frei – sind Sie am 14. Dezember dabei?`;
-      preheader = "Ein Klick genügt: unverbindlich vormerken für die FOI-Weihnachtsfeier am Hockenheimring.";
-      from = INTEREST_FROM;
-      footer = "Frontline of Innovation · gemeinsam mit School of Racing";
-      gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar\nmit Paul Muck, School of Racing";
+      subject = "Kurze Erinnerung: Weihnachtsfeier am 14. Dezember";
+      preheader = "Ein Klick genügt – Ihre Antwort hilft uns bei der Planung.";
+      from = PERSONAL_FROM;
+      gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar";
+      unsubscribe = `${ctx.siteUrl}/api/abmelden?t=${encodeURIComponent(g.manage_token)}`;
       blocks = [
-        {
-          hero: {
-            kicker: "Erinnerung · Montag, 14. Dezember 2026 · Hockenheimring",
-            line1: free === null ? "Sind Sie" : free === 0 ? "Warteliste" : free === 1 ? "Noch ein Platz" : `Noch ${free} Plätze`,
-            line2: free === null ? "dabei?" : free === 0 ? "ist offen." : "frei.",
-            image: `${ctx.siteUrl}/images/mail-hero.jpg`,
-            href: link,
-          },
-        },
-        { p: "vor ein paar Tagen haben wir Sie zu unserer ersten FOI-Weihnachtsfeier eingeladen: am 14. Dezember auf dem Hockenheimring – mit Ihrem eigenen Auto auf der Strecke oder als Beifahrer im Renntaxi, danach Dinner in der Loge." },
+        { p: "vor ein paar Tagen haben wir Sie zu unserer ersten FOI-Weihnachtsfeier eingeladen: am Montag, 14. Dezember, am Hockenheimring. Sie fahren mit Ihrem eigenen Auto auf der Strecke oder sitzen bei einem Profi im Renntaxi, danach essen wir gemeinsam in der Loge." },
         {
           p:
             taken !== null && taken > 0
-              ? `Die Resonanz ist großartig: ${taken} Gäste haben sich bereits vorgemerkt, ${free === 0 ? "alle Plätze sind vergeben – wer jetzt zusagt, kommt auf die Warteliste." : free === 1 ? `es ist noch ein Platz von ${cap} frei.` : `es sind noch ${free} von ${cap} Plätzen frei.`}`
-              : "Die Resonanz ist großartig – die Plätze sind begrenzt.",
+              ? free === 0
+                ? `${taken} Gäste haben sich bereits vorgemerkt, damit sind alle Plätze vergeben. Wer jetzt zusagt, kommt auf die Warteliste.`
+                : `${taken} Gäste haben sich bereits vorgemerkt. Wir planen gerade die Gruppen auf der Strecke und würden uns freuen, wenn Sie dabei sind.`
+              : "Wir planen gerade die Gruppen auf der Strecke und würden uns freuen, wenn Sie dabei sind.",
         },
-        { p: "Falls unsere Mail untergegangen ist: Mit einem Klick sagen Sie uns, ob Sie dabei sein möchten – unverbindlich und für Sie kostenfrei." },
-        { buttons: [{ label: "Ich will auf die Strecke", href: link, primary: true }, { label: "Diesmal nicht", href: `${link}?antwort=nicht` }] },
-        { p: "Wenn es diesmal nicht passt, freuen wir uns auch über ein kurzes „Diesmal nicht“ – dann wissen wir Bescheid und planen entsprechend." },
+        { p: "Falls unsere Mail untergegangen ist, hier ist Ihr persönlicher Link. Auch ein kurzes „Diesmal nicht“ hilft uns weiter:" },
+        { buttons: [{ label: "Zu meiner Antwort", href: link, primary: true }] },
       ];
+      plain = true;
       break;
     }
     case "interesse_danke": {
@@ -290,7 +282,10 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
   // Sicherung: Mails mit offenen Platzhaltern wie „[Treffpunkt]“ werden nie verschickt
   const open = text.match(/\[[^\]\n]{2,}\]/g);
   if (open) throw new MailPlaceholderError(`Mail „${MAIL_LABEL[type]}“ enthält noch Platzhalter: ${[...new Set(open)].join(", ")}`);
-  return { subject, html: toHtml(anrede, blocks, assets, preheader, footer, type === "save_the_date", gruss), text: text.replace("—\nFrontline of Innovation · info@frontlineofinnovation.de", `—\n${footer} · info@frontlineofinnovation.de${type === "save_the_date" ? "" : " · https://frontlineofinnovation.de"}`), from };
+  if (plain) {
+    return { subject, html: toPlainHtml(anrede, blocks, preheader, gruss, unsubscribe), text: toPlainText(anrede, blocks, gruss, unsubscribe), from, unsubscribe };
+  }
+  return { subject, html: toHtml(anrede, blocks, assets, preheader, footer, type === "save_the_date", gruss), text: text.replace("—\nFrontline of Innovation · info@frontlineofinnovation.de", `—\n${footer} · info@frontlineofinnovation.de${type === "save_the_date" ? "" : " · https://frontlineofinnovation.de"}`), from, unsubscribe };
 }
 
 export class MailPlaceholderError extends Error {}
@@ -322,6 +317,46 @@ function toText(anrede: string, blocks: Block[], gruss = GRUSS): string {
   for (const b of blocks) if ("ps" in b) parts.push(b.ps);
   parts.push("—\nFrontline of Innovation · info@frontlineofinnovation.de");
   return parts.join("\n\n");
+}
+
+/** Schlichte Text-Mail (Erinnerung): liest sich wie eine persönliche Nachricht */
+function toPlainText(anrede: string, blocks: Block[], gruss: string, unsubscribe?: string): string {
+  const parts = [anrede];
+  for (const b of blocks) {
+    if ("p" in b) parts.push(b.p);
+    if ("buttons" in b) parts.push(b.buttons.map((x) => x.href).join("\n"));
+  }
+  parts.push(gruss);
+  parts.push(
+    `—\nFrontline of Innovation · info@frontlineofinnovation.de · https://frontlineofinnovation.de` +
+      (unsubscribe ? `\nSie erhalten diese Mail, weil wir Sie persönlich eingeladen haben. Keine weiteren Mails zur Weihnachtsfeier: ${unsubscribe.replace("/api/abmelden?t=", "/abmelden/")}` : ""),
+  );
+  return parts.join("\n\n");
+}
+
+function toPlainHtml(anrede: string, blocks: Block[], preheader: string, gruss: string, unsubscribe?: string): string {
+  const body = blocks
+    .map((b) => {
+      if ("p" in b) return `<p style="margin:0 0 16px">${esc(b.p)}</p>`;
+      if ("buttons" in b)
+        return `<p style="margin:4px 0 20px">${b.buttons
+          .map((x) => `<a href="${esc(x.href)}" style="display:inline-block;padding:11px 20px;background:#E6941A;color:#000;font-weight:bold;text-decoration:none;border-radius:2px">${esc(x.label)}</a>`)
+          .join(" ")}</p>`;
+      return "";
+    })
+    .join("\n");
+  const abmelden = unsubscribe ? unsubscribe.replace("/api/abmelden?t=", "/abmelden/") : "";
+  return `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
+<body style="margin:0;padding:0;background:#ffffff">
+${preheader ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#ffffff">${esc(preheader)}</div>` : ""}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:24px 16px">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%"><tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.55;color:#1a1a1a">
+<p style="margin:0 0 16px">${esc(anrede)}</p>
+${body}
+<p style="margin:24px 0 0">${linkNames(esc(gruss), false).replace(/\n/g, "<br>")}</p>
+<p style="margin:28px 0 0;padding-top:14px;border-top:1px solid #e5e5e5;font-size:12px;line-height:1.5;color:#888">Frontline of Innovation · info@frontlineofinnovation.de · <a href="https://frontlineofinnovation.de" style="color:#888">frontlineofinnovation.de</a>${abmelden ? `<br>Sie erhalten diese Mail, weil wir Sie persönlich eingeladen haben. <a href="${esc(abmelden)}" style="color:#888">Keine weiteren Mails zur Weihnachtsfeier</a>` : ""}</p>
+</td></tr></table>
+</td></tr></table></body></html>`;
 }
 
 /** LinkedIn-Profile der Gastgeber – Namen in der Grußzeile werden verlinkt */

@@ -183,7 +183,12 @@ export async function processQueue(opts: { guestId?: string; max?: number } = {}
       html: mail.html,
       text: mail.text,
       attachments,
-      headers: { "X-Entity-Ref-ID": `${job.type}-${job.id}` },
+      headers: {
+        "X-Entity-Ref-ID": `${job.type}-${job.id}`,
+        ...(mail.unsubscribe
+          ? { "List-Unsubscribe": `<${mail.unsubscribe}>, <mailto:info@frontlineofinnovation.de?subject=Abmelden>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" }
+          : {}),
+      },
     }, { idempotencyKey: `foi-${job.type}-${job.id}` });
 
     if (res.error) {

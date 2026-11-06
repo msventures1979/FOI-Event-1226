@@ -57,9 +57,11 @@ export async function saveCapacity(form: FormData) {
   redirect(errors.length ? `/admin?fehler=${encodeURIComponent(errors.join(" · "))}` : "/admin?gespeichert=1");
 }
 
-export async function runQueue() {
+export async function runQueue(form?: FormData) {
   await requireAdmin();
-  const r = await processQueue();
+  // Optional in Paketen versenden (bessere Zustellbarkeit als alles auf einmal)
+  const max = Math.min(200, Math.max(1, Number(form?.get("max")) || 200));
+  const r = await processQueue({ max });
   redirect(`/admin?queue=${r.sent}-${r.failed}-${r.deferred}`);
 }
 

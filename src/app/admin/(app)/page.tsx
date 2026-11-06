@@ -90,6 +90,10 @@ export default async function Overview({ searchParams }: { searchParams: Promise
           <form action={runQueue}>
             <SubmitButton className="btn-ghost" pendingText="Versendet …">Warteschlange jetzt abarbeiten</SubmitButton>
           </form>
+          <form action={runQueue}>
+            <input type="hidden" name="max" value="80" />
+            <SubmitButton className="btn-ghost" pendingText="Versendet …">Nächstes Paket (80)</SubmitButton>
+          </form>
           {queue && <span className="text-gold">Letzter Lauf: {queue.split("-")[0]} gesendet, {queue.split("-")[1]} Fehler, {queue.split("-")[2]} auf morgen verschoben</span>}
         </div>
         {(failedJobs ?? []).length > 0 && (
