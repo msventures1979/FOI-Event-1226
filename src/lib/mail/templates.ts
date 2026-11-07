@@ -140,7 +140,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
                 : `${taken} Gäste haben sich bereits vorgemerkt – insgesamt haben wir maximal ${cap} Plätze.`
               : `Insgesamt haben wir maximal ${cap} Plätze.`,
         },
-        { p: "Falls unsere Mail untergegangen ist, hier ist Ihr persönlicher Link. Auch ein kurzes „Diesmal nicht“ hilft uns weiter:" },
+        { p: "Falls unsere Mail untergegangen ist, hier ist Ihr persönlicher Link:" },
         { buttons: [{ label: "Zu meiner Antwort", href: link, primary: true }] },
         { p: "Ihre Antwort ist unverbindlich. Die offizielle Einladung folgt, sobald wir alles geklärt haben – alle, die sich vorgemerkt haben, erhalten sie als Erste." },
       ];
