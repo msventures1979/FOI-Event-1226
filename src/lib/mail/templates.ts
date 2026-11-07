@@ -136,12 +136,13 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
           p:
             taken !== null && taken > 0
               ? free === 0
-                ? `${taken} Gäste haben sich bereits vorgemerkt, damit sind alle Plätze vergeben. Wer jetzt zusagt, kommt auf die Warteliste.`
-                : `${taken} Gäste haben sich bereits vorgemerkt. Wir planen gerade die Gruppen auf der Strecke und würden uns freuen, wenn Sie dabei sind.`
-              : "Wir planen gerade die Gruppen auf der Strecke und würden uns freuen, wenn Sie dabei sind.",
+                ? `${taken} Gäste haben sich bereits vorgemerkt, damit sind alle ${cap} Plätze vergeben. Wer jetzt zusagt, kommt auf die Warteliste.`
+                : `${taken} Gäste haben sich bereits vorgemerkt – insgesamt haben wir maximal ${cap} Plätze.`
+              : `Insgesamt haben wir maximal ${cap} Plätze.`,
         },
         { p: "Falls unsere Mail untergegangen ist, hier ist Ihr persönlicher Link. Auch ein kurzes „Diesmal nicht“ hilft uns weiter:" },
         { buttons: [{ label: "Zu meiner Antwort", href: link, primary: true }] },
+        { p: "Ihre Antwort ist unverbindlich. Die offizielle Einladung folgt, sobald wir alles geklärt haben – alle, die sich vorgemerkt haben, erhalten sie als Erste." },
       ];
       plain = true;
       break;
