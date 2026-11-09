@@ -51,13 +51,16 @@ export interface RenderedMail {
   unsubscribe?: string;
 }
 
+/** Beide Gastgeber stehen immer gemeinsam im Absender (Wunsch Matthias/Süleyman, Nov. 2026). */
+export const HOSTS_FROM = `"Matthias Storch & Süleyman Acar | Frontline of Innovation" <info@frontlineofinnovation.de>`;
+
 /** Für das Save the Date: nichts darf auf Auto/Rennen hindeuten – auch nicht Absender, Links oder Bildadressen. */
-export const TEASER_FROM = `"Matthias Storch | Frontline of Innovation" <info@frontlineofinnovation.de>`;
+export const TEASER_FROM = HOSTS_FROM;
 const TEASER_ASSETS = "https://foi-event-1226.vercel.app";
 
 
 /** Absender der Erinnerung: persönlich, echtes Postfach (= Antwortadresse) */
-export const PERSONAL_FROM = `"Matthias Storch | Frontline of Innovation" <info@frontlineofinnovation.de>`;
+export const PERSONAL_FROM = HOSTS_FROM;
 
 /** Absender der Interessensabfrage */
 export const INTEREST_FROM = "FOI Weihnachtsfeier <weihnachtsfeier@frontlineofinnovation.de>";
