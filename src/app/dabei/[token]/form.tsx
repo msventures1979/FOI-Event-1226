@@ -21,11 +21,15 @@ const GROUPS = [
 ] as const;
 
 export function InterestForm({
+  waitlist = false,
+  cap = 100,
   token,
   name,
   email,
   initial,
 }: {
+  waitlist?: boolean;
+  cap?: number;
   token: string;
   name: string;
   email: string;
@@ -61,10 +65,17 @@ export function InterestForm({
         Sind Sie dabei?
       </h2>
       <p className="mt-3 text-[16px] text-[#bbb]">Eine Minute, drei Klicks. Ihre Antwort ist unverbindlich und lässt sich jederzeit über Ihren Link ändern.</p>
+      {waitlist && (
+        <p className="mt-6 border-l-2 border-gold bg-card p-5 text-[16px] leading-relaxed text-[#ddd]">
+          <b className="text-white">Alle {cap} Plätze sind vorgemerkt.</b> Es lohnt sich trotzdem, zuzusagen: Sie kommen auf die Warteliste, und sobald jemand absagt, rücken Sie in der Reihenfolge der Antworten nach.
+        </p>
+      )}
 
       <fieldset className="mt-8 flex flex-col gap-3">
         <legend className="sr-only">Ihre Antwort</legend>
-        {ANSWERS.map((a) => option("answer", a.value, a.label, answer === a.value, () => setAnswer(a.value)))}
+        {ANSWERS.map((a) =>
+          option("answer", a.value, waitlist && a.value === "dabei" ? "Ja, ich bin dabei – bitte auf die Warteliste setzen." : a.label, answer === a.value, () => setAnswer(a.value)),
+        )}
       </fieldset>
 
       {coming && (

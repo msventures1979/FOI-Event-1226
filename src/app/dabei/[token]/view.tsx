@@ -21,6 +21,8 @@ export interface DabeiProps {
 
 export function DabeiView({ token, first, fullName, email, cap, dabei, mine, showThanks, pos, antwort, preview = false }: DabeiProps) {
   const free = Math.max(0, cap - dabei);
+  // Alle Plätze vorgemerkt und der Gast hat selbst noch keinen davon: Warteliste aktiv anbieten
+  const waitlist = free <= 0 && !(mine?.answer === "dabei" && pos !== null && pos <= cap);
   return (
     <PageShell plain>
       {preview && (
@@ -47,7 +49,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
             </p>
             {!(showThanks && mine) && (
               <a href="#antwort" className="btn-gold mt-8 inline-flex min-h-12 items-center gap-3">
-                Jetzt antworten <span aria-hidden>↓</span>
+                {waitlist ? "Auf die Warteliste" : "Jetzt antworten"} <span aria-hidden>↓</span>
               </a>
             )}
           </div>
@@ -59,7 +61,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
                 {free}
                 <span className="ml-2 text-2xl text-dim">/ {cap}</span>
               </p>
-              <p className="mt-2 text-sm text-[#ccc]">{free > 0 ? "Plätze noch frei – vorgemerkt wird in der Reihenfolge der Antworten." : "Alle Plätze sind vorgemerkt. Wer jetzt zusagt, kommt auf die Warteliste."}</p>
+              <p className="mt-2 text-sm text-[#ccc]">{free > 0 ? "Plätze noch frei – vorgemerkt wird in der Reihenfolge der Antworten." : "Alle Plätze sind vorgemerkt. Setzen Sie sich auf die Warteliste – wird ein Platz frei, rücken Sie in der Reihenfolge der Antworten nach."}</p>
               <Track pct={Math.min(100, (dabei / cap) * 100)} />
             </div>
           </div>
@@ -131,6 +133,8 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
           </>
         ) : (
           <InterestForm
+            waitlist={waitlist}
+            cap={cap}
             token={token}
             name={fullName}
             email={email}
