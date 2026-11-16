@@ -152,10 +152,6 @@ export function RegistrationForm({
           </select>
         </div>
         )}
-        <label className="chk min-h-12">
-          <input type="checkbox" name="extra_ride" /> Zusatzwunsch: Gern auch
-          eine weitere Fahrt, falls vor Ort Plätze frei sind.
-        </label>
       </div>
 
       {/* Blöcke der Erstwahl stehen immer oben */}
@@ -166,7 +162,7 @@ export function RegistrationForm({
             title={"Ihr Fahrzeug" + forSecond("own")}
             sub="Diese Angaben gehen an die School of Racing zur Gruppeneinteilung."
           >
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field
                 name="vehicle_marke"
                 label="Marke"
@@ -179,25 +175,7 @@ export function RegistrationForm({
                 required
                 placeholder="z. B. 911 Carrera S"
               />
-              <Field
-                name="vehicle_baujahr"
-                label="Baujahr"
-                required
-                inputMode="numeric"
-              />
-              <Field
-                name="vehicle_ps"
-                label="Leistung (PS)"
-                required
-                inputMode="numeric"
-              />
               <Field name="vehicle_kennzeichen" label="Kennzeichen" required />
-              <Select
-                name="vehicle_getriebe"
-                label="Getriebe"
-                required
-                options={["Automatik", "Schaltgetriebe"]}
-              />
               <Select
                 name="vehicle_reifen"
                 label="Bereifung am 14.12."

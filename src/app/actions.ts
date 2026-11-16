@@ -36,7 +36,7 @@ const schema = z
     // Pflichtangaben gelten für Erstwahl UND Zweitwunsch – beide Plätze können vergeben werden
     const types = new Set([d.participation_type, d.second_choice].filter(Boolean));
     const issue = (message: string, path: string) => ctx.addIssue({ code: "custom", message, path: [path] });
-    if (types.has("own") && ["marke", "modell", "baujahr", "ps", "kennzeichen", "getriebe", "reifen"].some((k) => !d.vehicle[k]))
+    if (types.has("own") && ["marke", "modell", "kennzeichen", "reifen"].some((k) => !d.vehicle[k]))
       issue("Bitte alle Fahrzeugangaben ausfüllen", "vehicle");
     if (types.has("own") && !d.license_since) issue("Bitte angeben, seit wann Sie den Führerschein haben", "license_since");
     if (types.has("own") && !d.experience) issue("Bitte Ihre Rennstreckenerfahrung angeben", "experience");
@@ -66,7 +66,7 @@ export async function registerAction(_prev: RegisterState, form: FormData): Prom
     consent_terms: form.get("consent_terms") === "on",
     consent_waiver: form.get("consent_waiver") === "on",
     vehicle: Object.fromEntries(
-      ["marke", "modell", "baujahr", "ps", "kennzeichen", "getriebe", "reifen"].map((k) => [k, s(`vehicle_${k}`)]).filter(([, v]) => v),
+      ["marke", "modell", "kennzeichen", "reifen"].map((k) => [k, s(`vehicle_${k}`)]).filter(([, v]) => v),
     ),
     experience: s("experience"),
     license_since: s("license_since"),

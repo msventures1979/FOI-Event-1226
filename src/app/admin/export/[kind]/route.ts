@@ -29,19 +29,19 @@ export async function GET(_req: Request, { params }: { params: Promise<{ kind: s
   switch (kind) {
     case "alle":
       title = "Alle Gäste";
-      header = ["Anrede", "Titel", "Vorname", "Nachname", "E-Mail", "Unternehmen", "Position", "LinkedIn", "Code", "Status", "Warteliste #", "Teilnahme", "Zweitwunsch", "Zusatzwunsch", "Mobil", "Startnummer", "Ernährung", "Allergien", "Foto-Einwilligung", "Notiz"];
+      header = ["Anrede", "Titel", "Vorname", "Nachname", "E-Mail", "Unternehmen", "Position", "LinkedIn", "Code", "Status", "Warteliste #", "Teilnahme", "Zweitwunsch", "Mobil", "Startnummer", "Ernährung", "Allergien", "Foto-Einwilligung", "Notiz"];
       body = rows.map(({ g, r }) => [
         g.salutation, g.title, g.first_name, g.last_name, g.email, g.company, g.position, g.linkedin ?? "", g.code, STATUS_LABEL[g.status], g.waitlist_position ?? "",
-        type(r), r?.second_choice ? PARTICIPATION[r.second_choice].short : "", r?.extra_ride ? "ja" : "", r?.mobile ?? "", r?.start_number ?? "",
+        type(r), r?.second_choice ? PARTICIPATION[r.second_choice].short : "", r?.mobile ?? "", r?.start_number ?? "",
         r?.diet ?? "", r?.allergies ?? "", r ? (r.consent_photo ? "ja" : "nein") : "", g.note,
       ]);
       break;
     case "fahrer":
       title = "Fahrerliste School of Racing";
-      header = ["Startnummer", "Name", "Mobil", "Teilnahme", "Marke", "Modell", "Baujahr", "PS", "Getriebe", "Bereifung", "Kennzeichen", "Erfahrung", "Führerschein seit", "Körpergröße", "Zusatzwunsch"];
+      header = ["Startnummer", "Name", "Mobil", "Teilnahme", "Marke", "Modell", "Bereifung", "Kennzeichen", "Erfahrung", "Führerschein seit", "Körpergröße"];
       body = rows
         .filter(({ g, r }) => ACTIVE.includes(g.status) && (r?.participation_type === "own" || r?.participation_type === "taxi"))
-        .map(({ g, r }) => [r?.start_number ?? "", name(g), r?.mobile ?? "", type(r), v(r, "marke"), v(r, "modell"), v(r, "baujahr"), v(r, "ps"), v(r, "getriebe"), v(r, "reifen"), v(r, "kennzeichen"), r?.experience ?? "", r?.license_since ?? "", r?.height_cm ?? "", r?.extra_ride ? "ja" : ""]);
+        .map(({ g, r }) => [r?.start_number ?? "", name(g), r?.mobile ?? "", type(r), v(r, "marke"), v(r, "modell"), v(r, "reifen"), v(r, "kennzeichen"), r?.experience ?? "", r?.license_since ?? "", r?.height_cm ?? ""]);
       break;
     case "catering":
       title = "Ernährung Catering";

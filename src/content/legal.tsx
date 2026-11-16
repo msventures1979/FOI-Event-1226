@@ -95,7 +95,7 @@ export function Datenschutz() {
       <p>
         Bei der Anmeldung verarbeiten wir zusätzlich Ihre Mobilnummer, die gewählte Teilnahmeart und einen eventuellen Zweitwunsch, Ihre Angaben zur
         Ernährung, den Status Ihrer Anmeldung sowie den Zeitpunkt Ihrer Zustimmung zu den Teilnahmebedingungen. Je nach Teilnahmeart kommen hinzu: Angaben
-        zu Ihrem Fahrzeug (Marke, Modell, Baujahr, Leistung, Kennzeichen, Getriebe, Bereifung), das Jahr Ihres Führerscheins, Ihre
+        zu Ihrem Fahrzeug (Marke, Modell, Kennzeichen, Bereifung), das Jahr Ihres Führerscheins, Ihre
         Rennstreckenerfahrung, Ihre Körpergröße für das Renntaxi und Ihre Bestätigung des Haftungsverzichts. Rechtsgrundlage
         ist die Durchführung der Veranstaltung, zu der Sie sich anmelden (Art. 6 Abs. 1 lit. b DSGVO).
       </p>
