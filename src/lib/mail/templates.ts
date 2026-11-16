@@ -76,7 +76,7 @@ export const PARTNERS: { name: string; href: string; logo: string; w: number; h:
   { name: "ox8 Corporate Finance", href: "https://ox8-cf.com", logo: "ox8.png", w: 47, h: 30 },
 ];
 
-const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\nab 13:00 Check-in · 14:30 auf der Strecke · 18:00 Early Dinner in der Loge";
+const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\nAnkunft: Selbstfahrer 13:00 (Briefing 13:45 Pflicht) · Drift-Beifahrer 14:15 · Dinner-Gäste 17:00\n14:30–16:30 auf der Strecke · 18:00 Early Dinner in der Loge";
 
 type Block =
   | { p: string }
@@ -125,7 +125,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { p: "So stellen wir uns unsere erste FOI-Weihnachtsfeier vor. Und wir haben richtig Lust darauf." },
         { p: "Wir laden dazu ausschließlich persönlich ein – einen kleinen Kreis aus unserem Netzwerk. Für Sie entstehen keine Kosten: Strecke, Drift-Fahrten und Dinner tragen wir gemeinsam mit unseren Partnern." },
         { p: "Noch ist nicht alles in trockenen Tüchern – und ehrlich gesagt hängt es auch an Ihnen. Sagen Sie uns mit einem Klick, ob Sie dabei sein möchten. Dann wissen wir, für wen wir Gas geben." },
-        { facts: "Montag, 14. Dezember 2026 · Hockenheimring\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend\nNur auf persönliche Einladung · für Sie kostenfrei · 100 Plätze" },
+        { facts: "Montag, 14. Dezember 2026 · Hockenheimring\nAb 13 Uhr · auf der Strecke ab 14:30 Uhr · Early Dinner um 18 Uhr\nNur auf persönliche Einladung · für Sie kostenfrei · 100 Plätze" },
         { buttons: [{ label: "Ich will auf die Strecke", href: link, primary: true }, { label: "Diesmal nicht", href: `${link}?antwort=nicht` }] },
         { p: "Ihre Antwort ist unverbindlich. Sobald das Event steht, erhalten alle, die sich vorgemerkt haben, als Erste die verbindliche Einladung." },
         { p: "Den Termin können Sie sich gleich im Kalender freihalten:" },

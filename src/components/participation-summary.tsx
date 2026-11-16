@@ -1,4 +1,4 @@
-import { ankunft } from "@/lib/ics";
+import { ablauf, ankunft } from "@/lib/ics";
 import { kurzanrede, PARTICIPATION, STATUS_LABEL, type Guest, type Registration } from "@/lib/types";
 
 export function ParticipationSummary({ guest, registration, headline, intro }: { guest: Guest; registration: Registration | null; headline: string; intro: string }) {
@@ -37,6 +37,24 @@ export function ParticipationSummary({ guest, registration, headline, intro }: {
           )}
         </dl>
       </div>
+      {type && (
+        <div className="border-t border-line p-8 md:px-12 md:py-10">
+          <p className="eyebrow mb-5">Ihr Ablauf am 14. Dezember</p>
+          <ol className="grid gap-3">
+            {ablauf(type).map((zeile) => {
+              const [zeit, ...rest] = zeile.split(" ");
+              const text = rest.join(" ");
+              return (
+                <li key={zeile} className="grid gap-4 text-base [grid-template-columns:64px_1fr]">
+                  <span className="font-display text-xl font-semibold text-gold">{zeit}</span>
+                  <span className="text-[#d1d1d1]">{text.replace(" (PFLICHT)", "")}{text.includes("(PFLICHT)") && <b className="ml-2 border border-gold px-1.5 py-0.5 font-display text-[11px] uppercase tracking-[0.2em] text-gold">Pflicht</b>}</span>
+                </li>
+              );
+            })}
+          </ol>
+          <p className="mt-6 text-sm text-[#a6a6a6]">Den kompletten Tagesablauf finden Sie auf <a href="/#ablauf" className="text-gold">der Event-Seite</a>.</p>
+        </div>
+      )}
     </section>
   );
 }

@@ -5,12 +5,20 @@ export function ankunft(art: Art): string {
   return art === "dinner" ? "17:00 Uhr in der Loge" : art === "taxi" ? "14:15 Uhr" : "13:00 Uhr";
 }
 
-/** Ablauf je Teilnahmeart – für Bestätigungsmail, Kalendereintrag und „Meine Teilnahme“ */
+/** Ablauf je Teilnahmeart – gleiche Stationen wie die Timeline auf der Website.
+ *  Für Bestätigungsmail, Kalendereintrag, Bestätigungsseite und „Meine Teilnahme“. */
 export function ablauf(art: Art): string[] {
   const abend = ["17:00 Empfang in der Loge", "18:00 Early Dinner, Charity-Auktion und Networking"];
-  if (art === "dinner") return ["17:00 Ankunft in der Loge", "18:00 Early Dinner, Charity-Auktion und Networking"];
-  if (art === "taxi") return ["14:15 Ankunft und Check-in", "14:30–16:30 Drift-Fahrten als Beifahrer", ...abend];
-  return ["13:00 Ankunft und Check-in (Fahrzeug, Unterlagen)", "13:45 Drivers Briefing – Teilnahme ist Pflicht, ohne Briefing keine Fahrt auf der Strecke", "14:30–16:30 Auf der Strecke, in Ihrer Gruppe", ...abend];
+  if (art === "dinner") return ["17:00 Ankunft und Empfang in der Loge", "18:00 Early Dinner, Charity-Auktion und Networking"];
+  if (art === "taxi")
+    return ["14:15 Ankunft und Check-in", "14:30 Start der Drift-Fahrten, mit einem Profi am Steuer", "16:30 Ende der Fahrzeit, weiter in die Loge", ...abend];
+  return [
+    "13:00 Ankunft und Check-in: Fahrzeug, Unterlagen, Einteilung in die Gruppen",
+    "13:45 Drivers Briefing (PFLICHT): ohne Briefing keine Fahrt auf der Strecke, bitte pünktlich sein",
+    "14:30 Start auf der Strecke, in Ihrer Gruppe",
+    "16:30 Ende der Fahrzeit, weiter in die Loge",
+    ...abend,
+  ];
 }
 
 const START: Record<string, string> = { own: "20261214T120000Z", taxi: "20261214T131500Z", dinner: "20261214T160000Z" };
