@@ -21,8 +21,8 @@ export const MAIL_LABEL: Record<MailType, string> = {
   interesse_danke: "0b · Bestätigung der Vormerkung (automatisch)",
   interesse_erinnerung: "0c · Erinnerung an die Interessensabfrage",
   save_the_date: "1 · Save the Date",
-  einladung: "2 · Einladung mit Code",
-  erinnerung: "3 · Erinnerung Code",
+  einladung: "2 · Einladung mit persönlichem Link",
+  erinnerung: "3 · Erinnerung an die Anmeldung",
   bestaetigung: "4 · Anmeldebestätigung",
   warteliste: "5 · Warteliste",
   platz_frei: "6 · Platz frei geworden",
@@ -226,8 +226,10 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
             { p: "vielen Dank, dass Sie sich für unsere Weihnachtsfeier der anderen Art vorgemerkt haben. Jetzt wird es offiziell: Wir laden Sie herzlich ein zu FOI Racing auf dem Hockenheimring." },
             { facts: FAKTEN + ", mit einer Charity-Auktion" },
             { p: `Ihr Platz ist für Sie reserviert – bis ${fmtDate(ctx.offerExpiresAt!)}. Bitte melden Sie sich bis dahin über Ihren persönlichen Link verbindlich an, das dauert nur zwei Minuten. Danach geben wir den Platz an den nächsten Gast auf der Warteliste weiter.` },
-            { p: "Sie fahren Ihren eigenen Wagen – für Einsteiger geführt per Funk –, steigen als Beifahrer in den Drift-Wagen oder kommen nur zum Dinner am Abend. Die Teilnahme ist für Sie kostenfrei." },
+            { p: "Bei der Anmeldung wählen Sie, wie Sie dabei sein möchten: mit dem eigenen Wagen auf der Strecke, als Beifahrer im Drift-Wagen mit einem Profi am Steuer oder nur zum Early Dinner am Abend." },
             { buttons: [{ label: "Jetzt verbindlich anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
+            { p: "Den kompletten Ablauf, Infos zur Charity-Auktion und Antworten auf häufige Fragen finden Sie auf racing.frontlineofinnovation.de." },
+            { partners: true },
             { ps: "Der Link gilt nur für Sie persönlich. Über denselben Link sehen Sie später Ihre Anmeldung und können bei Bedarf absagen." },
           ]
         : [
