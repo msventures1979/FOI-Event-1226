@@ -97,7 +97,8 @@ export async function processQueue(opts: { guestId?: string; max?: number } = {}
     // Mails, die zu einem bestimmten Status gehören, verwerfen, wenn er nicht mehr passt
     const st = (guest as Guest).status;
     const stale =
-      (["einladung", "erinnerung"].includes(job.type) && st !== "eingeladen") ||
+      // Einladung/Erinnerung: offen eingeladen oder Platz reserviert (angeboten, noch ohne Anmeldung)
+      (["einladung", "erinnerung"].includes(job.type) && !(st === "eingeladen" || (st === "angeboten" && !reg))) ||
       (["letzte_infos", "vorabend"].includes(job.type) && !["angemeldet", "bestaetigt"].includes(st)) ||
       (job.type === "platz_frei" && st !== "angeboten");
     // Erinnerung an die Abfrage: verwerfen, wenn der Gast inzwischen geantwortet hat
