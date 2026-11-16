@@ -253,6 +253,9 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { facts: `Ihre Teilnahme: ${art}\nMontag, 14. Dezember 2026\nHockenheimring, Am Motodrom, 68766 Hockenheim` },
         { p: "So läuft der Tag für Sie:" },
         { facts: ablauf(ctx.participationType).join("\n") },
+        ...(ctx.participationType === "own"
+          ? [{ p: "Für die Fahrt mit dem eigenen Wagen füllen Sie vorab eine Verzichtserklärung der School of Racing aus. Die Unterlagen schicken wir Ihnen in Kürze gesondert zu." }]
+          : []),
         { p: "Programm, Anfahrt und Antworten auf häufige Fragen finden Sie jederzeit auf racing.frontlineofinnovation.de. Treffpunkt, Parken und die letzten Details schicken wir Ihnen zusätzlich eine Woche vor dem Termin." },
         { buttons: [{ label: "Programm & Anfahrt ansehen", href: ctx.siteUrl }] },
         { partners: true },

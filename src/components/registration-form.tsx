@@ -308,7 +308,7 @@ export function RegistrationForm({
       </div>
 
       <div className="mb-9 flex flex-col gap-3.5">
-        {(need.has("own") || need.has("taxi")) && (
+        {need.has("taxi") && !need.has("own") && (
           <label className="chk">
             <input type="checkbox" name="consent_waiver" required />
             <span>
@@ -319,6 +319,11 @@ export function RegistrationForm({
               gelesen und akzeptiere ihn. {req}
             </span>
           </label>
+        )}
+        {need.has("own") && (
+          <p className="border-l-2 border-gold pl-4 text-[15px] leading-relaxed text-muted">
+            Für die Fahrt mit dem eigenen Wagen füllen Sie vorab eine Verzichtserklärung der School of Racing aus. Die Unterlagen erhalten Sie nach Ihrer Anmeldung.
+          </p>
         )}
         <label className="chk">
           <input type="checkbox" name="consent_terms" required />

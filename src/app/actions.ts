@@ -40,7 +40,7 @@ const schema = z
       issue("Bitte alle Fahrzeugangaben ausfüllen", "vehicle");
     if (types.has("own") && !d.license_since) issue("Bitte angeben, seit wann Sie den Führerschein haben", "license_since");
     if (types.has("own") && !d.experience) issue("Bitte Ihre Rennstreckenerfahrung angeben", "experience");
-    if ((types.has("own") || types.has("taxi")) && !d.consent_waiver) issue("Bitte den Haftungsverzicht der School of Racing bestätigen", "consent_waiver");
+    if (types.has("taxi") && !types.has("own") && !d.consent_waiver) issue("Bitte den Haftungsverzicht der School of Racing bestätigen", "consent_waiver");
   });
 
 export type RegisterState = { error?: string } | undefined;

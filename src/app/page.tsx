@@ -9,12 +9,12 @@ export const revalidate = 60;
 
 const FAQ: { q: string; a: string }[] = [
   { q: "Was kostet die Teilnahme?", a: "Nichts. Die Partner des Tages übernehmen die Kosten." },
-  { q: "Was brauche ich für die Fahrt mit dem eigenen Wagen?", a: "[Fahrzeugvoraussetzungen, Reifen, Helm, Kleidung – von School of Racing]" },
-  { q: "Bin ich versichert?", a: "[Haftung und Versicherung – von School of Racing; Hinweis, dass die eigene Kfz-Versicherung auf der Rennstrecke meist nicht greift]" },
-  { q: "Was passiert bei Regen oder Schnee?", a: "[Regelung – von School of Racing]" },
-  { q: "Was ziehe ich an?", a: "[Strecke: warm und wetterfest; Dinner: Dresscode offen]" },
-  { q: "Wie komme ich hin, wo parke ich?", a: "[Anfahrt, Parken, Treffpunkt]" },
-  { q: "Kann ich eine Begleitung mitbringen?", a: "[offen – zählt sie zum Kontingent?]" },
+  { q: "Was brauche ich für die Fahrt mit dem eigenen Wagen?", a: "Für die Fahrt mit dem eigenen Wagen füllen Sie vorab eine Verzichtserklärung der School of Racing aus. Die Unterlagen dazu erhalten Sie nach Ihrer Anmeldung, zusammen mit allen Hinweisen zu Fahrzeug und Ausrüstung." },
+  { q: "Bin ich versichert?", a: "Wer mit dem eigenen Wagen fährt, unterzeichnet vorab eine Verzichtserklärung der School of Racing; sie kommt nach der Anmeldung. Bitte prüfen Sie außerdem, ob Ihre Kfz-Versicherung Fahrten auf der Rennstrecke abdeckt – das ist meist nicht der Fall." },
+  { q: "Was passiert bei Regen oder Schnee?", a: "Darüber informieren wir Sie rechtzeitig vor dem Termin." },
+  { q: "Was ziehe ich an?", a: "Für die Strecke warme, wetterfeste Kleidung – es ist Dezember. Alles Weitere zum Abend geben wir rechtzeitig bekannt." },
+  { q: "Wie komme ich hin, wo parke ich?", a: "Der Hockenheimring liegt Am Motodrom, 68766 Hockenheim. Treffpunkt und Parken geben wir rechtzeitig vor dem Termin bekannt." },
+  { q: "Kann ich eine Begleitung mitbringen?", a: "Die Einladung gilt persönlich. Wenn Sie eine Begleitung mitbringen möchten, schreiben Sie uns bitte vorab an info@frontlineofinnovation.de." },
   {
     q: "Was, wenn ich doch nicht kommen kann?",
     a: "Nutzen Sie den Link „Leider nicht dabei“ in Ihrer Einladung oder den Link in Ihrer Bestätigungsmail. Ihr Platz geht dann an den nächsten Gast auf der Warteliste.",
@@ -159,7 +159,7 @@ export default async function Home() {
             <h2 id="auktion-h" className="h-section">Ein Los für den guten Zweck</h2>
           </div>
           <p className="max-w-[460px] text-base leading-relaxed text-muted">
-            Während des Dinners versteigern wir ein Werk von Horst Hamann. Der Erlös geht vollständig an einen gemeinnützigen Verein; welcher, ist noch zu bestimmen. Geboten wird vor Ort.
+            Während des Dinners versteigern wir ein Werk von Horst Hamann. Der Erlös geht vollständig an einen regionalen gemeinnützigen Verein. Geboten wird vor Ort.
           </p>
         </div>
         <div className="max-w-[720px]">
