@@ -67,6 +67,15 @@ export const PERSONAL_FROM = HOSTS_FROM;
 export const INTEREST_FROM = "FOI Weihnachtsfeier <weihnachtsfeier@frontlineofinnovation.de>";
 
 const GRUSS = "Herzliche Grüße aus Mannheim\nMatthias Storch und Süleyman Acar";
+/** Partner mit Link und dunklem Logo für helle Mails (Logos liegen unter /images/mail/) */
+export const PARTNERS: { name: string; href: string; logo: string; w: number; h: number }[] = [
+  { name: "School of Racing", href: "https://www.school-of-racing.de", logo: "school-of-racing.png", w: 50, h: 40 },
+  { name: "KOS Klima", href: "https://kosklima.de", logo: "kos-klima.png", w: 106, h: 18 },
+  { name: "UNZER", href: "https://www.unzer.com/de/", logo: "unzer.png", w: 88, h: 20 },
+  { name: "billiger.de", href: "https://www.billiger.de", logo: "billiger.png", w: 67, h: 22 },
+  { name: "ox8 Corporate Finance", href: "https://ox8-cf.com", logo: "ox8.png", w: 47, h: 30 },
+];
+
 const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\n13:00 Eintreffen · 14:00 Racing · 17:00 Early Dinner in der Loge";
 
 type Block =
@@ -74,6 +83,7 @@ type Block =
   | { ps: string }
   | { hero: { kicker: string; line1: string; line2: string; image?: string; href?: string } }
   | { facts: string }
+  | { partners: true }
   | { code: string }
   | { buttons: { label: string; href: string; primary?: boolean }[] };
 
@@ -245,6 +255,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { facts: ablauf(ctx.participationType === "dinner").join("\n") },
         { p: "Programm, Anfahrt und Antworten auf häufige Fragen finden Sie jederzeit auf racing.frontlineofinnovation.de. Treffpunkt, Parken und die letzten Details schicken wir Ihnen zusätzlich eine Woche vor dem Termin." },
         { buttons: [{ label: "Programm & Anfahrt ansehen", href: ctx.siteUrl }] },
+        { partners: true },
         { buttons: [
           { label: "In Outlook / Apple Kalender eintragen", href: `${ctx.siteUrl}/api/ics/${g.manage_token}`, primary: true },
           { label: "Google Kalender", href: gcalAnmeldung(verwalten, ctx.participationType === "dinner") },
@@ -336,6 +347,7 @@ function toText(anrede: string, blocks: Block[], gruss = GRUSS): string {
   for (const b of blocks) {
     if ("p" in b) parts.push(b.p);
     if ("facts" in b) parts.push(b.facts);
+    if ("partners" in b) parts.push("Möglich gemacht von unseren Partnern:\n" + PARTNERS.map((x) => `${x.name}: ${x.href}`).join("\n"));
     if ("code" in b) parts.push(`Ihr persönlicher Code: ${b.code}`);
     if ("buttons" in b) parts.push(b.buttons.map((x) => `${x.label}: ${x.href}`).join("\n"));
   }
@@ -415,6 +427,10 @@ function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = ""
       if ("p" in b) return `<p style="margin:0 0 16px">${esc(b.p)}</p>`;
       if ("facts" in b)
         return `<p style="margin:0 0 16px;padding:14px 16px;border-left:3px solid #E6941A;background:#f6f6f4;font-size:15px">${esc(b.facts).replace(/\n/g, "<br>")}</p>`;
+      if ("partners" in b)
+        return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 24px;border-top:1px solid #e5e5e5;border-bottom:1px solid #e5e5e5"><tr><td style="padding:16px 0 6px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E6941A">Möglich gemacht von unseren Partnern</td></tr><tr><td style="padding:6px 0 16px">${PARTNERS.map(
+          (x) => `<a href="${esc(x.href)}" style="display:inline-block;margin:6px 22px 6px 0;vertical-align:middle;text-decoration:none"><img src="${esc(siteUrl)}/images/mail/${x.logo}" width="${x.w}" height="${x.h}" alt="${esc(x.name)}" style="display:block;border:0;width:${x.w}px;height:${x.h}px"></a>`,
+        ).join("")}</td></tr></table>`;
       if ("code" in b)
         return `<p style="margin:0 0 16px">Ihr persönlicher Code:<br><span style="display:inline-block;margin-top:6px;padding:8px 14px;background:#000;color:#fff;font-family:'Courier New',monospace;font-size:20px;letter-spacing:3px">${esc(b.code)}</span></p>`;
       if (!("buttons" in b)) return "";
