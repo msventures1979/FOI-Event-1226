@@ -11,6 +11,7 @@ import { enqueue, processQueue, sendNow } from "@/lib/mail/queue";
 import { refreshDelivery } from "@/lib/mail/delivery";
 import { mailReady, renderMail, type MailType } from "@/lib/mail/templates";
 import { env } from "@/lib/env";
+import { buildIcs } from "@/lib/ics";
 import { Resend } from "resend";
 import type { Guest } from "@/lib/types";
 
@@ -196,7 +197,10 @@ export async function queueMails(_prev: unknown, form: FormData): Promise<{ msg:
     const { count: dabeiCount } = await db().from("event_interest").select("guest_id", { count: "exact", head: true }).eq("event_id", ev.id).eq("answer", "dabei");
     const testFree = type === "interesse_erinnerung" ? (ev.total_capacity ?? 100) - (dabeiCount ?? 0) : 12;
     const mail = renderMail(type, { guest: g, siteUrl: env.siteUrl, participationType: "own", freeSlots: testFree, interest: { answer: "dabei", mode: "own", track_group: "rookie", vehicle: "" } });
-    const r = await new Resend(env.resendKey).emails.send({ from: mail.from ?? env.mailFrom, to: testTo || admin, replyTo: env.mailReplyTo, subject: `[TEST] ${mail.subject}`, html: mail.html, text: mail.text });
+    const r = await new Resend(env.resendKey).emails.send({ from: mail.from ?? env.mailFrom, to: testTo || admin, replyTo: env.mailReplyTo, subject: `[TEST] ${mail.subject}`, html: mail.html, text: mail.text,
+      // wie im Echtversand: Kalendereintrag an die Bestätigung hängen
+      attachments: type === "bestaetigung" ? [{ filename: "FOI-Weihnachtsfeier-14-Dezember.ics", contentType: "text/calendar; charset=utf-8; method=PUBLISH", content: Buffer.from(buildIcs({ url: `${env.siteUrl}/meine-teilnahme/${g.manage_token}` })).toString("base64") }] : undefined,
+    });
     return { msg: r.error ? `Fehler: ${r.error.message}` : `Testmail an ${testTo || admin} gesendet (Daten von ${g.first_name} ${g.last_name}).` };
   }
 
