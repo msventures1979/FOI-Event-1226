@@ -107,7 +107,7 @@ export default async function Home() {
       <section id="ablauf" aria-labelledby="ablauf-h" className="border-y border-line bg-card">
         <div className="mx-auto max-w-[1240px] px-6 py-16">
           <p className="eyebrow mb-3">Ablauf · Montag, 14. Dezember</p>
-          <h2 id="ablauf-h" className="h-section mb-10">Zwei Sektoren, ein Ziel</h2>
+          <h2 id="ablauf-h" className="h-section mb-10">Vom Check-in bis zum Dinner</h2>
           <ol className="grid border-t-2 border-white md:grid-cols-4">
             <AgendaItem mark="Start" time="13:00" title="Check-in" text="Ankunft der Selbstfahrer: Fahrzeug und Unterlagen. Um 13:45 Uhr folgt das Drivers Briefing – für alle, die selbst fahren, Pflicht." />
             <AgendaItem mark="Sektor 1" time="14:15" title="Drift-Beifahrer" text="Ankunft und Check-in für alle, die als Beifahrer mitfahren." />
