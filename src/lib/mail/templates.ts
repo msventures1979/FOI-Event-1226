@@ -477,6 +477,9 @@ ${body}
 <p style="margin:24px 0 0">${linkNames(esc(gruss), neutral).replace(/\n/g, "<br>")}</p>${neutral ? "" : `<p style="margin:14px 0 0;font-size:14px"><a href="https://frontlineofinnovation.de" style="color:#E6941A;text-decoration:underline">frontlineofinnovation.de</a></p>`}
 ${ps}
 </td></tr>
-<tr><td style="padding:24px 28px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#888">${esc(footer)} · <a href="mailto:info@frontlineofinnovation.de" style="color:#888">info@frontlineofinnovation.de</a>${neutral ? "" : ` · <a href="https://frontlineofinnovation.de" style="color:#888">frontlineofinnovation.de</a>`}</td></tr>
+<tr><td style="padding:8px 28px 32px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.7;color:#888"><div style="border-top:1px solid #e5e5e5;padding-top:20px">${footer
+    .split(" · ")
+    .map((t, i) => (i === 0 ? `<strong style="color:#666">${esc(t)}</strong>` : esc(t.charAt(0).toUpperCase() + t.slice(1))))
+    .join("<br>")}<br><span style="display:block;margin-top:10px"><a href="mailto:info@frontlineofinnovation.de" style="color:#888">info@frontlineofinnovation.de</a>${neutral ? "" : ` &nbsp;·&nbsp; <a href="https://frontlineofinnovation.de" style="color:#888">frontlineofinnovation.de</a>`}</span></div></td></tr>
 </table></td></tr></table></body></html>`;
 }
