@@ -96,7 +96,7 @@ export function Datenschutz() {
         Bei der Anmeldung verarbeiten wir zusätzlich Ihre Mobilnummer, die gewählte Teilnahmeart und einen eventuellen Zweitwunsch, Ihre Angaben zur
         Ernährung, den Status Ihrer Anmeldung sowie den Zeitpunkt Ihrer Zustimmung zu den Teilnahmebedingungen. Je nach Teilnahmeart kommen hinzu: Angaben
         zu Ihrem Fahrzeug (Marke, Modell, Kennzeichen, Bereifung), das Jahr Ihres Führerscheins, Ihre
-        Rennstreckenerfahrung, Ihre Körpergröße für das Renntaxi und Ihre Bestätigung des Haftungsverzichts. Rechtsgrundlage
+        Rennstreckenerfahrung und Ihre Bestätigung des Haftungsverzichts. Rechtsgrundlage
         ist die Durchführung der Veranstaltung, zu der Sie sich anmelden (Art. 6 Abs. 1 lit. b DSGVO).
       </p>
 
@@ -130,8 +130,8 @@ export function Datenschutz() {
       <p>Wir geben Daten nur weiter, soweit es für die Veranstaltung nötig ist:</p>
       <ul className="mt-3 list-disc space-y-2 pl-6">
         <li>
-          <b className="text-white">School of Racing</b> (Mitveranstalter): Name, Mobilnummer, Teilnahmeart, Fahrzeug- und Fahrerangaben sowie
-          Körpergröße – für Gruppeneinteilung, Sicherheitseinweisung und Ablauf auf der Strecke.
+          <b className="text-white">School of Racing</b> (Mitveranstalter): Name, Mobilnummer, Teilnahmeart sowie Fahrzeug- und
+          Fahrerangaben – für Gruppeneinteilung, Sicherheitseinweisung und Ablauf auf der Strecke.
         </li>
         <li>
           <b className="text-white">Gastronomie am Veranstaltungsort</b>: Anzahl der Gäste sowie Ernährungswünsche und Allergien, soweit möglich ohne
@@ -158,7 +158,7 @@ export function Datenschutz() {
 
       <H2>4. Wie lange wir Daten speichern</H2>
       <ul className="mt-3 list-disc space-y-2 pl-6">
-        <li>Fahrzeug- und Fahrerangaben, Körpergröße sowie Allergien und Ernährungsangaben löschen wir spätestens drei Monate nach der Veranstaltung.</li>
+        <li>Fahrzeug- und Fahrerangaben sowie Allergien und Ernährungsangaben löschen wir spätestens drei Monate nach der Veranstaltung.</li>
         <li>Die übrigen Anmeldedaten löschen wir spätestens zwölf Monate nach der Veranstaltung.</li>
         <li>
           Name, Kontaktdaten, Unternehmen und Position behalten wir als Teil unseres Netzwerks, bis Sie widersprechen. Gesetzliche

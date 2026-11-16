@@ -186,22 +186,6 @@ export function RegistrationForm({
           </Box>
         )}
 
-        {need.has("taxi") && (
-          <Box
-            first={art === "taxi"}
-            title={"Ihre Mitfahrt" + forSecond("taxi")}
-            sub="Diese Angaben gehen an die School of Racing."
-          >
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <Field
-                name="height_cm"
-                label="Körpergröße in cm (falls für das Fahrzeug nötig)"
-                inputMode="numeric"
-              />
-            </div>
-          </Box>
-        )}
-
         {need.has("own") && (
           <Box
             title={"Fahrerangaben" + forSecond("own")}

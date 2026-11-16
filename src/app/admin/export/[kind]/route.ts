@@ -38,10 +38,10 @@ export async function GET(_req: Request, { params }: { params: Promise<{ kind: s
       break;
     case "fahrer":
       title = "Fahrerliste School of Racing";
-      header = ["Startnummer", "Name", "Mobil", "Teilnahme", "Marke", "Modell", "Bereifung", "Kennzeichen", "Erfahrung", "Führerschein seit", "Körpergröße"];
+      header = ["Startnummer", "Name", "Mobil", "Teilnahme", "Marke", "Modell", "Bereifung", "Kennzeichen", "Erfahrung", "Führerschein seit"];
       body = rows
         .filter(({ g, r }) => ACTIVE.includes(g.status) && (r?.participation_type === "own" || r?.participation_type === "taxi"))
-        .map(({ g, r }) => [r?.start_number ?? "", name(g), r?.mobile ?? "", type(r), v(r, "marke"), v(r, "modell"), v(r, "reifen"), v(r, "kennzeichen"), r?.experience ?? "", r?.license_since ?? "", r?.height_cm ?? ""]);
+        .map(({ g, r }) => [r?.start_number ?? "", name(g), r?.mobile ?? "", type(r), v(r, "marke"), v(r, "modell"), v(r, "reifen"), v(r, "kennzeichen"), r?.experience ?? "", r?.license_since ?? ""]);
       break;
     case "catering":
       title = "Ernährung Catering";
