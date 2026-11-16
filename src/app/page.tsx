@@ -149,17 +149,16 @@ export default async function Home() {
         <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
           <div>
             <p className="eyebrow mb-3">Charity-Auktion</p>
-            <h2 id="auktion-h" className="h-section">Zwei Lose für den guten Zweck</h2>
+            <h2 id="auktion-h" className="h-section">Ein Los für den guten Zweck</h2>
           </div>
           <p className="max-w-[460px] text-base leading-relaxed text-muted">
-            Während des Dinners versteigern wir zwei Stücke. Der Erlös geht vollständig an einen gemeinnützigen Verein; welcher, ist noch zu bestimmen. Geboten wird vor Ort.
+            Während des Dinners versteigern wir ein Werk von Horst Hamann. Der Erlös geht vollständig an einen gemeinnützigen Verein; welcher, ist noch zu bestimmen. Geboten wird vor Ort.
           </p>
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          <Lot n="1" title="Horst Hamann" text="Ein Werk des Mannheimer Fotografen, bekannt für seine Serie „New York Vertical“." placeholder="[Abbildung des Werks]" />
-          <Lot n="2" title="6 Monate Mercedes-AMG" text="Ein halbes Jahr Leasing eines Mercedes-AMG." placeholder="[Fahrzeugbild]" />
+        <div className="max-w-[820px]">
+          <Lot n="1" title="Horst Hamann" text="Ein Werk des Mannheimer Fotografen, bekannt für seine Serie „New York Vertical“." image="/images/horst-hamann.jpg" alt="Porträt des Fotografen Horst Hamann" />
         </div>
-        <p className="mt-4 text-[13px] text-dim">Beide Lose unter Vorbehalt – Details sind noch in Klärung.</p>
+        <p className="mt-4 text-[13px] text-dim">Unter Vorbehalt – Details sind noch in Klärung.</p>
       </section>
 
       {/* Ort */}
@@ -342,10 +341,12 @@ function TypeCard({ type, image, alt, foot, free, gold = false }: { type: "own" 
   );
 }
 
-function Lot({ n, title, text, placeholder }: { n: string; title: string; text: string; placeholder: string }) {
+function Lot({ n, title, text, image, alt }: { n: string; title: string; text: string; image: string; alt: string }) {
   return (
     <article className="grid border border-line-strong sm:grid-cols-2">
-      <div className="flex min-h-[190px] items-center justify-center bg-[#141414] p-4 text-center text-xs uppercase tracking-[0.12em] text-[#8c8c8c]">{placeholder}</div>
+      <div className="relative min-h-[320px]">
+        <Image src={image} alt={alt} fill sizes="(min-width:640px) 410px, 100vw" className="photo object-cover object-[50%_30%]" />
+      </div>
       <div className="flex flex-col gap-2.5 p-7">
         <span className="font-display text-sm tracking-[0.2em] text-dim">LOS {n}</span>
         <h3 className="font-display text-[28px] font-semibold uppercase">{title}</h3>
