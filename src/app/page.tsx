@@ -108,10 +108,11 @@ export default async function Home() {
         <div className="mx-auto max-w-[1240px] px-6 py-16">
           <p className="eyebrow mb-3">Ablauf · Montag, 14. Dezember</p>
           <h2 id="ablauf-h" className="h-section mb-10">Zwei Sektoren, ein Ziel</h2>
-          <ol className="grid border-t-2 border-white md:grid-cols-3">
-            <AgendaItem mark="Sektor 1" time="13:00" title="Eintreffen" text="Empfang, Fahrerbesprechung, Einteilung in die Gruppen." />
-            <AgendaItem mark="Sektor 2" time="14:00" title="Racing" text="Fahrten in Gruppen, nach Teilnahmeart und Erfahrung, begleitet von der School of Racing." />
-            <AgendaItem mark="Ziel" time="17:00" title="Early Dinner & Networking" text="In der Loge, mit Charity-Auktion. Ende gegen [Uhrzeit]." gold last />
+          <ol className="grid border-t-2 border-white md:grid-cols-4">
+            <AgendaItem mark="Start" time="13:00" title="Check-in" text="Ankunft der Selbstfahrer: Fahrzeug und Unterlagen. Um 13:45 Uhr folgt das Drivers Briefing – für alle, die selbst fahren, Pflicht." />
+            <AgendaItem mark="Sektor 1" time="14:15" title="Drift-Beifahrer" text="Ankunft und Check-in für alle, die als Beifahrer mitfahren." />
+            <AgendaItem mark="Sektor 2" time="14:30" title="Auf der Strecke" text="Bis 16:30 Uhr: Fahrten in den Gruppen Rookie, Performance und Race – und Drift-Fahrten mit einem Profi am Steuer." />
+            <AgendaItem mark="Ziel" time="17:00" title="Loge" text="Empfang in der Loge, Ankunft der Dinner-Gäste. Um 18:00 Uhr Early Dinner mit Charity-Auktion und Networking." gold last />
           </ol>
         </div>
       </section>
@@ -126,7 +127,7 @@ export default async function Home() {
         <div className="grid gap-6 md:grid-cols-3">
           <TypeCard type="own" image="/images/card-own-car.jpg" alt="Sportwagen bei einem Trackday der School of Racing" foot="Voraussetzungen: [Fahrzeug, Reifen, Helm]" free={slots?.own.free} />
           <TypeCard type="taxi" image="/images/card-taxi.jpg" alt="Blick aus dem Cockpit auf die Rennstrecke bei einem Training der School of Racing" foot="Mit einem Profi am Steuer" free={slots?.taxi.free} />
-          <TypeCard type="dinner" image="/images/dinner.jpg" alt="Gäste an gedeckten Tischen beim FOI-Dinner im Mai 2026" foot="Ab 17:00 in der Loge" free={slots?.dinner.free} />
+          <TypeCard type="dinner" image="/images/dinner.jpg" alt="Gäste an gedeckten Tischen beim FOI-Dinner im Mai 2026" foot="Ankunft 17:00 · Dinner 18:00" free={slots?.dinner.free} />
         </div>
       </section>
 
@@ -137,7 +138,7 @@ export default async function Home() {
             <Image src="/images/dinner.jpg" alt="Gäste an gedeckten Tischen beim FOI-Dinner im Mai 2026" fill sizes="(min-width:768px) 50vw, 100vw" className="photo object-cover object-[60%_50%]" />
           </div>
           <div className="flex flex-col justify-center gap-6 bg-card px-6 py-14 md:px-14">
-            <p className="eyebrow">Ab 17:00 · Loge</p>
+            <p className="eyebrow">Ab 17:00 · Loge · Early Dinner um 18:00</p>
             <h2 id="dinner-h" className="h-section">Nach der Zielflagge beginnt der Abend</h2>
             <p className="text-lg leading-relaxed text-[#d1d1d1]">Ein frühes Dinner in der Loge, Zeit für Gespräche mit den Menschen, die Frontline of Innovation ausmachen – und eine Charity-Auktion für den guten Zweck.</p>
           </div>

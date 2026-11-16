@@ -1,16 +1,26 @@
-/** Ablauf je Teilnahmeart – für Bestätigungsmail und Kalendereintrag */
-export function ablauf(dinnerOnly: boolean): string[] {
-  return dinnerOnly
-    ? ["17:00 Eintreffen in der Loge", "Early Dinner und Charity-Auktion"]
-    : ["13:00 Eintreffen, Begrüßung und Fahrerbesprechung", "14:00 Auf der Strecke – in Gruppen mit der School of Racing", "17:00 Early Dinner in der Loge, mit Charity-Auktion"];
+type Art = "own" | "taxi" | "dinner" | null | undefined;
+
+/** Ankunftszeit je Teilnahmeart (Absprache mit Paul Muck, 16.11.2026) */
+export function ankunft(art: Art): string {
+  return art === "dinner" ? "17:00 Uhr in der Loge" : art === "taxi" ? "14:15 Uhr" : "13:00 Uhr";
 }
+
+/** Ablauf je Teilnahmeart – für Bestätigungsmail, Kalendereintrag und „Meine Teilnahme“ */
+export function ablauf(art: Art): string[] {
+  const abend = ["17:00 Empfang in der Loge", "18:00 Early Dinner, Charity-Auktion und Networking"];
+  if (art === "dinner") return ["17:00 Ankunft in der Loge", "18:00 Early Dinner, Charity-Auktion und Networking"];
+  if (art === "taxi") return ["14:15 Ankunft und Check-in", "14:30–16:30 Drift-Fahrten als Beifahrer", ...abend];
+  return ["13:00 Ankunft und Check-in (Fahrzeug, Unterlagen)", "13:45 Drivers Briefing – Teilnahme ist Pflicht", "14:30–16:30 Auf der Strecke, in Ihrer Gruppe", ...abend];
+}
+
+const START: Record<string, string> = { own: "20261214T120000Z", taxi: "20261214T131500Z", dinner: "20261214T160000Z" };
 
 /**
  * Kalendereintrag nach der Anmeldung. Gleiche UID wie der Eintrag aus der Interessensabfrage, damit Outlook/Apple
  * den vorgemerkten Termin aktualisieren statt einen zweiten anzulegen (SEQUENCE höher).
  */
-export function buildIcs(opts: { uid?: string; url: string; title?: string; dinnerOnly?: boolean }): string {
-  const dinner = Boolean(opts.dinnerOnly);
+export function buildIcs(opts: { uid?: string; url: string; title?: string; art?: Art }): string {
+  const art = opts.art ?? "own";
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -21,11 +31,11 @@ export function buildIcs(opts: { uid?: string; url: string; title?: string; dinn
     "UID:foi-weihnachtsfeier-2026-12-14@frontlineofinnovation.de",
     "SEQUENCE:1",
     `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`,
-    dinner ? "DTSTART:20261214T160000Z" : "DTSTART:20261214T120000Z",
+    `DTSTART:${START[art] ?? START.own}`,
     "DTEND:20261214T200000Z",
     `SUMMARY:${opts.title ?? "FOI Weihnachtsfeier · Hockenheimring"}`,
     "LOCATION:Hockenheimring\\, Am Motodrom\\, 68766 Hockenheim",
-    `DESCRIPTION:Ihre Anmeldung ist bestätigt.\\n${ablauf(dinner).join("\\n")}\\n\\nFrontline of Innovation in Zusammenarbeit mit School of Racing.\\nIhre Teilnahme: ${opts.url}`,
+    `DESCRIPTION:Ihre Anmeldung ist bestätigt.\\n${ablauf(art).join("\\n")}\\n\\nFrontline of Innovation in Zusammenarbeit mit School of Racing.\\nIhre Teilnahme: ${opts.url}`,
     `URL:${opts.url}`,
     "END:VEVENT",
     "END:VCALENDAR",
@@ -70,7 +80,7 @@ export function buildWeihnachtsfeierIcs(url: string): string {
     "DTEND:20261214T200000Z",
     "SUMMARY:FOI Weihnachtsfeier · Hockenheimring (Save the Date)",
     "LOCATION:Hockenheimring\\, Am Motodrom\\, 68766 Hockenheim",
-    `DESCRIPTION:Persönliche Einladung von Frontline of Innovation und School of Racing.\\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend in der Loge.\\nNoch unverbindlich – die verbindliche Einladung folgt.\\n\\nIhre Antwort: ${url}`,
+    `DESCRIPTION:Persönliche Einladung von Frontline of Innovation und School of Racing.\\nAb 13 Uhr · auf der Strecke ab 14:30 Uhr · Early Dinner um 18 Uhr in der Loge.\\nNoch unverbindlich – die verbindliche Einladung folgt.\\n\\nIhre Antwort: ${url}`,
     `URL:${url}`,
     "END:VEVENT",
     "END:VCALENDAR",
@@ -101,17 +111,17 @@ export function gcalWeihnachtsfeier(link: string) {
     "&text=" + encodeURIComponent("FOI Weihnachtsfeier · Hockenheimring (Save the Date)") +
     "&dates=20261214T120000Z/20261214T200000Z" +
     "&location=" + encodeURIComponent("Hockenheimring, Am Motodrom, 68766 Hockenheim") +
-    "&details=" + encodeURIComponent("Persönliche Einladung von Frontline of Innovation und School of Racing.\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend in der Loge.\nNoch unverbindlich – die verbindliche Einladung folgt.\n\nIhre Antwort: " + link)
+    "&details=" + encodeURIComponent("Persönliche Einladung von Frontline of Innovation und School of Racing.\nAb 13 Uhr · auf der Strecke ab 14:30 Uhr · Early Dinner um 18 Uhr in der Loge.\nNoch unverbindlich – die verbindliche Einladung folgt.\n\nIhre Antwort: " + link)
   );
 }
 
 /** Google-Kalender-Link nach der Anmeldung */
-export function gcalAnmeldung(link: string, dinnerOnly: boolean) {
+export function gcalAnmeldung(link: string, art: Art) {
   return (
     "https://calendar.google.com/calendar/render?action=TEMPLATE" +
     "&text=" + encodeURIComponent("FOI Weihnachtsfeier · Hockenheimring") +
-    "&dates=" + (dinnerOnly ? "20261214T160000Z" : "20261214T120000Z") + "/20261214T200000Z" +
+    "&dates=" + (START[art ?? "own"] ?? START.own) + "/20261214T200000Z" +
     "&location=" + encodeURIComponent("Hockenheimring, Am Motodrom, 68766 Hockenheim") +
-    "&details=" + encodeURIComponent("Ihre Anmeldung ist bestätigt.\n" + ablauf(dinnerOnly).join("\n") + "\n\nIhre Teilnahme: " + link)
+    "&details=" + encodeURIComponent("Ihre Anmeldung ist bestätigt.\n" + ablauf(art).join("\n") + "\n\nIhre Teilnahme: " + link)
   );
 }

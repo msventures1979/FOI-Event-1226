@@ -72,7 +72,7 @@ export function DabeiView({ token, first, fullName, email, cap, dabei, mine, sho
       <section aria-label="Was Sie erwartet" className="border-b border-line">
         <ul className="mx-auto grid max-w-[1240px] gap-px bg-line md:grid-cols-3">
           {[
-            { k: "Ab 14 Uhr", t: "Auf der Strecke", d: "Mit Ihrem eigenen Wagen in einer von drei Gruppen, von Rookie bis Race – für Einsteiger geführt per Funk. Oder als Beifahrer im Drift-Wagen – oder nur zum Dinner am Abend." },
+            { k: "Ab 14:30 Uhr", t: "Auf der Strecke", d: "Mit Ihrem eigenen Wagen in einer von drei Gruppen, von Rookie bis Race – für Einsteiger geführt per Funk. Oder als Beifahrer im Drift-Wagen – oder nur zum Dinner am Abend." },
             { k: "Früher Abend", t: "Dinner in der Loge", d: "Mit den Menschen, die Frontline of Innovation ausmachen." },
             { k: "Exklusiv & kostenfrei", t: `${cap} Plätze`, d: "Nur auf persönliche Einladung. Für Sie entstehen keine Kosten – getragen von unseren Partnern. Eintreffen ab 13 Uhr." },
           ].map((x) => (

@@ -170,7 +170,7 @@ export async function processQueue(opts: { guestId?: string; max?: number } = {}
             {
               filename: "FOI-Weihnachtsfeier-14-Dezember.ics",
               contentType: "text/calendar; charset=utf-8; method=PUBLISH",
-              content: Buffer.from(buildIcs({ url: `${env.siteUrl}/meine-teilnahme/${(guest as Guest).manage_token}`, dinnerOnly: reg?.participation_type === "dinner" })).toString("base64"),
+              content: Buffer.from(buildIcs({ url: `${env.siteUrl}/meine-teilnahme/${(guest as Guest).manage_token}`, art: reg?.participation_type })).toString("base64"),
             },
           ]
         : undefined;

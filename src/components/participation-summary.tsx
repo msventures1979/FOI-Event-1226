@@ -1,3 +1,4 @@
+import { ankunft } from "@/lib/ics";
 import { kurzanrede, PARTICIPATION, STATUS_LABEL, type Guest, type Registration } from "@/lib/types";
 
 export function ParticipationSummary({ guest, registration, headline, intro }: { guest: Guest; registration: Registration | null; headline: string; intro: string }) {
@@ -25,7 +26,7 @@ export function ParticipationSummary({ guest, registration, headline, intro }: {
           <dt className="text-[#a6a6a6]">Datum</dt>
           <dd>Montag, 14. Dezember 2026</dd>
           <dt className="text-[#a6a6a6]">Eintreffen</dt>
-          <dd>{type === "dinner" ? "17:00 Uhr in der Loge" : "13:00 Uhr"}</dd>
+          <dd>{ankunft(type)}</dd>
           <dt className="text-[#a6a6a6]">Ort</dt>
           <dd>Hockenheimring, Am Motodrom, 68766 Hockenheim</dd>
           {registration?.start_number && ["angemeldet", "bestaetigt", "eingecheckt"].includes(guest.status) && (

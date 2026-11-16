@@ -1,5 +1,5 @@
 import { briefanrede, PARTICIPATION, type Guest, type ParticipationType } from "../types";
-import { ablauf, gcalAnmeldung } from "../ics";
+import { ablauf, ankunft, gcalAnmeldung } from "../ics";
 
 export type MailType =
   | "interesse"
@@ -76,7 +76,7 @@ export const PARTNERS: { name: string; href: string; logo: string; w: number; h:
   { name: "ox8 Corporate Finance", href: "https://ox8-cf.com", logo: "ox8.png", w: 47, h: 30 },
 ];
 
-const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\n13:00 Eintreffen · 14:00 Racing · 17:00 Early Dinner in der Loge";
+const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\nab 13:00 Check-in · 14:30 auf der Strecke · 18:00 Early Dinner in der Loge";
 
 type Block =
   | { p: string }
@@ -252,13 +252,13 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { p: "vielen Dank für Ihre Anmeldung – wir freuen uns sehr auf Sie! Ihr Platz ist verbindlich für Sie reserviert." },
         { facts: `Ihre Teilnahme: ${art}\nMontag, 14. Dezember 2026\nHockenheimring, Am Motodrom, 68766 Hockenheim` },
         { p: "So läuft der Tag für Sie:" },
-        { facts: ablauf(ctx.participationType === "dinner").join("\n") },
+        { facts: ablauf(ctx.participationType).join("\n") },
         { p: "Programm, Anfahrt und Antworten auf häufige Fragen finden Sie jederzeit auf racing.frontlineofinnovation.de. Treffpunkt, Parken und die letzten Details schicken wir Ihnen zusätzlich eine Woche vor dem Termin." },
         { buttons: [{ label: "Programm & Anfahrt ansehen", href: ctx.siteUrl }] },
         { partners: true },
         { buttons: [
           { label: "In Outlook / Apple Kalender eintragen", href: `${ctx.siteUrl}/api/ics/${g.manage_token}`, primary: true },
-          { label: "Google Kalender", href: gcalAnmeldung(verwalten, ctx.participationType === "dinner") },
+          { label: "Google Kalender", href: gcalAnmeldung(verwalten, ctx.participationType) },
         ] },
         { p: "Den Kalendereintrag finden Sie auch im Anhang. Haben Sie sich den Termin schon nach der Vormerkung eingetragen, wird er damit aktualisiert." },
         { buttons: [{ label: "Meine Teilnahme ansehen", href: verwalten }] },
@@ -292,7 +292,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       subject = "In einer Woche: FOI Racing am 14. Dezember";
       blocks = [
         { p: "in einer Woche sehen wir uns auf dem Hockenheimring." },
-        { facts: `Eintreffen 13:00 Uhr · Treffpunkt [Eingang] · Parken [Hinweis]\nIhre Teilnahme: ${art}` },
+        { facts: `Ankunft ${ankunft(ctx.participationType)} · Treffpunkt [Eingang] · Parken [Hinweis]\nIhre Teilnahme: ${art}` },
         { p: "Bitte denken Sie an [warme, wetterfeste Kleidung; Helm/Reifen bei eigenem Wagen].." },
         { p: "Bitte bestätigen Sie kurz, dass es bei Ihrer Teilnahme bleibt. Bitte geben Sie uns bis zum 10. Dezember Bescheid." },
         { buttons: [{ label: "Ich bin dabei", href: `${verwalten}?bestaetigen=1`, primary: true }, { label: "Ich muss leider absagen", href: `${verwalten}?absagen=1` }] },
@@ -302,7 +302,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       subject = "Am Montag geht es los: FOI Racing";
       blocks = [
         { p: "am Montag ist es so weit. Wir freuen uns auf Sie." },
-        { facts: `Eintreffen 13:00 Uhr · [Treffpunkt]\nIhre Teilnahme: ${art}\nBei Fragen am Tag: [Telefonnummer vor Ort]` },
+        { facts: `Ankunft ${ankunft(ctx.participationType)} · [Treffpunkt]\nIhre Teilnahme: ${art}\nBei Fragen am Tag: [Telefonnummer vor Ort]` },
         { buttons: [{ label: "Meine Teilnahme", href: verwalten }] },
       ];
       break;

@@ -7,7 +7,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
   const { token } = await params;
   const found = await guestByToken(token);
   if (!found) return new NextResponse("Nicht gefunden", { status: 404 });
-  const ics = buildIcs({ url: `${env.siteUrl}/meine-teilnahme/${token}`, dinnerOnly: found.registration?.participation_type === "dinner" });
+  const ics = buildIcs({ url: `${env.siteUrl}/meine-teilnahme/${token}`, art: found.registration?.participation_type });
   return new NextResponse(ics, {
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
