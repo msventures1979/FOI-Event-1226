@@ -34,9 +34,9 @@ export type TrackGroup = "" | "rookie" | "performance" | "race";
 export const GROUPS: { value: Exclude<TrackGroup, "">; label: string; text: string }[] = [
   { value: "rookie", label: "Rookie", text: "Mit wenig oder keiner Rennstreckenerfahrung drehen Sie hier dank Überholverbot entspannt Ihre Runden – auf Wunsch geführt, mit Tipps per Funk direkt ins Auto." },
   { value: "performance", label: "Performance", text: "Sie haben Trackday-Erfahrung, kennen die Strecke und beherrschen Ihr Fahrzeug auch unter Stress." },
-  { value: "race", label: "Race / Drift", text: "Sie haben viel Rennstreckenerfahrung und können auch mit Fahrzeugen ohne Straßenzulassung teilnehmen." },
+  { value: "race", label: "Race", text: "Sie haben viel Rennstreckenerfahrung und können auch mit Fahrzeugen ohne Straßenzulassung teilnehmen." },
 ];
-export const GROUP_SHORT: Record<TrackGroup, string> = { "": "", rookie: "Rookie", performance: "Performance", race: "Race / Drift" };
+export const GROUP_SHORT: Record<TrackGroup, string> = { "": "", rookie: "Rookie", performance: "Performance", race: "Race" };
 
 export const ANSWER_SHORT: Record<InterestAnswer, string> = { dabei: "Dabei", interessiert: "Interessiert", nicht: "Nicht dabei" };
 export const MODE_SHORT: Record<InterestMode, string> = { "": "", own: "Eigener Wagen", taxi: "Drift-Beifahrer", dinner: "Nur Dinner", offen: "Noch offen" };

@@ -163,7 +163,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       footer = "Frontline of Innovation · gemeinsam mit School of Racing";
       gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar\nmit Paul Muck, School of Racing";
       const MODE: Record<string, string> = { own: "Mit eigenem Fahrzeug", taxi: "Als Drift-Beifahrer", dinner: "Nur zum Dinner", offen: "Entscheiden Sie später" };
-      const GROUP: Record<string, string> = { rookie: "Rookie", performance: "Performance", race: "Race / Drift" };
+      const GROUP: Record<string, string> = { rookie: "Rookie", performance: "Performance", race: "Race" };
       const strecke = [MODE[i.mode], GROUP[i.track_group]].filter(Boolean).join(" · ");
       const angaben = [`Ihre Antwort: ${dabei ? "Ich bin dabei" : "Interessiert, noch nicht sicher"}`, strecke && `Auf der Strecke: ${strecke}`, i.vehicle && `Fahrzeug: ${i.vehicle}`].filter(Boolean).join("\n");
       blocks = [

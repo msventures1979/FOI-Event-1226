@@ -18,7 +18,7 @@ const MODES = [
 const GROUPS = [
   { value: "rookie", label: "Rookie", text: "Mit wenig oder keiner Rennstreckenerfahrung drehen Sie hier dank Überholverbot entspannt Ihre Runden – auf Wunsch geführt, mit Tipps per Funk direkt ins Auto." },
   { value: "performance", label: "Performance", text: "Sie haben Trackday-Erfahrung, kennen die Strecke und beherrschen Ihr Fahrzeug auch unter Stress." },
-  { value: "race", label: "Race / Drift", text: "Sie haben viel Rennstreckenerfahrung und können auch mit Fahrzeugen ohne Straßenzulassung teilnehmen." },
+  { value: "race", label: "Race", text: "Sie haben viel Rennstreckenerfahrung und können auch mit Fahrzeugen ohne Straßenzulassung teilnehmen." },
 ] as const;
 
 export function InterestForm({
