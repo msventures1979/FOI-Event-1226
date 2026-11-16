@@ -317,10 +317,6 @@ export function RegistrationForm({
           </label>
         )}
         <label className="chk">
-          <input type="checkbox" name="consent_photo" /> Freiwillig: Ich bin
-          einverstanden, dass Fotos und Videos von mir veröffentlicht werden.
-        </label>
-        <label className="chk">
           <input type="checkbox" name="consent_terms" required />
           <span>
             Ich akzeptiere die{" "}

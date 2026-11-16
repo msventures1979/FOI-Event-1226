@@ -109,8 +109,9 @@ export function Datenschutz() {
 
       <H3>Fotos und Videos</H3>
       <p>
-        Bei der Veranstaltung wird fotografiert und gefilmt. Aufnahmen, auf denen Sie erkennbar im Mittelpunkt stehen, veröffentlichen wir nur, wenn Sie
-        bei der Anmeldung zugestimmt haben (Art. 6 Abs. 1 lit. a DSGVO). Die Zustimmung können Sie jederzeit widerrufen.
+        Bei der Veranstaltung wird fotografiert und gefilmt. Die Aufnahmen nutzen wir, um über die Veranstaltung zu berichten, etwa auf unserer Website
+        und in sozialen Medien (berechtigtes Interesse, Art. 6 Abs. 1 lit. f DSGVO). Wenn Sie nicht fotografiert werden möchten, sagen Sie es bitte vor Ort
+        unserem Team oder schreiben Sie an <Mail />. Aufnahmen, auf denen Sie erkennbar sind, entfernen wir auf Wunsch.
       </p>
 
       <H3>E-Mails zur Veranstaltung</H3>

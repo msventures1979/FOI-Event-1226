@@ -29,11 +29,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ kind: s
   switch (kind) {
     case "alle":
       title = "Alle Gäste";
-      header = ["Anrede", "Titel", "Vorname", "Nachname", "E-Mail", "Unternehmen", "Position", "LinkedIn", "Code", "Status", "Warteliste #", "Teilnahme", "Zweitwunsch", "Mobil", "Startnummer", "Ernährung", "Allergien", "Foto-Einwilligung", "Notiz"];
+      header = ["Anrede", "Titel", "Vorname", "Nachname", "E-Mail", "Unternehmen", "Position", "LinkedIn", "Code", "Status", "Warteliste #", "Teilnahme", "Zweitwunsch", "Mobil", "Startnummer", "Ernährung", "Allergien", "Notiz"];
       body = rows.map(({ g, r }) => [
         g.salutation, g.title, g.first_name, g.last_name, g.email, g.company, g.position, g.linkedin ?? "", g.code, STATUS_LABEL[g.status], g.waitlist_position ?? "",
         type(r), r?.second_choice ? PARTICIPATION[r.second_choice].short : "", r?.mobile ?? "", r?.start_number ?? "",
-        r?.diet ?? "", r?.allergies ?? "", r ? (r.consent_photo ? "ja" : "nein") : "", g.note,
+        r?.diet ?? "", r?.allergies ?? "", g.note,
       ]);
       break;
     case "fahrer":
