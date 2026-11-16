@@ -155,7 +155,7 @@ export default async function Home() {
             Während des Dinners versteigern wir ein Werk von Horst Hamann. Der Erlös geht vollständig an einen gemeinnützigen Verein; welcher, ist noch zu bestimmen. Geboten wird vor Ort.
           </p>
         </div>
-        <div className="max-w-[820px]">
+        <div className="max-w-[720px]">
           <Lot n="1" title="Horst Hamann" text="Ein Werk des Mannheimer Fotografen, bekannt für seine Serie „New York Vertical“." image="/images/horst-hamann.jpg" alt="Porträt des Fotografen Horst Hamann" />
         </div>
         <p className="mt-4 text-[13px] text-dim">Unter Vorbehalt – Details sind noch in Klärung.</p>
@@ -343,9 +343,9 @@ function TypeCard({ type, image, alt, foot, free, gold = false }: { type: "own" 
 
 function Lot({ n, title, text, image, alt }: { n: string; title: string; text: string; image: string; alt: string }) {
   return (
-    <article className="grid border border-line-strong sm:grid-cols-2">
-      <div className="relative min-h-[320px]">
-        <Image src={image} alt={alt} fill sizes="(min-width:640px) 410px, 100vw" className="photo object-cover object-[50%_30%]" />
+    <article className="grid border border-line-strong sm:grid-cols-[280px_1fr]">
+      <div className="relative aspect-[642/900] w-full">
+        <Image src={image} alt={alt} fill sizes="(min-width:640px) 280px, 100vw" className="photo object-cover object-top" />
       </div>
       <div className="flex flex-col gap-2.5 p-7">
         <span className="font-display text-sm tracking-[0.2em] text-dim">LOS {n}</span>
