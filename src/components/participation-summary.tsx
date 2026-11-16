@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ablauf, ankunft } from "@/lib/ics";
 import { kurzanrede, PARTICIPATION, STATUS_LABEL, type Guest, type Registration } from "@/lib/types";
 
@@ -52,7 +53,7 @@ export function ParticipationSummary({ guest, registration, headline, intro }: {
               );
             })}
           </ol>
-          <p className="mt-6 text-sm text-[#a6a6a6]">Den kompletten Tagesablauf finden Sie auf <a href="/#ablauf" className="text-gold">der Event-Seite</a>.</p>
+          <p className="mt-6 text-sm text-[#a6a6a6]">Den kompletten Tagesablauf finden Sie auf <Link href="/#ablauf" className="text-gold">der Event-Seite</Link>.</p>
         </div>
       )}
     </section>

@@ -16,13 +16,13 @@ export function Header({ plain = false }: { plain?: boolean }) {
         </Link>
         {plain ? null : (
         <div className="flex items-center gap-x-6 text-sm">
-          {/* Auf dem Handy nur der Anmelde-Button, damit der feste Kopf flach bleibt */}
+          {/* Keine öffentliche Anmeldung – nur Hinweis „Nur auf Einladung“ */}
           <Link href="/#ablauf" className="hidden py-3 text-[#ccc] no-underline hover:text-white lg:inline">Ablauf</Link>
           <Link href="/#dinner" className="hidden py-3 text-[#ccc] no-underline hover:text-white lg:inline">Dinner &amp; Auktion</Link>
           <Link href="/#fragen" className="hidden py-3 text-[#ccc] no-underline hover:text-white lg:inline">Fragen</Link>
-          <Link href="/#teilnahme" className="btn-gold !min-h-11 !px-4 text-sm sm:!px-5">
-            Teilnahme
-          </Link>
+          <span className="border border-gold px-3 py-2 font-display text-[12px] uppercase tracking-[0.18em] text-gold sm:px-4">
+            Nur auf Einladung
+          </span>
         </div>
         )}
       </nav>

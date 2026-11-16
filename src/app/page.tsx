@@ -43,7 +43,7 @@ export default async function Home() {
               Ein Nachmittag auf der Strecke, ein Abend in der Loge. Für die Gäste der Frontline of Innovation – auf persönliche Einladung.
             </p>
             <p className="mt-10 max-w-[560px] border-l-2 border-gold bg-black/60 px-5 py-4 text-[16px] leading-relaxed text-[#ddd]">
-              Sie melden sich über den persönlichen Link in Ihrer Einladung an – ganz ohne Code. Die Teilnahme ist für Sie kostenfrei.
+              Die Teilnahme ist nur auf persönliche Einladung möglich. Eingeladene Gäste finden hier alle Informationen zum Tag – angemeldet wird über den Link in der Einladung.
             </p>
           </div>
           <div className="border border-line-strong bg-[rgba(10,10,10,.92)]">
@@ -64,11 +64,11 @@ export default async function Home() {
         <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-x-12 gap-y-6 px-6 py-7">
           <div className="flex flex-wrap items-center gap-x-10 gap-y-5">
             <span className="font-display text-xs uppercase tracking-[0.22em] text-gold">Partner</span>
-            <Image src="/images/school-of-racing.svg" alt="School of Racing" width={55} height={44} unoptimized className="h-[44px] w-auto opacity-85" />
-            <Image src="/images/kos-klima.png" alt="KOS Klima" width={118} height={20} className="h-5 w-auto opacity-85" />
-            <Image src="/images/unzer.png" alt="UNZER" width={97} height={22} className="h-[22px] w-auto opacity-85" />
-            <Image src="/images/billiger.png" alt="billiger.de" width={79} height={26} className="h-[26px] w-auto opacity-85" />
-            <Image src="/images/ox8.png" alt="ox8 Corporate Finance" width={54} height={34} className="h-[34px] w-auto opacity-85" />
+            <a href="https://www.school-of-racing.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/school-of-racing.svg" alt="School of Racing" width={55} height={44} unoptimized className="h-[44px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
+            <a href="https://kosklima.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/kos-klima.png" alt="KOS Klima" width={118} height={20} className="h-5 w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
+            <a href="https://www.unzer.com/de/" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/unzer.png" alt="UNZER" width={97} height={22} className="h-[22px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
+            <a href="https://www.billiger.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/billiger.png" alt="billiger.de" width={79} height={26} className="h-[26px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
+            <a href="https://ox8-cf.com" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/ox8.png" alt="ox8 Corporate Finance" width={54} height={34} className="h-[34px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
           </div>
         </div>
       </section>
@@ -127,12 +127,12 @@ export default async function Home() {
       <section id="teilnahme" aria-labelledby="teilnahme-h" className="mx-auto max-w-[1240px] px-6 py-[72px]">
         <p className="eyebrow mb-3">Teilnahme</p>
         <div className="mb-9 flex flex-wrap items-end justify-between gap-6">
-          <h2 id="teilnahme-h" className="h-section">Wählen Sie Ihre Linie</h2>
-          <p className="max-w-[420px] text-base leading-relaxed text-muted">Die Plätze je Art sind begrenzt und werden in der Reihenfolge der Anmeldung vergeben.</p>
+          <h2 id="teilnahme-h" className="h-section">Drei Arten, dabei zu sein</h2>
+          <p className="max-w-[420px] text-base leading-relaxed text-muted">Ihre Teilnahmeart wählen Sie bei der Anmeldung über den persönlichen Link in Ihrer Einladung.</p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
-          <TypeCard type="own" image="/images/card-own-car.jpg" alt="Sportwagen bei einem Trackday der School of Racing" foot="Voraussetzungen: [Fahrzeug, Reifen, Helm]" free={slots?.own.free} />
-          <TypeCard type="taxi" image="/images/card-taxi.jpg" alt="Blick aus dem Cockpit auf die Rennstrecke bei einem Training der School of Racing" foot="Mit einem Profi am Steuer" free={slots?.taxi.free} />
+          <TypeCard type="own" image="/images/card-own-car.jpg" alt="Sportwagen bei einem Trackday der School of Racing" foot="Ankunft 13:00 · Briefing 13:45 (Pflicht)" free={slots?.own.free} />
+          <TypeCard type="taxi" image="/images/card-taxi.jpg" alt="Blick aus dem Cockpit auf die Rennstrecke bei einem Training der School of Racing" foot="Ankunft 14:15 · Profi am Steuer" free={slots?.taxi.free} />
           <TypeCard type="dinner" image="/images/dinner.jpg" alt="Gäste an gedeckten Tischen beim FOI-Dinner im Mai 2026" foot="Ankunft 17:00 · Dinner 18:00" free={slots?.dinner.free} />
         </div>
       </section>
@@ -175,17 +175,17 @@ export default async function Home() {
             <p className="eyebrow mb-3">Ort &amp; Anreise</p>
             <h2 id="ort-h" className="h-section mb-5">Hockenheimring</h2>
             <p className="mb-8 text-[17px] leading-relaxed text-[#d1d1d1]">
-              Über Jahrzehnte Austragungsort der Formel 1, südlich von Mannheim gelegen. Gefahren wird auf [Streckenvariante]; das Dinner findet in der Loge statt.
+              Über Jahrzehnte Austragungsort der Formel 1, südlich von Mannheim gelegen. Die genaue Streckenvariante geben wir rechtzeitig bekannt; das Dinner findet in der Loge statt.
             </p>
             <dl className="grid grid-cols-[minmax(110px,auto)_1fr] border-t border-line-strong text-base">
               {[
                 ["Adresse", "Am Motodrom, 68766 Hockenheim"],
-                ["Treffpunkt", "[Eingang / Fahrerlager]"],
-                ["Parken", "[Hinweis]"],
+                ["Treffpunkt", ""],
+                ["Parken", ""],
               ].map(([k, v]) => (
                 <div key={k} className="contents">
                   <dt className="border-b border-line-strong py-3.5 pr-4 text-dim">{k}</dt>
-                  <dd className="border-b border-line-strong py-3.5">{v}</dd>
+                  <dd className="border-b border-line-strong py-3.5">{v || <span className="italic text-dim">Geben wir rechtzeitig vor dem Termin bekannt.</span>}</dd>
                 </div>
               ))}
             </dl>
@@ -249,11 +249,11 @@ export default async function Home() {
         <h2 id="partner-h" className="mb-2 text-center font-display text-sm font-medium uppercase tracking-[0.24em] text-gold">Partner</h2>
         <p className="mb-8 text-center text-base text-muted">Dieser Tag wird von unseren Partnern getragen. Für Sie ist er kostenfrei.</p>
         <div className="grid grid-cols-2 gap-6 md:grid-cols-5">
-          <PartnerTile><Image src="/images/school-of-racing.svg" alt="School of Racing" width={95} height={76} unoptimized className="h-[76px] w-auto opacity-90" /></PartnerTile>
-          <PartnerTile><Image src="/images/kos-klima.png" alt="KOS Klima" width={153} height={26} className="h-[26px] w-auto opacity-90" /></PartnerTile>
-          <PartnerTile><Image src="/images/unzer.png" alt="UNZER" width={123} height={28} className="h-7 w-auto opacity-90" /></PartnerTile>
-          <PartnerTile><Image src="/images/billiger.png" alt="billiger.de" width={103} height={34} className="h-[34px] w-auto opacity-90" /></PartnerTile>
-          <PartnerTile><Image src="/images/ox8.png" alt="ox8 Corporate Finance" width={73} height={46} className="h-[46px] w-auto opacity-90" /></PartnerTile>
+          <PartnerTile><a href="https://www.school-of-racing.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/school-of-racing.svg" alt="School of Racing" width={95} height={76} unoptimized className="h-[76px] w-auto opacity-90 transition-opacity group-hover:opacity-100" /></a></PartnerTile>
+          <PartnerTile><a href="https://kosklima.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/kos-klima.png" alt="KOS Klima" width={153} height={26} className="h-[26px] w-auto opacity-90 transition-opacity group-hover:opacity-100" /></a></PartnerTile>
+          <PartnerTile><a href="https://www.unzer.com/de/" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/unzer.png" alt="UNZER" width={123} height={28} className="h-7 w-auto opacity-90 transition-opacity group-hover:opacity-100" /></a></PartnerTile>
+          <PartnerTile><a href="https://www.billiger.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/billiger.png" alt="billiger.de" width={103} height={34} className="h-[34px] w-auto opacity-90 transition-opacity group-hover:opacity-100" /></a></PartnerTile>
+          <PartnerTile><a href="https://ox8-cf.com" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/ox8.png" alt="ox8 Corporate Finance" width={73} height={46} className="h-[46px] w-auto opacity-90 transition-opacity group-hover:opacity-100" /></a></PartnerTile>
         </div>
       </section>
 
@@ -283,10 +283,10 @@ export default async function Home() {
             <span className="text-gold">auf der Strecke.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-[520px] text-lg leading-relaxed text-[#d1d1d1]">
-            100 Plätze, vergeben in der Reihenfolge der Anmeldung. Wer absagt, gibt seinen Platz an die Warteliste weiter.
+            100 Plätze, ausschließlich auf persönliche Einladung. Wer absagt, gibt seinen Platz an die Warteliste weiter.
           </p>
           <p className="mx-auto mt-8 max-w-[560px] text-[17px] leading-relaxed text-white">
-            Ihre persönliche Einladung kommt per Mail – mit einem Link, über den Sie sich direkt anmelden.
+            Eingeladene Gäste melden sich über den persönlichen Link in ihrer Einladungsmail an.
           </p>
           <p className="mt-5 text-sm text-[#a6a6a6]">
             Link nicht gefunden oder Sie können nicht dabei sein? Schreiben Sie uns an{" "}
