@@ -255,6 +255,7 @@ export function RegistrationForm({
           name="company"
           label="Unternehmen"
           required
+          defaultValue={guest.company}
           autoComplete="organization"
           maxLength={120}
         />
