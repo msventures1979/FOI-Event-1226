@@ -52,8 +52,8 @@ export default async function Home() {
             <dl className="grid grid-cols-2">
               <Stat value={showFree ? `${slots!.free}` : "100"} label={showFree ? "Plätze noch frei" : "Plätze, nicht mehr"} border="br" />
               <Stat value="3" label="Arten, dabei zu sein" border="b" />
-              <Stat value="0 €" label="für Sie, getragen von Partnern" border="r" />
-              <Stat value="4" label="Partner, die den Tag möglich machen" gold />
+              <Stat value="1" label="Charity-Auktion für den guten Zweck" border="r" />
+              <Stat value="5" label="Partner, die den Tag möglich machen" gold />
             </dl>
           </div>
         </div>
