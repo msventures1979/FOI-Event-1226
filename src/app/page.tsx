@@ -62,7 +62,7 @@ export default async function Home() {
               <Stat value={showFree ? `${slots!.free}` : "100"} label={showFree ? "Plätze noch frei" : "Plätze, nicht mehr"} border="br" />
               <Stat value="2" label="Arten, die Strecke zu erleben" border="b" />
               <Stat value="0 €" label="für Sie, getragen von Partnern" border="r" />
-              <Stat value="1" label="Überraschungsgast zum Dinner" gold />
+              <Stat value="4" label="Partner, die den Tag möglich machen" gold />
             </dl>
           </div>
         </div>
@@ -73,15 +73,17 @@ export default async function Home() {
         <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-x-12 gap-y-6 px-6 py-7">
           <div className="flex flex-wrap items-center gap-x-10 gap-y-5">
             <span className="font-display text-xs uppercase tracking-[0.22em] text-gold">Partner</span>
-            <Image src="/images/billiger.png" alt="billiger.de" width={79} height={26} className="h-[26px] w-auto opacity-85" />
+            <Image src="/images/kos-klima.png" alt="KOS Klima" width={118} height={20} className="h-5 w-auto opacity-85" />
             <Image src="/images/unzer.png" alt="UNZER" width={97} height={22} className="h-[22px] w-auto opacity-85" />
+            <Image src="/images/billiger.png" alt="billiger.de" width={79} height={26} className="h-[26px] w-auto opacity-85" />
+            <Image src="/images/ox8.png" alt="ox8 Corporate Finance" width={54} height={34} className="h-[34px] w-auto opacity-85" />
           </div>
         </div>
       </section>
 
       <div className="overflow-hidden border-b border-line">
         <p className="px-6 py-5 text-center font-display text-[22px] uppercase leading-relaxed tracking-[0.12em] text-[#8c8c8c]">
-          {["Eigener Wagen", "Renntaxi", "Early Dinner", "Überraschungsgast", "Charity-Auktion"].map((w, i) => (
+          {["Eigener Wagen", "Renntaxi", "Early Dinner", "Charity-Auktion"].map((w, i) => (
             <span key={w}>
               {i > 0 && <span aria-hidden className="text-gold"> / </span>}
               {w}
@@ -98,7 +100,7 @@ export default async function Home() {
           <p>
             Gemeinsam mit Paul Muck und der School of Racing laden wir Sie auf den Hockenheimring ein. Sie fahren mit Ihrem eigenen Auto auf die Strecke. Wer zum ersten Mal Rennstreckenluft schnuppert, fährt geführt – mit Tipps per Funk direkt ins Auto, Runde für Runde. Oder Sie steigen als Beifahrer ins Renntaxi und erleben die Strecke im Renntempo.
           </p>
-          <p>Danach geht es weiter wie an jedem FOI-Abend: mit einem frühen Dinner, einem Überraschungsgast und Gesprächen, die es ohne diesen Tag nie gegeben hätte.</p>
+          <p>Danach geht es weiter wie an jedem FOI-Abend: mit einem frühen Dinner, einer Charity-Auktion und Gesprächen, die es ohne diesen Tag nie gegeben hätte.</p>
         </div>
       </section>
 
@@ -118,7 +120,7 @@ export default async function Home() {
           <ol className="grid border-t-2 border-white md:grid-cols-3">
             <AgendaItem mark="Sektor 1" time="13:00" title="Eintreffen" text="Empfang, Fahrerbesprechung, Einteilung in die Gruppen." />
             <AgendaItem mark="Sektor 2" time="14:00" title="Racing" text="Fahrten in Gruppen, nach Teilnahmeart und Erfahrung, begleitet von der School of Racing." />
-            <AgendaItem mark="Ziel" time="17:00" title="Early Dinner & Networking" text="In der Loge, mit Überraschungsgast und Charity-Auktion. Ende gegen [Uhrzeit]." gold last />
+            <AgendaItem mark="Ziel" time="17:00" title="Early Dinner & Networking" text="In der Loge, mit Charity-Auktion. Ende gegen [Uhrzeit]." gold last />
           </ol>
         </div>
       </section>
@@ -145,14 +147,7 @@ export default async function Home() {
           <div className="flex flex-col justify-center gap-6 bg-card px-6 py-14 md:px-14">
             <p className="eyebrow">Ab 17:00 · Loge</p>
             <h2 id="dinner-h" className="h-section">Nach der Zielflagge beginnt der Abend</h2>
-            <p className="text-lg leading-relaxed text-[#d1d1d1]">Ein frühes Dinner in der Loge, Zeit für Gespräche – und ein Gast, den wir erst am Abend vorstellen.</p>
-            <div className="mt-2 flex items-center gap-5 border border-dashed border-gold p-6">
-              <span aria-hidden className="font-display text-6xl font-bold leading-none text-gold">?</span>
-              <div>
-                <h3 className="font-display text-xl font-semibold uppercase tracking-[0.04em]">Überraschungsgast</h3>
-                <p className="mt-1 text-[15px] text-muted">Wer es ist, verraten wir in der Loge.</p>
-              </div>
-            </div>
+            <p className="text-lg leading-relaxed text-[#d1d1d1]">Ein frühes Dinner in der Loge, Zeit für Gespräche mit den Menschen, die Frontline of Innovation ausmachen – und eine Charity-Auktion für den guten Zweck.</p>
           </div>
         </div>
       </section>
@@ -256,10 +251,10 @@ export default async function Home() {
         <h2 id="partner-h" className="mb-2 text-center font-display text-sm font-medium uppercase tracking-[0.24em] text-gold">Partner</h2>
         <p className="mb-8 text-center text-base text-muted">Dieser Tag wird von unseren Partnern getragen. Für Sie ist er kostenfrei.</p>
         <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-          <PartnerTile><Image src="/images/billiger.png" alt="billiger.de" width={103} height={34} className="h-[34px] w-auto opacity-90" /></PartnerTile>
+          <PartnerTile><Image src="/images/kos-klima.png" alt="KOS Klima" width={153} height={26} className="h-[26px] w-auto opacity-90" /></PartnerTile>
           <PartnerTile><Image src="/images/unzer.png" alt="UNZER" width={123} height={28} className="h-7 w-auto opacity-90" /></PartnerTile>
-          <PartnerTile dashed>[Partner 4]</PartnerTile>
-          <PartnerTile dashed>[Partner 5]</PartnerTile>
+          <PartnerTile><Image src="/images/billiger.png" alt="billiger.de" width={103} height={34} className="h-[34px] w-auto opacity-90" /></PartnerTile>
+          <PartnerTile><Image src="/images/ox8.png" alt="ox8 Corporate Finance" width={73} height={46} className="h-[46px] w-auto opacity-90" /></PartnerTile>
         </div>
       </section>
 
