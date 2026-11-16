@@ -22,7 +22,7 @@ const schema = z
     position: z.string().trim().min(1, "Bitte Position angeben").max(120),
     email: z.string().trim().email("Bitte gültige E-Mail angeben").max(160),
     mobile: z.string().trim().min(6, "Bitte Mobilnummer angeben").max(40),
-    diet: z.string().max(60),
+    diet: z.enum(["Fleisch", "Vegetarisch"], { message: "Bitte wählen Sie Ihren Hauptgang: Fleisch oder vegetarisch" }),
     allergies: z.string().max(500),
     consent_photo: z.boolean(),
     consent_terms: z.literal(true, { message: "Bitte Teilnahmebedingungen und Datenschutzhinweise akzeptieren" }),

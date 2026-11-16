@@ -286,25 +286,10 @@ export function RegistrationForm({
         />
         <Select
           name="diet"
-          label="Ernährung"
-          options={["keine Besonderheiten", "vegetarisch", "vegan"]}
-          defaultValue="keine Besonderheiten"
+          label="Ihr Hauptgang beim Dinner"
+          options={["Fleisch", "Vegetarisch"]}
+          required
         />
-        <div className="sm:col-span-2 lg:col-span-1">
-          <label className="lbl" htmlFor="allergies">
-            Allergien / Unverträglichkeiten
-          </label>
-          <textarea
-            id="allergies"
-            name="allergies"
-            className="field"
-            placeholder="optional"
-            maxLength={500}
-          />
-          <p className="mt-1.5 text-xs text-[#a6a6a6]">
-            Freiwillig. Wir nutzen die Angabe nur für das Essen am Abend und löschen sie spätestens drei Monate nach der Veranstaltung.
-          </p>
-        </div>
       </div>
 
       <div className="mb-9 flex flex-col gap-3.5">
