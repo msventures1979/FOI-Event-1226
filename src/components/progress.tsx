@@ -1,5 +1,5 @@
 export function Progress({ step }: { step: 1 | 2 | 3 }) {
-  const items = ["1 Code", "2 Angaben", "3 Bestätigt"];
+  const items = ["1 Einladung", "2 Angaben", "3 Bestätigt"];
   return (
     <ol aria-label="Fortschritt" className="mb-12 flex flex-wrap gap-2 font-display text-[13px] uppercase tracking-[0.16em]">
       {items.map((label, i) => {

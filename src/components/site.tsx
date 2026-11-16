@@ -18,7 +18,6 @@ export function Header({ plain = false }: { plain?: boolean }) {
         <div className="flex items-center gap-x-6 text-sm">
           {/* Auf dem Handy nur der Anmelde-Button, damit der feste Kopf flach bleibt */}
           <Link href="/#ablauf" className="hidden py-3 text-[#ccc] no-underline hover:text-white lg:inline">Ablauf</Link>
-          <Link href="/#teilnahme" className="hidden py-3 text-[#ccc] no-underline hover:text-white lg:inline">Teilnahme</Link>
           <Link href="/#dinner" className="hidden py-3 text-[#ccc] no-underline hover:text-white lg:inline">Dinner &amp; Auktion</Link>
           <Link href="/#fragen" className="hidden py-3 text-[#ccc] no-underline hover:text-white lg:inline">Fragen</Link>
           <Link href="/#teilnahme" className="btn-gold !min-h-11 !px-4 text-sm sm:!px-5">
