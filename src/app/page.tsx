@@ -1,6 +1,5 @@
 import { Person } from "@/components/person";
 import Image from "next/image";
-import Link from "next/link";
 import { PageShell } from "@/components/site";
 import { getPublicFreeSlots } from "@/lib/event";
 import { PARTICIPATION } from "@/lib/types";
@@ -42,18 +41,9 @@ export default async function Home() {
             <p className="mt-8 max-w-[560px] text-[19px] leading-relaxed text-[#ddd]">
               Ein Nachmittag auf der Strecke, ein Abend in der Loge. Für die Gäste der Frontline of Innovation – auf persönliche Einladung.
             </p>
-            <form action="/anmeldung" method="get" className="mt-10 flex max-w-[560px] flex-wrap gap-3">
-              <label htmlFor="code-hero" className="sr-only">Einladungscode</label>
-              <input
-                id="code-hero"
-                name="code"
-                placeholder="FOI-XXXXXXXX"
-                autoComplete="off"
-                className="field !min-h-[52px] flex-[1_1_220px] !bg-black/60 font-display !text-xl tracking-[0.14em]"
-              />
-              <button type="submit" className="btn-gold">Startplatz sichern</button>
-            </form>
-            <p className="mt-3.5 text-[13px] text-[#a6a6a6]">Ihren persönlichen Code finden Sie in Ihrer Einladung. Die Teilnahme ist kostenfrei.</p>
+            <p className="mt-10 max-w-[560px] border-l-2 border-gold bg-black/60 px-5 py-4 text-[16px] leading-relaxed text-[#ddd]">
+              Sie melden sich über den persönlichen Link in Ihrer Einladung an – ganz ohne Code. Die Teilnahme ist für Sie kostenfrei.
+            </p>
           </div>
           <div className="border border-line-strong bg-[rgba(10,10,10,.92)]">
             <div aria-hidden className="checker-sm h-2.5 opacity-90" />
@@ -289,11 +279,12 @@ export default async function Home() {
           <p className="mx-auto mt-6 max-w-[520px] text-lg leading-relaxed text-[#d1d1d1]">
             100 Plätze, vergeben in der Reihenfolge der Anmeldung. Wer absagt, gibt seinen Platz an die Warteliste weiter.
           </p>
-          <div className="mt-10">
-            <Link href="/anmeldung" className="btn-gold">Mit Code anmelden</Link>
-          </div>
+          <p className="mx-auto mt-8 max-w-[560px] text-[17px] leading-relaxed text-white">
+            Ihre persönliche Einladung kommt per Mail – mit einem Link, über den Sie sich direkt anmelden.
+          </p>
           <p className="mt-5 text-sm text-[#a6a6a6]">
-            Sie können nicht dabei sein? Bitte nutzen Sie den Link „Leider nicht dabei“ in Ihrer Einladung oder den Link in Ihrer Bestätigungsmail.
+            Link nicht gefunden oder Sie können nicht dabei sein? Schreiben Sie uns an{" "}
+            <a href="mailto:info@frontlineofinnovation.de">info@frontlineofinnovation.de</a>.
           </p>
         </div>
       </section>
