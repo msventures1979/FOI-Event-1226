@@ -95,7 +95,7 @@ type Block =
   | { facts: string }
   | { partners: true }
   | { code: string }
-  | { buttons: { label: string; href: string; primary?: boolean }[] };
+  | { buttons: { label: string; href: string; primary?: boolean; subtle?: boolean }[] };
 
 function fmtDate(iso: string): string {
   return new Date(iso).toLocaleString("de-DE", { timeZone: "Europe/Berlin", weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }) + " Uhr";
@@ -238,7 +238,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
             { facts: FAKTEN },
             { p: `Ihr Platz ist für Sie reserviert – bis ${fmtDate(ctx.offerExpiresAt!)}. Bitte melden Sie sich bis dahin über Ihren persönlichen Link verbindlich an, das dauert nur zwei Minuten. Danach geben wir den Platz an den nächsten Gast auf der Warteliste weiter.` },
             { p: "Bei der Anmeldung wählen Sie, wie Sie dabei sein möchten: mit dem eigenen Wagen auf der Strecke, als Beifahrer im Drift-Wagen mit einem Profi am Steuer oder nur zum Early Dinner am Abend." },
-            { buttons: [{ label: "Jetzt verbindlich anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
+            { buttons: [{ label: "Jetzt verbindlich anmelden", href: anmelden, primary: true }, { label: "Ich kann leider nicht dabei sein", href: absagen, subtle: true }] },
             { p: "Den kompletten Ablauf, Infos zur Charity-Auktion und Antworten auf häufige Fragen finden Sie auf unserer Event-Seite." },
             { buttons: [{ label: "Programm & Ablauf ansehen", href: ctx.siteUrl }] },
             { partners: true },
@@ -248,7 +248,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
             { p: "wir laden Sie herzlich zur Weihnachtsfeier der anderen Art ein: FOI Racing auf dem Hockenheimring." },
             { facts: FAKTEN },
             { p: "Sie fahren Ihren eigenen Wagen – für Einsteiger geführt per Funk –, steigen als Beifahrer in den Drift-Wagen oder kommen nur zum Dinner am Abend. Die Teilnahme ist für Sie kostenfrei. Es gibt 100 Plätze; sie werden in der Reihenfolge der Anmeldung vergeben." },
-            { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
+            { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Ich kann leider nicht dabei sein", href: absagen, subtle: true }] },
             { ps: "Der Link gilt nur für Sie persönlich." },
           ];
       break;
@@ -257,7 +257,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       subject = "Erinnerung: Ihr Platz bei FOI Racing";
       blocks = [
         { p: "Ihre Einladung zur FOI-Weihnachtsfeier am 14. Dezember ist noch offen. " + (g.status === "angeboten" && ctx.offerExpiresAt ? `Ihr Platz ist noch bis ${fmtDate(ctx.offerExpiresAt)} für Sie reserviert.` : ctx.freeSlots != null && ctx.freeSlots < 20 ? `Es sind noch ${ctx.freeSlots} Plätze frei.` : "Die Plätze sind begrenzt.") },
-        { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
+        { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Ich kann leider nicht dabei sein", href: absagen, subtle: true }] },
       ];
       break;
     case "bestaetigung":
@@ -295,7 +295,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       blocks = [
         { p: `für Sie ist ein Platz bei FOI Racing frei geworden${art ? ` (${art})` : ""}.` },
         { p: ctx.offerExpiresAt ? `Der Platz ist bis ${fmtDate(ctx.offerExpiresAt)} für Sie reserviert. Bitte melden Sie sich bis dahin über Ihren persönlichen Link an – danach geht er an den nächsten Gast auf der Warteliste.` : "Bitte melden Sie sich zeitnah an." },
-        { buttons: [{ label: "Platz annehmen", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
+        { buttons: [{ label: "Platz annehmen", href: anmelden, primary: true }, { label: "Ich kann leider nicht dabei sein", href: absagen, subtle: true }] },
       ];
       break;
     case "absage":
@@ -453,7 +453,9 @@ function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = ""
       if (!("buttons" in b)) return "";
       return `<p style="margin:8px 0 20px">${b.buttons
         .map((x) =>
-          x.primary
+          x.subtle
+            ? `<br><a href="${esc(x.href)}" style="display:inline-block;margin:6px 0 0;font-size:13px;color:#888;text-decoration:underline">${esc(x.label)}</a>`
+            : x.primary
             ? `<a href="${esc(x.href)}" style="display:inline-block;margin:0 8px 8px 0;padding:12px 22px;background:#E6941A;color:#000;font-weight:bold;text-decoration:none;border-radius:2px">${esc(x.label)}</a>`
             : `<a href="${esc(x.href)}" style="display:inline-block;margin:0 8px 8px 0;padding:11px 20px;border:1px solid #999;color:#333;text-decoration:none;border-radius:2px">${esc(x.label)}</a>`,
         )
