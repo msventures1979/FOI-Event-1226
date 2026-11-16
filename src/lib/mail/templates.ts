@@ -219,6 +219,8 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
     case "einladung": {
       // Erste Welle: Platz ist reserviert (status „angeboten“ mit Frist) – sonst normale Einladung
       const reserviert = g.status === "angeboten" && ctx.offerExpiresAt;
+      // Wie im Save the Date: lockere Anrede mit Vorname, Text in der Sie-Form
+      if (g.first_name?.trim()) anrede = `Hallo ${g.first_name.trim()},`;
       subject = reserviert ? "Ihr Platz ist reserviert: FOI Racing am 14. Dezember" : "Ihre Einladung: FOI Racing am 14. Dezember";
       preheader = reserviert ? "Jetzt verbindlich anmelden – Ihr persönlicher Link ist in dieser Mail." : "";
       blocks = reserviert
