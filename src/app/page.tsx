@@ -1,5 +1,6 @@
 import { Person } from "@/components/person";
 import Image from "next/image";
+import { Timeline } from "@/components/timeline";
 import { PageShell } from "@/components/site";
 import { getPublicFreeSlots } from "@/lib/event";
 import { PARTICIPATION } from "@/lib/types";
@@ -108,12 +109,17 @@ export default async function Home() {
         <div className="mx-auto max-w-[1240px] px-6 py-16">
           <p className="eyebrow mb-3">Ablauf · Montag, 14. Dezember</p>
           <h2 id="ablauf-h" className="h-section mb-10">Vom Check-in bis zum Dinner</h2>
-          <ol className="grid border-t-2 border-white md:grid-cols-4">
-            <AgendaItem mark="Start" time="13:00" title="Check-in" text="Ankunft der Selbstfahrer: Fahrzeug und Unterlagen. Um 13:45 Uhr folgt das Drivers Briefing – für alle, die selbst fahren, Pflicht." />
-            <AgendaItem mark="Sektor 1" time="14:15" title="Drift-Beifahrer" text="Ankunft und Check-in für alle, die als Beifahrer mitfahren." />
-            <AgendaItem mark="Sektor 2" time="14:30" title="Auf der Strecke" text="Bis 16:30 Uhr: Fahrten in den Gruppen Rookie, Performance und Race – und Drift-Fahrten mit einem Profi am Steuer." />
-            <AgendaItem mark="Ziel" time="17:00" title="Loge" text="Empfang in der Loge, Ankunft der Dinner-Gäste. Um 18:00 Uhr Early Dinner mit Charity-Auktion und Networking." gold last />
-          </ol>
+          <Timeline
+            steps={[
+              { who: "Selbstfahrer", time: "13:00", title: "Ankunft & Check-in", text: "Fahrzeug, Unterlagen und Einteilung in die Gruppen." },
+              { who: "Selbstfahrer", time: "13:45", title: "Drivers Briefing", text: "Für alle, die selbst fahren, ist die Teilnahme Pflicht." },
+              { who: "Drift-Beifahrer", time: "14:15", title: "Ankunft & Check-in", text: "Für alle, die als Beifahrer mit einem Profi fahren." },
+              { who: "Strecke", time: "14:30", title: "Start auf der Strecke", text: "Fahrten in den Gruppen Rookie, Performance und Race – und Drift-Fahrten mit einem Profi am Steuer." },
+              { who: "Strecke", time: "16:30", title: "Ende der Fahrzeit", text: "Letzte Runden, dann geht es weiter in die Loge." },
+              { who: "Loge", time: "17:00", title: "Empfang in der Loge", text: "Ankunft der Dinner-Gäste. Ankommen, aufwärmen, erste Gespräche." },
+              { who: "Loge", time: "18:00", title: "Early Dinner", text: "Dinner, Charity-Auktion und Networking – mit den Menschen, die Frontline of Innovation ausmachen.", gold: true },
+            ]}
+          />
         </div>
       </section>
 
@@ -298,17 +304,6 @@ function Stat({ value, label, border = "", gold = false }: { value: string; labe
       <dt className="mt-1.5 text-sm text-[#b3b3b3]">{label}</dt>
       <dd className={`font-display text-[56px] font-semibold leading-none ${gold ? "text-gold" : ""}`}>{value}</dd>
     </div>
-  );
-}
-
-function AgendaItem({ mark, time, title, text, gold = false, last = false }: { mark: string; time: string; title: string; text: string; gold?: boolean; last?: boolean }) {
-  return (
-    <li className={`py-7 pb-2 md:px-7 ${last ? "" : "md:border-r md:border-line"} first:md:pl-0 last:md:pr-0`}>
-      <div className={`font-display text-[13px] uppercase tracking-[0.2em] ${gold ? "text-gold" : "text-dim"}`}>{mark}</div>
-      <div className={`mt-3 font-display text-[64px] font-semibold leading-none ${gold ? "text-gold" : ""}`}>{time}</div>
-      <h3 className="mb-2 mt-4 text-xl font-semibold">{title}</h3>
-      <p className="text-base leading-relaxed text-muted">{text}</p>
-    </li>
   );
 }
 
