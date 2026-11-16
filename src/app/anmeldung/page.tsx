@@ -15,6 +15,26 @@ export default async function Anmeldung({ searchParams }: { searchParams: Promis
   const { code, t } = await searchParams;
 
   if (!code && !t) return <CodeEntry />;
+
+  // Vorschau ohne Gästedaten – zeigt das Formular so, wie es ein Gast mit reserviertem Platz sieht; nichts wird gespeichert
+  if (t === "vorschau") {
+    const ev = await getEvent().catch(() => null);
+    const slots = ev ? await getFreeSlots(ev.id) : ({ total: 100, taken: 0, free: 100, own: { max: null, taken: 0, free: 100 }, taxi: { max: null, taken: 0, free: 100 } } as const);
+    return (
+      <PageShell>
+        <main className="mx-auto max-w-[1040px] px-6 pb-24 pt-16">
+          <p className="mb-8 border border-dashed border-gold p-3 text-sm text-gold">Vorschau – hier wird nichts gespeichert und keine Mail verschickt.</p>
+          <Progress step={2} />
+          <RegistrationForm
+            guest={{ code: "FOI-VORSCHAU", salutation: "Herr", title: "", first_name: "Max", last_name: "Mustermann", company: "Musterfirma GmbH", position: "Geschäftsführer", email: "max.mustermann@beispiel.de" }}
+            slots={slots}
+            initialArt="own"
+            reservedUntil="2026-11-23T22:59:00Z"
+          />
+        </main>
+      </PageShell>
+    );
+  }
   if (!env.hasDb) return <CodeEntry info="Die Anmeldung öffnet mit dem Versand der Einladungen Mitte November." />;
 
   // Persönlicher Link aus der Einladung (?t=…) – kein Code nötig; ?code=… bleibt als Ausweg

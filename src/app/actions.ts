@@ -79,6 +79,8 @@ export async function registerAction(_prev: RegisterState, form: FormData): Prom
   if (!parsed.success) return fail(parsed.error.issues[0]?.message ?? "Bitte prüfen Sie Ihre Angaben.");
 
   const { code, ...data } = parsed.data;
+  // Vorschau (/anmeldung?t=vorschau): Formular vollständig prüfen, aber nichts speichern
+  if (code === "FOI-VORSCHAU") return fail("Vorschau: Alle Angaben sind gültig. In der Vorschau wird nichts gespeichert und keine Mail verschickt.");
   const { data: res, error } = await db().rpc("register_guest", { p_code: code, p_data: data });
   if (error) {
     console.error(error);
