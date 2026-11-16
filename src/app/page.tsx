@@ -34,7 +34,7 @@ export default async function Home() {
         <div className="relative mx-auto grid max-w-[1240px] items-end gap-14 px-6 pb-16 pt-[72px] md:grid-cols-2">
           <div>
             <p className="eyebrow mb-6 !text-[15px] !tracking-[0.22em]">FOI Racing · Montag, 14. Dezember 2026 · Hockenheimring</p>
-            <h1 className="font-display text-[clamp(52px,8vw,112px)] font-bold uppercase leading-[0.95]">
+            <h1 className="font-display text-[clamp(42px,5vw,72px)] font-bold uppercase leading-[0.95]">
               Die Weihnachts&shy;feier
               <br />
               <span className="text-gold">der anderen Art.</span>
