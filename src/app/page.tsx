@@ -73,7 +73,7 @@ export default async function Home() {
         <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-x-12 gap-y-6 px-6 py-7">
           <div className="flex flex-wrap items-center gap-x-10 gap-y-5">
             <span className="font-display text-xs uppercase tracking-[0.22em] text-gold">Partner</span>
-            <Image src="/images/school-of-racing.png" alt="School of Racing" width={48} height={38} className="h-[38px] w-auto opacity-85" />
+            <Image src="/images/school-of-racing.svg" alt="School of Racing" width={48} height={38} unoptimized className="h-[38px] w-auto opacity-85" />
             <Image src="/images/kos-klima.png" alt="KOS Klima" width={118} height={20} className="h-5 w-auto opacity-85" />
             <Image src="/images/unzer.png" alt="UNZER" width={97} height={22} className="h-[22px] w-auto opacity-85" />
             <Image src="/images/billiger.png" alt="billiger.de" width={79} height={26} className="h-[26px] w-auto opacity-85" />
@@ -252,7 +252,7 @@ export default async function Home() {
         <h2 id="partner-h" className="mb-2 text-center font-display text-sm font-medium uppercase tracking-[0.24em] text-gold">Partner</h2>
         <p className="mb-8 text-center text-base text-muted">Dieser Tag wird von unseren Partnern getragen. Für Sie ist er kostenfrei.</p>
         <div className="grid grid-cols-2 gap-6 md:grid-cols-5">
-          <PartnerTile><Image src="/images/school-of-racing.png" alt="School of Racing" width={75} height={60} className="h-[60px] w-auto opacity-90" /></PartnerTile>
+          <PartnerTile><Image src="/images/school-of-racing.svg" alt="School of Racing" width={75} height={60} unoptimized className="h-[60px] w-auto opacity-90" /></PartnerTile>
           <PartnerTile><Image src="/images/kos-klima.png" alt="KOS Klima" width={153} height={26} className="h-[26px] w-auto opacity-90" /></PartnerTile>
           <PartnerTile><Image src="/images/unzer.png" alt="UNZER" width={123} height={28} className="h-7 w-auto opacity-90" /></PartnerTile>
           <PartnerTile><Image src="/images/billiger.png" alt="billiger.de" width={103} height={34} className="h-[34px] w-auto opacity-90" /></PartnerTile>
