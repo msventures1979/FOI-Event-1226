@@ -76,7 +76,17 @@ export const PARTNERS: { name: string; href: string; logo: string; w: number; h:
   { name: "ox8 Corporate Finance", href: "https://ox8-cf.com", logo: "ox8.png", w: 47, h: 30 },
 ];
 
-const FAKTEN = "Montag, 14. Dezember 2026 · Hockenheimring\nAnkunft: Selbstfahrer 13:00 (Briefing 13:45 Pflicht) · Drift-Beifahrer 14:15 · Dinner-Gäste 17:00\n14:30–16:30 auf der Strecke · 18:00 Early Dinner in der Loge";
+const FAKTEN = [
+  "Montag, 14. Dezember 2026 · Hockenheimring",
+  "",
+  "Ihre Ankunft, je nachdem, wie Sie dabei sind:",
+  "· Mit dem eigenen Wagen: 13:00 Uhr – um 13:45 Uhr folgt das Drivers Briefing, die Teilnahme ist Pflicht",
+  "· Als Drift-Beifahrer: 14:15 Uhr",
+  "· Nur zum Dinner: 17:00 Uhr",
+  "",
+  "Auf der Strecke: 14:30 bis 16:30 Uhr",
+  "Early Dinner mit Charity-Auktion: ab 18:00 Uhr in der Loge",
+].join("\n");
 
 type Block =
   | { p: string }
@@ -225,7 +235,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       blocks = reserviert
         ? [
             { p: "vielen Dank, dass Sie sich für unsere Weihnachtsfeier der anderen Art vorgemerkt haben. Jetzt wird es offiziell: Wir laden Sie herzlich ein zu FOI Racing auf dem Hockenheimring." },
-            { facts: FAKTEN + ", mit einer Charity-Auktion" },
+            { facts: FAKTEN },
             { p: `Ihr Platz ist für Sie reserviert – bis ${fmtDate(ctx.offerExpiresAt!)}. Bitte melden Sie sich bis dahin über Ihren persönlichen Link verbindlich an, das dauert nur zwei Minuten. Danach geben wir den Platz an den nächsten Gast auf der Warteliste weiter.` },
             { p: "Bei der Anmeldung wählen Sie, wie Sie dabei sein möchten: mit dem eigenen Wagen auf der Strecke, als Beifahrer im Drift-Wagen mit einem Profi am Steuer oder nur zum Early Dinner am Abend." },
             { buttons: [{ label: "Jetzt verbindlich anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
@@ -235,7 +245,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
           ]
         : [
             { p: "wir laden Sie herzlich zur Weihnachtsfeier der anderen Art ein: FOI Racing auf dem Hockenheimring." },
-            { facts: FAKTEN + ", mit einer Charity-Auktion" },
+            { facts: FAKTEN },
             { p: "Sie fahren Ihren eigenen Wagen – für Einsteiger geführt per Funk –, steigen als Beifahrer in den Drift-Wagen oder kommen nur zum Dinner am Abend. Die Teilnahme ist für Sie kostenfrei. Es gibt 100 Plätze; sie werden in der Reihenfolge der Anmeldung vergeben." },
             { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
             { ps: "Der Link gilt nur für Sie persönlich." },
