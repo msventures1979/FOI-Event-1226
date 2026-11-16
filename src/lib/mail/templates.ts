@@ -1,4 +1,5 @@
 import { briefanrede, PARTICIPATION, type Guest, type ParticipationType } from "../types";
+import { ablauf, gcalAnmeldung } from "../ics";
 
 export type MailType =
   | "interesse"
@@ -238,11 +239,18 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
     case "bestaetigung":
       subject = "Anmeldung bestätigt: FOI Racing am 14. Dezember";
       blocks = [
-        { p: "vielen Dank für Ihre Anmeldung – Ihr Startplatz ist für Sie reserviert." },
-        { facts: `Teilnahmeart: ${art}\nMontag, 14. Dezember 2026, Eintreffen 13:00 Uhr\nHockenheimring, Am Motodrom, 68766 Hockenheim` },
-        { p: "Alle Details zu Treffpunkt, Parken und Ablauf schicken wir Ihnen eine Woche vor dem Termin." },
-        { p: "Den Kalendereintrag finden Sie im Anhang. Falls sich Ihre Pläne ändern, sagen Sie bitte über diesen Link ab, damit wir den Platz weitergeben können." },
-        { buttons: [{ label: "Teilnahme verwalten", href: verwalten }] },
+        { p: "vielen Dank für Ihre Anmeldung – wir freuen uns sehr auf Sie! Ihr Platz ist verbindlich für Sie reserviert." },
+        { facts: `Ihre Teilnahme: ${art}\nMontag, 14. Dezember 2026\nHockenheimring, Am Motodrom, 68766 Hockenheim` },
+        { p: "So läuft der Tag für Sie:" },
+        { facts: ablauf(ctx.participationType === "dinner").join("\n") },
+        { p: "Treffpunkt, Parken und die letzten Details schicken wir Ihnen eine Woche vor dem Termin." },
+        { buttons: [
+          { label: "In Outlook / Apple Kalender eintragen", href: `${ctx.siteUrl}/api/ics/${g.manage_token}`, primary: true },
+          { label: "Google Kalender", href: gcalAnmeldung(verwalten, ctx.participationType === "dinner") },
+        ] },
+        { p: "Den Kalendereintrag finden Sie auch im Anhang. Haben Sie sich den Termin schon nach der Vormerkung eingetragen, wird er damit aktualisiert." },
+        { buttons: [{ label: "Meine Teilnahme ansehen", href: verwalten }] },
+        { ps: "Falls sich Ihre Pläne ändern, sagen Sie bitte über „Meine Teilnahme“ ab – dann geben wir Ihren Platz an den nächsten Gast auf der Warteliste weiter." },
       ];
       break;
     case "warteliste":

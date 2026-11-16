@@ -7,11 +7,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
   const { token } = await params;
   const found = await guestByToken(token);
   if (!found) return new NextResponse("Nicht gefunden", { status: 404 });
-  const ics = buildIcs({ uid: found.guest.id, url: `${env.siteUrl}/meine-teilnahme/${token}` });
+  const ics = buildIcs({ url: `${env.siteUrl}/meine-teilnahme/${token}`, dinnerOnly: found.registration?.participation_type === "dinner" });
   return new NextResponse(ics, {
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
-      "Content-Disposition": 'attachment; filename="FOI-Racing-2026.ics"',
+      "Content-Disposition": 'attachment; filename="FOI-Weihnachtsfeier-14-Dezember.ics"',
     },
   });
 }
