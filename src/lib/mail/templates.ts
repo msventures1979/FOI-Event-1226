@@ -243,7 +243,8 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
         { facts: `Ihre Teilnahme: ${art}\nMontag, 14. Dezember 2026\nHockenheimring, Am Motodrom, 68766 Hockenheim` },
         { p: "So läuft der Tag für Sie:" },
         { facts: ablauf(ctx.participationType === "dinner").join("\n") },
-        { p: "Treffpunkt, Parken und die letzten Details schicken wir Ihnen eine Woche vor dem Termin." },
+        { p: "Programm, Anfahrt und Antworten auf häufige Fragen finden Sie jederzeit auf racing.frontlineofinnovation.de. Treffpunkt, Parken und die letzten Details schicken wir Ihnen zusätzlich eine Woche vor dem Termin." },
+        { buttons: [{ label: "Programm & Anfahrt ansehen", href: ctx.siteUrl }] },
         { buttons: [
           { label: "In Outlook / Apple Kalender eintragen", href: `${ctx.siteUrl}/api/ics/${g.manage_token}`, primary: true },
           { label: "Google Kalender", href: gcalAnmeldung(verwalten, ctx.participationType === "dinner") },
