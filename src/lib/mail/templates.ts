@@ -69,11 +69,11 @@ export const INTEREST_FROM = "FOI Weihnachtsfeier <weihnachtsfeier@frontlineofin
 const GRUSS = "Herzliche Grüße aus Mannheim\nMatthias Storch und Süleyman Acar";
 /** Partner mit Link und dunklem Logo für helle Mails (Logos liegen unter /images/mail/) */
 export const PARTNERS: { name: string; href: string; logo: string; w: number; h: number }[] = [
-  { name: "School of Racing", href: "https://www.school-of-racing.de", logo: "school-of-racing.png", w: 50, h: 40 },
-  { name: "KOS Klima", href: "https://kosklima.de", logo: "kos-klima.png", w: 106, h: 18 },
-  { name: "UNZER", href: "https://www.unzer.com/de/", logo: "unzer.png", w: 88, h: 20 },
-  { name: "billiger.de", href: "https://www.billiger.de", logo: "billiger.png", w: 67, h: 22 },
-  { name: "ox8 Corporate Finance", href: "https://ox8-cf.com", logo: "ox8.png", w: 47, h: 30 },
+  { name: "School of Racing", href: "https://www.school-of-racing.de", logo: "school-of-racing-kachel.png", w: 74, h: 56 },
+  { name: "KOS Klima", href: "https://kosklima.de", logo: "kos-klima-kachel.png", w: 130, h: 56 },
+  { name: "UNZER", href: "https://www.unzer.com/de/", logo: "unzer-kachel.png", w: 112, h: 56 },
+  { name: "billiger.de", href: "https://www.billiger.de", logo: "billiger-kachel.png", w: 91, h: 56 },
+  { name: "ox8 Corporate Finance", href: "https://ox8-cf.com", logo: "ox8-kachel.png", w: 71, h: 56 },
 ];
 
 const FAKTEN = [
@@ -446,7 +446,7 @@ function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = ""
         return `<p style="margin:0 0 16px;padding:14px 16px;border-left:3px solid #E6941A;background:#f6f6f4;font-size:15px">${esc(b.facts).replace(/\n/g, "<br>")}</p>`;
       if ("partners" in b)
         return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 24px;border-top:1px solid #e5e5e5;border-bottom:1px solid #e5e5e5"><tr><td style="padding:16px 0 6px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E6941A">Möglich gemacht von unseren Partnern</td></tr><tr><td style="padding:6px 0 16px">${PARTNERS.map(
-          (x) => `<a href="${esc(x.href)}" style="display:inline-block;margin:6px 22px 6px 0;vertical-align:middle;text-decoration:none"><img src="${esc(siteUrl)}/images/mail/${x.logo}" width="${x.w}" height="${x.h}" alt="${esc(x.name)}" style="display:block;border:0;width:${x.w}px;height:${x.h}px"></a>`,
+          (x) => `<a href="${esc(x.href)}" style="display:inline-block;margin:4px 8px 4px 0;vertical-align:middle;text-decoration:none;background:#ffffff;border-radius:3px"><img src="${esc(siteUrl)}/images/mail/${x.logo}" width="${x.w}" height="${x.h}" alt="${esc(x.name)}" style="display:block;border:0;border-radius:3px;width:${x.w}px;height:${x.h}px"></a>`,
         ).join("")}</td></tr></table>`;
       if ("code" in b)
         return `<p style="margin:0 0 16px">Ihr persönlicher Code:<br><span style="display:inline-block;margin-top:6px;padding:8px 14px;background:#000;color:#fff;font-family:'Courier New',monospace;font-size:20px;letter-spacing:3px">${esc(b.code)}</span></p>`;
