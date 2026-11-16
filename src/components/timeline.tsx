@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 
-export type TimelineStep = { time: string; title: string; text: string; who: string; gold?: boolean };
+export type TimelineStep = { time: string; title: string; text: string; who: string; gold?: boolean; badge?: string };
 
 /** Komplette Tages-Timeline, horizontal scrollbar (Wischen, Pfeile, Tastatur) */
 export function Timeline({ steps }: { steps: TimelineStep[] }) {
@@ -25,7 +25,10 @@ export function Timeline({ steps }: { steps: TimelineStep[] }) {
           <li key={s.time + s.title} className={`w-[270px] shrink-0 snap-start py-7 pb-2 pr-7 ${i < steps.length - 1 ? "mr-7 border-r border-line" : ""}`}>
             <div className={`font-display text-[13px] uppercase tracking-[0.2em] ${s.gold ? "text-gold" : "text-dim"}`}>{s.who}</div>
             <div className={`mt-3 font-display text-[56px] font-semibold leading-none ${s.gold ? "text-gold" : ""}`}>{s.time}</div>
-            <h3 className="mb-2 mt-4 text-xl font-semibold">{s.title}</h3>
+            <h3 className="mb-2 mt-4 flex flex-wrap items-center gap-2 text-xl font-semibold">
+              {s.title}
+              {s.badge && <span className="border border-gold px-2 py-0.5 font-display text-[11px] uppercase tracking-[0.2em] text-gold">{s.badge}</span>}
+            </h3>
             <p className="text-base leading-relaxed text-muted">{s.text}</p>
           </li>
         ))}

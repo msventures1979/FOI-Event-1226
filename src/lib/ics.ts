@@ -10,7 +10,7 @@ export function ablauf(art: Art): string[] {
   const abend = ["17:00 Empfang in der Loge", "18:00 Early Dinner, Charity-Auktion und Networking"];
   if (art === "dinner") return ["17:00 Ankunft in der Loge", "18:00 Early Dinner, Charity-Auktion und Networking"];
   if (art === "taxi") return ["14:15 Ankunft und Check-in", "14:30–16:30 Drift-Fahrten als Beifahrer", ...abend];
-  return ["13:00 Ankunft und Check-in (Fahrzeug, Unterlagen)", "13:45 Drivers Briefing – Teilnahme ist Pflicht", "14:30–16:30 Auf der Strecke, in Ihrer Gruppe", ...abend];
+  return ["13:00 Ankunft und Check-in (Fahrzeug, Unterlagen)", "13:45 Drivers Briefing – Teilnahme ist Pflicht, ohne Briefing keine Fahrt auf der Strecke", "14:30–16:30 Auf der Strecke, in Ihrer Gruppe", ...abend];
 }
 
 const START: Record<string, string> = { own: "20261214T120000Z", taxi: "20261214T131500Z", dinner: "20261214T160000Z" };

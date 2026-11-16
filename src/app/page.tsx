@@ -112,7 +112,7 @@ export default async function Home() {
           <Timeline
             steps={[
               { who: "Selbstfahrer", time: "13:00", title: "Ankunft & Check-in", text: "Fahrzeug, Unterlagen und Einteilung in die Gruppen." },
-              { who: "Selbstfahrer", time: "13:45", title: "Drivers Briefing", text: "Für alle, die selbst fahren, ist die Teilnahme Pflicht." },
+              { who: "Selbstfahrer", time: "13:45", title: "Drivers Briefing", badge: "Pflicht", text: "Für alle, die selbst fahren, verpflichtend. Ohne Briefing keine Fahrt auf der Strecke – bitte pünktlich sein." },
               { who: "Drift-Beifahrer", time: "14:15", title: "Ankunft & Check-in", text: "Für alle, die als Beifahrer mit einem Profi fahren." },
               { who: "Strecke", time: "14:30", title: "Start auf der Strecke", text: "Fahrten in den Gruppen Rookie, Performance und Race – und Drift-Fahrten mit einem Profi am Steuer." },
               { who: "Strecke", time: "16:30", title: "Ende der Fahrzeit", text: "Letzte Runden, dann geht es weiter in die Loge." },

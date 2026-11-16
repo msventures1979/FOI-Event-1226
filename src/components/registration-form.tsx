@@ -185,6 +185,10 @@ export function RegistrationForm({
                 options={["Winterreifen", "Sommerreifen", "Semi-Slicks"]}
               />
             </div>
+            <p className="mt-6 border-l-2 border-gold pl-4 text-[15px] leading-relaxed text-muted">
+              <strong className="text-white">Drivers Briefing um 13:45 Uhr ist Pflicht.</strong> Ohne Teilnahme am Briefing ist keine Fahrt auf der
+              Strecke möglich. Bitte planen Sie Ihre Ankunft für 13:00 Uhr ein.
+            </p>
           </Box>
         )}
 
