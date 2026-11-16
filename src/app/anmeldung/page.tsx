@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PageShell } from "@/components/site";
 import { Progress } from "@/components/progress";
+import { PartnerStrip } from "@/components/partners";
 import { RegistrationForm } from "@/components/registration-form";
 import { env } from "@/lib/env";
 import { getEvent, getFreeSlots, guestByCode, guestByToken } from "@/lib/event";
@@ -24,6 +25,7 @@ export default async function Anmeldung({ searchParams }: { searchParams: Promis
       <PageShell>
         <main className="mx-auto max-w-[1040px] px-6 pb-24 pt-16">
           <p className="mb-8 border border-dashed border-gold p-3 text-sm text-gold">Vorschau – hier wird nichts gespeichert und keine Mail verschickt.</p>
+          <PartnerStrip />
           <Progress step={2} />
           <RegistrationForm
             guest={{ code: "FOI-VORSCHAU", salutation: "Herr", title: "", first_name: "Max", last_name: "Mustermann", company: "Musterfirma GmbH", position: "Geschäftsführer", email: "max.mustermann@beispiel.de" }}
@@ -70,6 +72,7 @@ export default async function Anmeldung({ searchParams }: { searchParams: Promis
   return (
     <PageShell>
       <main className="mx-auto max-w-[1040px] px-6 pb-24 pt-16">
+        <PartnerStrip />
         <Progress step={2} />
         <RegistrationForm
           guest={{

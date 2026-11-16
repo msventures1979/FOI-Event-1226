@@ -94,7 +94,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
   let preheader = "";
   let from: string | undefined = HOSTS_FROM; // beide Gastgeber im Absender (Standard für alle Mails)
   let assets = ctx.siteUrl;
-  let footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing";
+  let footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing · mit freundlicher Unterstützung von KOS Klima, UNZER, billiger.de und ox8 Corporate Finance";
   let blocks: Block[] = [];
   let gruss = GRUSS;
   let unsubscribe: string | undefined;
