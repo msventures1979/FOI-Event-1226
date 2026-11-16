@@ -239,7 +239,8 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
             { p: `Ihr Platz ist für Sie reserviert – bis ${fmtDate(ctx.offerExpiresAt!)}. Bitte melden Sie sich bis dahin über Ihren persönlichen Link verbindlich an, das dauert nur zwei Minuten. Danach geben wir den Platz an den nächsten Gast auf der Warteliste weiter.` },
             { p: "Bei der Anmeldung wählen Sie, wie Sie dabei sein möchten: mit dem eigenen Wagen auf der Strecke, als Beifahrer im Drift-Wagen mit einem Profi am Steuer oder nur zum Early Dinner am Abend." },
             { buttons: [{ label: "Jetzt verbindlich anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
-            { p: "Den kompletten Ablauf, Infos zur Charity-Auktion und Antworten auf häufige Fragen finden Sie auf racing.frontlineofinnovation.de." },
+            { p: "Den kompletten Ablauf, Infos zur Charity-Auktion und Antworten auf häufige Fragen finden Sie auf unserer Event-Seite." },
+            { buttons: [{ label: "Programm & Ablauf ansehen", href: ctx.siteUrl }] },
             { partners: true },
             { ps: "Der Link gilt nur für Sie persönlich. Über denselben Link sehen Sie später Ihre Anmeldung und können bei Bedarf absagen." },
           ]
