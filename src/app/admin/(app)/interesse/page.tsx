@@ -53,13 +53,14 @@ export default async function InteressePage({ searchParams }: { searchParams: Pr
       <p className="mt-2 text-sm text-dim">
         {invited ?? 0} Gäste in der Liste · {answered} geantwortet · {Math.max(0, cap - counts.dabei)} von {cap} Plätzen frei
       </p>
-      <ul className="mt-6 grid grid-cols-2 gap-px bg-line sm:grid-cols-4 lg:grid-cols-7">
+      <ul className="mt-6 grid grid-cols-2 gap-px bg-line sm:grid-cols-4 lg:grid-cols-8">
         {[
           ["Dabei", counts.dabei, "dabei"],
           ["Interessiert", counts.interessiert, "interessiert"],
           ["Nicht dabei", counts.nicht, "nicht"],
           ["Eigener Wagen", modes("own"), ""],
-          ["Renntaxi", modes("taxi"), ""],
+          ["Drift-Beifahrer", modes("taxi"), ""],
+          ["Nur Dinner", modes("dinner"), ""],
           ["Noch offen", modes("offen"), ""],
           ["Ohne Antwort", Math.max(0, (invited ?? 0) - answered), ""],
         ].map(([l, n, k]) => (

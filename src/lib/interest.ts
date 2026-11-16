@@ -2,7 +2,7 @@ import "server-only";
 import { db } from "@/lib/supabase/admin";
 
 export type InterestAnswer = "dabei" | "interessiert" | "nicht";
-export type InterestMode = "" | "own" | "taxi" | "offen";
+export type InterestMode = "" | "own" | "taxi" | "dinner" | "offen";
 
 export interface Interest {
   guest_id: string;
@@ -25,7 +25,8 @@ export const ANSWERS: { value: InterestAnswer; label: string; hint?: string }[] 
 
 export const MODES: { value: Exclude<InterestMode, "">; label: string }[] = [
   { value: "own", label: "Mit meinem eigenen Fahrzeug." },
-  { value: "taxi", label: "Als Beifahrer im Renntaxi, mit einem Profi am Steuer." },
+  { value: "taxi", label: "Als Drift-Beifahrer, mit einem Profi am Steuer." },
+  { value: "dinner", label: "Nur zum Dinner am Abend." },
   { value: "offen", label: "Das entscheide ich später." },
 ];
 
@@ -38,7 +39,7 @@ export const GROUPS: { value: Exclude<TrackGroup, "">; label: string; text: stri
 export const GROUP_SHORT: Record<TrackGroup, string> = { "": "", rookie: "Rookie", performance: "Performance", race: "Race / Drift" };
 
 export const ANSWER_SHORT: Record<InterestAnswer, string> = { dabei: "Dabei", interessiert: "Interessiert", nicht: "Nicht dabei" };
-export const MODE_SHORT: Record<InterestMode, string> = { "": "", own: "Eigener Wagen", taxi: "Renntaxi", offen: "Noch offen" };
+export const MODE_SHORT: Record<InterestMode, string> = { "": "", own: "Eigener Wagen", taxi: "Drift-Beifahrer", dinner: "Nur Dinner", offen: "Noch offen" };
 
 export async function interestCounts(eventId: string): Promise<{ dabei: number; interessiert: number; nicht: number }> {
   const supa = db();

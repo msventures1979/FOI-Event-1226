@@ -32,7 +32,7 @@ export async function saveCapacity(form: FormData) {
     const { error } = await db().from("events").update({ total_capacity: total }).eq("id", ev.id);
     if (error) errors.push(error.message);
   }
-  for (const t of ["own", "taxi"]) {
+  for (const t of ["own", "taxi", "dinner"]) {
     const raw = String(form.get(t) ?? "").trim();
     const val = raw === "" ? null : Number(raw);
     if (val !== null && (!Number.isInteger(val) || val < 0)) {

@@ -110,9 +110,9 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar\nmit Paul Muck, School of Racing";
       blocks = [
         { hero: { kicker: "Persönliche Einladung · Save the Date · 14. Dezember 2026", line1: "Weihnachtsfeier", line2: "mit Vollgas.", image: `${ctx.siteUrl}/images/mail-hero.jpg`, href: link } },
-        { p: "stellen Sie sich einen kalten Dezembernachmittag vor. Der Motor läuft warm, vor Ihnen liegt der Hockenheimring: Sie fahren mit Ihrem eigenen Auto auf die Strecke. Für alle, die zum ersten Mal Rennstreckenluft schnuppern, bieten wir geführtes Fahren mit Funkgeräten an – mit hilfreichen Tipps direkt ins Auto, damit Sie sich Runde für Runde mit der Strecke vertraut machen. Oder Sie lassen sich von einem Profi im Renntaxi durch die Kurven tragen. Danach wird es gemütlich: Dinner in der Loge, mit den Menschen, die Frontline of Innovation ausmachen." },
+        { p: "stellen Sie sich einen kalten Dezembernachmittag vor. Der Motor läuft warm, vor Ihnen liegt der Hockenheimring: Sie fahren mit Ihrem eigenen Auto auf die Strecke. Für alle, die zum ersten Mal Rennstreckenluft schnuppern, bieten wir geführtes Fahren mit Funkgeräten an – mit hilfreichen Tipps direkt ins Auto, damit Sie sich Runde für Runde mit der Strecke vertraut machen. Oder Sie lassen sich von einem Profi als Beifahrer quer durch die Kurven driften. Danach wird es gemütlich: Dinner in der Loge, mit den Menschen, die Frontline of Innovation ausmachen." },
         { p: "So stellen wir uns unsere erste FOI-Weihnachtsfeier vor. Und wir haben richtig Lust darauf." },
-        { p: "Wir laden dazu ausschließlich persönlich ein – einen kleinen Kreis aus unserem Netzwerk. Für Sie entstehen keine Kosten: Strecke, Renntaxi und Dinner tragen wir gemeinsam mit unseren Partnern." },
+        { p: "Wir laden dazu ausschließlich persönlich ein – einen kleinen Kreis aus unserem Netzwerk. Für Sie entstehen keine Kosten: Strecke, Drift-Fahrten und Dinner tragen wir gemeinsam mit unseren Partnern." },
         { p: "Noch ist nicht alles in trockenen Tüchern – und ehrlich gesagt hängt es auch an Ihnen. Sagen Sie uns mit einem Klick, ob Sie dabei sein möchten. Dann wissen wir, für wen wir Gas geben." },
         { facts: "Montag, 14. Dezember 2026 · Hockenheimring\nAb 13 Uhr · auf der Strecke ab 14 Uhr · Dinner am frühen Abend\nNur auf persönliche Einladung · für Sie kostenfrei · 100 Plätze" },
         { buttons: [{ label: "Ich will auf die Strecke", href: link, primary: true }, { label: "Diesmal nicht", href: `${link}?antwort=nicht` }] },
@@ -135,7 +135,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar";
       unsubscribe = `${ctx.siteUrl}/api/abmelden?t=${encodeURIComponent(g.manage_token)}`;
       blocks = [
-        { p: "vor ein paar Tagen haben wir Sie zu unserer ersten FOI-Weihnachtsfeier eingeladen: am Montag, 14. Dezember, am Hockenheimring. Sie fahren mit Ihrem eigenen Auto auf der Strecke oder sitzen bei einem Profi im Renntaxi, danach essen wir gemeinsam in der Loge." },
+        { p: "vor ein paar Tagen haben wir Sie zu unserer ersten FOI-Weihnachtsfeier eingeladen: am Montag, 14. Dezember, am Hockenheimring. Sie fahren mit Ihrem eigenen Auto auf der Strecke oder sitzen bei einem Profi im Drift-Wagen, danach essen wir gemeinsam in der Loge." },
         {
           p:
             taken !== null && taken > 0
@@ -162,7 +162,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       from = INTEREST_FROM;
       footer = "Frontline of Innovation · gemeinsam mit School of Racing";
       gruss = "Herzliche Grüße\nMatthias Storch und Süleyman Acar\nmit Paul Muck, School of Racing";
-      const MODE: Record<string, string> = { own: "Mit eigenem Fahrzeug", taxi: "Im Renntaxi", offen: "Entscheiden Sie später" };
+      const MODE: Record<string, string> = { own: "Mit eigenem Fahrzeug", taxi: "Als Drift-Beifahrer", dinner: "Nur zum Dinner", offen: "Entscheiden Sie später" };
       const GROUP: Record<string, string> = { rookie: "Rookie", performance: "Performance", race: "Race / Drift" };
       const strecke = [MODE[i.mode], GROUP[i.track_group]].filter(Boolean).join(" · ");
       const angaben = [`Ihre Antwort: ${dabei ? "Ich bin dabei" : "Interessiert, noch nicht sicher"}`, strecke && `Auf der Strecke: ${strecke}`, i.vehicle && `Fahrzeug: ${i.vehicle}`].filter(Boolean).join("\n");
@@ -215,14 +215,14 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
             { p: "vielen Dank, dass Sie sich für unsere Weihnachtsfeier der anderen Art vorgemerkt haben. Jetzt wird es offiziell: Wir laden Sie herzlich ein zu FOI Racing auf dem Hockenheimring." },
             { facts: FAKTEN + ", mit einer Charity-Auktion" },
             { p: `Ihr Platz ist für Sie reserviert – bis ${fmtDate(ctx.offerExpiresAt!)}. Bitte melden Sie sich bis dahin über Ihren persönlichen Link verbindlich an, das dauert nur zwei Minuten. Danach geben wir den Platz an den nächsten Gast auf der Warteliste weiter.` },
-            { p: "Sie fahren Ihren eigenen Wagen – für Einsteiger geführt per Funk – oder Sie steigen ins Renntaxi. Die Teilnahme ist für Sie kostenfrei." },
+            { p: "Sie fahren Ihren eigenen Wagen – für Einsteiger geführt per Funk –, steigen als Beifahrer in den Drift-Wagen oder kommen nur zum Dinner am Abend. Die Teilnahme ist für Sie kostenfrei." },
             { buttons: [{ label: "Jetzt verbindlich anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
             { ps: "Der Link gilt nur für Sie persönlich. Über denselben Link sehen Sie später Ihre Anmeldung und können bei Bedarf absagen." },
           ]
         : [
             { p: "wir laden Sie herzlich zur Weihnachtsfeier der anderen Art ein: FOI Racing auf dem Hockenheimring." },
             { facts: FAKTEN + ", mit einer Charity-Auktion" },
-            { p: "Sie fahren Ihren eigenen Wagen – für Einsteiger geführt per Funk – oder Sie steigen ins Renntaxi. Die Teilnahme ist für Sie kostenfrei. Es gibt 100 Plätze; sie werden in der Reihenfolge der Anmeldung vergeben." },
+            { p: "Sie fahren Ihren eigenen Wagen – für Einsteiger geführt per Funk –, steigen als Beifahrer in den Drift-Wagen oder kommen nur zum Dinner am Abend. Die Teilnahme ist für Sie kostenfrei. Es gibt 100 Plätze; sie werden in der Reihenfolge der Anmeldung vergeben." },
             { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
             { ps: "Der Link gilt nur für Sie persönlich." },
           ];

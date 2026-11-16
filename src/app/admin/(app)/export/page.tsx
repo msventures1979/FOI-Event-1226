@@ -2,7 +2,7 @@ import { requireAdmin } from "@/lib/admin";
 const EXPORTS: [string, string, string][] = [
   ["interesse", "Interessensabfrage (Save the Date)", "Alle Gäste mit Antwort, Streckenwunsch, Fahrzeug und Anmerkung"],
   ["alle", "Alle Gäste", "Stammdaten, Status, Code, Teilnahme, Anmeldedaten"],
-  ["fahrer", "Fahrerliste für School of Racing", "Eigener Wagen und Renntaxi: Name, Mobil, Fahrzeug, Bereifung, Erfahrung, Führerschein"],
+  ["fahrer", "Fahrerliste für School of Racing", "Eigener Wagen und Drift-Beifahrer: Name, Mobil, Fahrzeug, Bereifung, Erfahrung, Führerschein"],
   ["catering", "Ernährungsliste für das Catering", "Alle Angemeldeten mit Ernährung und Allergien"],
   ["checkin", "Check-in-Liste zum Ausdrucken", "Alphabetisch mit Startnummer und Teilnahmeart"],
 ];

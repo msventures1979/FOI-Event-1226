@@ -1,4 +1,5 @@
-export type ParticipationType = "own" | "taxi";
+/** „taxi“ ist intern der Schlüssel für „Drift-Beifahrer“ (früher Renntaxi) */
+export type ParticipationType = "own" | "taxi" | "dinner";
 
 export const PARTICIPATION: Record<ParticipationType, { num: string; title: string; short: string; text: string }> = {
   own: {
@@ -9,13 +10,19 @@ export const PARTICIPATION: Record<ParticipationType, { num: string; title: stri
   },
   taxi: {
     num: "02",
-    title: "Renntaxi",
-    short: "Renntaxi",
-    text: "Sie sitzen auf dem Beifahrersitz, am Steuer ein Profi. Mehrere Runden im Renntempo, ohne selbst fahren zu müssen.",
+    title: "Drift-Beifahrer",
+    short: "Drift-Beifahrer",
+    text: "Sie sitzen auf dem Beifahrersitz, am Steuer ein Profi der School of Racing – und erleben die Strecke quer, ohne selbst fahren zu müssen.",
+  },
+  dinner: {
+    num: "03",
+    title: "Nur zum Dinner",
+    short: "Nur Dinner",
+    text: "Sie kommen am frühen Abend in die Loge: zum Dinner, zur Charity-Auktion und zu den Gesprächen.",
   },
 };
 
-export const PARTICIPATION_TYPES: ParticipationType[] = ["own", "taxi"];
+export const PARTICIPATION_TYPES: ParticipationType[] = ["own", "taxi", "dinner"];
 
 export type GuestStatus =
   | "eingeladen"
@@ -98,6 +105,7 @@ export interface FreeSlots {
   free: number;
   own: { max: number | null; taken: number; free: number };
   taxi: { max: number | null; taken: number; free: number };
+  dinner: { max: number | null; taken: number; free: number };
 }
 
 /** „Sehr geehrter Herr Dr. Müller“ / „Sehr geehrte Frau Müller“ / „Guten Tag Max Müller“ */

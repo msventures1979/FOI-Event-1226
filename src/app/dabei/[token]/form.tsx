@@ -11,7 +11,8 @@ const ANSWERS = [
 ] as const;
 const MODES = [
   { value: "own", label: "Mit meinem eigenen Fahrzeug." },
-  { value: "taxi", label: "Als Beifahrer im Renntaxi, mit einem Profi am Steuer." },
+  { value: "taxi", label: "Als Drift-Beifahrer, mit einem Profi am Steuer." },
+  { value: "dinner", label: "Nur zum Dinner am Abend." },
   { value: "offen", label: "Das entscheide ich später." },
 ] as const;
 const GROUPS = [

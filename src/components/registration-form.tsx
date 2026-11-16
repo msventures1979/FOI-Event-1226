@@ -81,7 +81,7 @@ export function RegistrationForm({
         <legend className="mb-4 font-display text-[22px] font-semibold uppercase tracking-[0.04em]">
           Teilnahmeart {req}
         </legend>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           {PARTICIPATION_TYPES.map((t) => {
             const on = t === art;
             const free = slots[t].free;
@@ -121,7 +121,9 @@ export function RegistrationForm({
                 <span className="text-sm leading-normal text-muted">
                   {t === "own"
                     ? "Für Einsteiger geführt per Funk."
-                    : "Beifahrer, am Steuer ein Profi."}
+                    : t === "taxi"
+                      ? "Beifahrer, am Steuer ein Profi."
+                      : "Dinner, Auktion und Gespräche in der Loge."}
                 </span>
               </label>
             );

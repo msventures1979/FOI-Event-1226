@@ -6,7 +6,7 @@ import { db } from "@/lib/supabase/admin";
 import { getEvent, guestByToken, normalizeCode } from "@/lib/event";
 import { processQueue, sendNow } from "@/lib/mail/queue";
 
-const type = z.enum(["own", "taxi"]);
+const type = z.enum(["own", "taxi", "dinner"]);
 
 const schema = z
   .object({

@@ -19,7 +19,7 @@ export default async function Anmeldung({ searchParams }: { searchParams: Promis
   // Vorschau ohne Gästedaten – zeigt das Formular so, wie es ein Gast mit reserviertem Platz sieht; nichts wird gespeichert
   if (t === "vorschau") {
     const ev = await getEvent().catch(() => null);
-    const slots = ev ? await getFreeSlots(ev.id) : ({ total: 100, taken: 0, free: 100, own: { max: null, taken: 0, free: 100 }, taxi: { max: null, taken: 0, free: 100 } } as const);
+    const slots = ev ? await getFreeSlots(ev.id) : ({ total: 100, taken: 0, free: 100, own: { max: null, taken: 0, free: 100 }, taxi: { max: null, taken: 0, free: 100 }, dinner: { max: null, taken: 0, free: 100 } } as const);
     return (
       <PageShell>
         <main className="mx-auto max-w-[1040px] px-6 pb-24 pt-16">
@@ -65,7 +65,7 @@ export default async function Anmeldung({ searchParams }: { searchParams: Promis
     return <CodeEntry info="Die Anmeldung ist geschlossen. Bitte schreiben Sie uns an info@frontlineofinnovation.de." />;
   }
   const [slots, interest] = await Promise.all([getFreeSlots(ev.id), interestOf(guest.id)]);
-  const initialArt: ParticipationType = interest?.mode === "taxi" ? "taxi" : "own";
+  const initialArt: ParticipationType = interest?.mode === "taxi" ? "taxi" : interest?.mode === "dinner" ? "dinner" : "own";
 
   return (
     <PageShell>

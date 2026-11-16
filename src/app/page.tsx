@@ -60,7 +60,7 @@ export default async function Home() {
             <h2 className="px-7 pb-2.5 pt-6 font-display text-[13px] font-medium uppercase tracking-[0.2em] text-dim">Startaufstellung</h2>
             <dl className="grid grid-cols-2">
               <Stat value={showFree ? `${slots!.free}` : "100"} label={showFree ? "Plätze noch frei" : "Plätze, nicht mehr"} border="br" />
-              <Stat value="2" label="Arten, die Strecke zu erleben" border="b" />
+              <Stat value="3" label="Arten, dabei zu sein" border="b" />
               <Stat value="0 €" label="für Sie, getragen von Partnern" border="r" />
               <Stat value="4" label="Partner, die den Tag möglich machen" gold />
             </dl>
@@ -84,7 +84,7 @@ export default async function Home() {
 
       <div className="overflow-hidden border-b border-line">
         <p className="px-6 py-5 text-center font-display text-[22px] uppercase leading-relaxed tracking-[0.12em] text-[#8c8c8c]">
-          {["Eigener Wagen", "Renntaxi", "Early Dinner", "Charity-Auktion"].map((w, i) => (
+          {["Eigener Wagen", "Drift-Beifahrer", "Early Dinner", "Charity-Auktion"].map((w, i) => (
             <span key={w}>
               {i > 0 && <span aria-hidden className="text-gold"> / </span>}
               {w}
@@ -99,7 +99,7 @@ export default async function Home() {
         <div className="flex flex-col gap-5 text-lg leading-[1.65] text-[#d1d1d1]">
           <p>Zweimal im Jahr bringt Frontline of Innovation Entscheiderinnen und Entscheider aus Wirtschaft, Sport, Wissenschaft und Politik an einen Tisch. Im Dezember feiern wir anders.</p>
           <p>
-            Gemeinsam mit Paul Muck und der School of Racing laden wir Sie auf den Hockenheimring ein. Sie fahren mit Ihrem eigenen Auto auf die Strecke. Wer zum ersten Mal Rennstreckenluft schnuppert, fährt geführt – mit Tipps per Funk direkt ins Auto, Runde für Runde. Oder Sie steigen als Beifahrer ins Renntaxi und erleben die Strecke im Renntempo.
+            Gemeinsam mit Paul Muck und der School of Racing laden wir Sie auf den Hockenheimring ein. Sie fahren mit Ihrem eigenen Auto auf die Strecke. Wer zum ersten Mal Rennstreckenluft schnuppert, fährt geführt – mit Tipps per Funk direkt ins Auto, Runde für Runde. Oder Sie steigen als Beifahrer zu einem Profi in den Drift-Wagen. Und wer nur zum Abend kommen möchte, ist beim Dinner herzlich willkommen.
           </p>
           <p>Danach geht es weiter wie an jedem FOI-Abend: mit einem frühen Dinner, einer Charity-Auktion und Gesprächen, die es ohne diesen Tag nie gegeben hätte.</p>
         </div>
@@ -133,9 +133,10 @@ export default async function Home() {
           <h2 id="teilnahme-h" className="h-section">Wählen Sie Ihre Linie</h2>
           <p className="max-w-[420px] text-base leading-relaxed text-muted">Die Plätze je Art sind begrenzt und werden in der Reihenfolge der Anmeldung vergeben.</p>
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           <TypeCard type="own" image="/images/card-own-car.jpg" alt="Sportwagen bei einem Trackday der School of Racing" foot="Voraussetzungen: [Fahrzeug, Reifen, Helm]" free={slots?.own.free} />
-          <TypeCard type="taxi" image="/images/card-taxi.jpg" alt="Blick aus dem Cockpit auf die Rennstrecke bei einem Training der School of Racing" foot="[Fahrzeug, Rundenzahl]" free={slots?.taxi.free} />
+          <TypeCard type="taxi" image="/images/card-taxi.jpg" alt="Blick aus dem Cockpit auf die Rennstrecke bei einem Training der School of Racing" foot="Mit einem Profi am Steuer" free={slots?.taxi.free} />
+          <TypeCard type="dinner" image="/images/dinner.jpg" alt="Gäste an gedeckten Tischen beim FOI-Dinner im Mai 2026" foot="Ab 17:00 in der Loge" free={slots?.dinner.free} />
         </div>
       </section>
 
@@ -320,7 +321,7 @@ function AgendaItem({ mark, time, title, text, gold = false, last = false }: { m
   );
 }
 
-function TypeCard({ type, image, alt, foot, free, gold = false }: { type: "own" | "taxi"; image?: string; alt?: string; foot: string; free?: number; gold?: boolean }) {
+function TypeCard({ type, image, alt, foot, free, gold = false }: { type: "own" | "taxi" | "dinner"; image?: string; alt?: string; foot: string; free?: number; gold?: boolean }) {
   const p = PARTICIPATION[type];
   return (
     <article className={`flex flex-col border bg-card ${gold ? "border-gold" : "border-line-strong"}`}>
@@ -330,7 +331,7 @@ function TypeCard({ type, image, alt, foot, free, gold = false }: { type: "own" 
         </div>
       ) : (
         <div className="flex h-[170px] items-center justify-center bg-[#141414] p-4 text-center text-xs uppercase tracking-[0.12em] text-[#8c8c8c]">
-          [Foto Renntaxi – von School of Racing]
+          [Foto]
         </div>
       )}
       <div className="flex flex-1 flex-col gap-3.5 px-7 pb-7 pt-6">

@@ -5,7 +5,7 @@ import { env } from "@/lib/env";
 import { INTEREST_FROM } from "@/lib/mail/templates";
 
 const ANSWER: Record<string, string> = { dabei: "Dabei", interessiert: "Interessiert", nicht: "Nicht dabei" };
-const MODE: Record<string, string> = { own: "Eigener Wagen", taxi: "Renntaxi", offen: "Noch offen", "": "" };
+const MODE: Record<string, string> = { own: "Eigener Wagen", taxi: "Drift-Beifahrer", dinner: "Nur Dinner", offen: "Noch offen", "": "" };
 const GROUP: Record<string, string> = { rookie: "Rookie", performance: "Performance", race: "Race / Drift", "": "" };
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
@@ -57,7 +57,8 @@ export function buildDigest({ rows, changed, guests, bounces, capacity, siteUrl 
     ["Rookie", active.filter((r) => r.track_group === "rookie").length],
     ["Performance", active.filter((r) => r.track_group === "performance").length],
     ["Race / Drift", active.filter((r) => r.track_group === "race").length],
-    ["Renntaxi", active.filter((r) => r.mode === "taxi").length],
+    ["Drift-Beifahrer", active.filter((r) => r.mode === "taxi").length],
+    ["Nur Dinner", active.filter((r) => r.mode === "dinner").length],
     ["Noch offen", active.filter((r) => r.mode === "offen").length],
   ];
 
