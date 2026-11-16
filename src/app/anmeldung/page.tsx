@@ -4,30 +4,48 @@ import { PageShell } from "@/components/site";
 import { Progress } from "@/components/progress";
 import { RegistrationForm } from "@/components/registration-form";
 import { env } from "@/lib/env";
-import { getEvent, getFreeSlots, guestByCode } from "@/lib/event";
+import { getEvent, getFreeSlots, guestByCode, guestByToken } from "@/lib/event";
+import { interestOf } from "@/lib/interest";
+import type { Guest, ParticipationType } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Anmeldung – FOI Racing" };
 
-export default async function Anmeldung({ searchParams }: { searchParams: Promise<{ code?: string }> }) {
-  const { code } = await searchParams;
+export default async function Anmeldung({ searchParams }: { searchParams: Promise<{ code?: string; t?: string }> }) {
+  const { code, t } = await searchParams;
 
-  if (!code) return <CodeEntry />;
+  if (!code && !t) return <CodeEntry />;
   if (!env.hasDb) return <CodeEntry info="Die Anmeldung öffnet mit dem Versand der Einladungen Mitte November." />;
 
-  const guest = await guestByCode(code);
-  if (!guest) return <CodeEntry code={code} error="Dieser Code ist nicht gültig. Bitte prüfen Sie die Schreibweise in Ihrer Einladung." />;
+  // Persönlicher Link aus der Einladung (?t=…) – kein Code nötig; ?code=… bleibt als Ausweg
+  let guest: Guest | null = null;
+  let hasRegistration = false;
+  if (t) {
+    const found = await guestByToken(t);
+    if (!found) return <CodeEntry error="Dieser Link ist nicht (mehr) gültig. Bitte nutzen Sie den Link aus Ihrer Einladung oder geben Sie Ihren Code ein." />;
+    guest = found.guest;
+    hasRegistration = Boolean(found.registration);
+  } else {
+    guest = await guestByCode(code!);
+    if (!guest) return <CodeEntry code={code} error="Dieser Code ist nicht gültig. Bitte prüfen Sie die Schreibweise in Ihrer Einladung." />;
+    hasRegistration = guest.status !== "eingeladen" && guest.status !== "angeboten";
+  }
 
-  if (["angemeldet", "bestaetigt", "eingecheckt", "warteliste", "angeboten"].includes(guest.status)) {
+  // Reservierter Platz (Einladungswelle / Nachrücken ohne bisherige Anmeldung): Formular zeigen
+  const reservedUntil =
+    guest.status === "angeboten" && !hasRegistration && guest.offer_expires_at && new Date(guest.offer_expires_at) > new Date() ? guest.offer_expires_at : null;
+
+  if (!reservedUntil && ["angemeldet", "bestaetigt", "eingecheckt", "warteliste", "angeboten"].includes(guest.status)) {
     redirect(`/meine-teilnahme/${guest.manage_token}`);
   }
 
   const ev = await getEvent();
-  const closed = ev.status !== "aktiv" || (ev.registration_deadline !== null && new Date() > new Date(ev.registration_deadline));
+  const closed = ev.status !== "aktiv" || (!reservedUntil && ev.registration_deadline !== null && new Date() > new Date(ev.registration_deadline));
   if (closed) {
     return <CodeEntry info="Die Anmeldung ist geschlossen. Bitte schreiben Sie uns an info@frontlineofinnovation.de." />;
   }
-  const slots = await getFreeSlots(ev.id);
+  const [slots, interest] = await Promise.all([getFreeSlots(ev.id), interestOf(guest.id)]);
+  const initialArt: ParticipationType = interest?.mode === "taxi" ? "taxi" : "own";
 
   return (
     <PageShell>
@@ -45,6 +63,8 @@ export default async function Anmeldung({ searchParams }: { searchParams: Promis
             email: guest.email,
           }}
           slots={slots}
+          initialArt={initialArt}
+          reservedUntil={reservedUntil}
         />
       </main>
     </PageShell>

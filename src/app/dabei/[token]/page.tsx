@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getEvent, guestByToken } from "@/lib/event";
 import { type Interest, dabeiPosition, interestCounts, interestOf } from "@/lib/interest";
 import { DabeiView } from "./view";
@@ -19,6 +19,8 @@ export default async function Dabei({ params, searchParams }: { params: Promise<
   const found = await guestByToken(token);
   if (!found) notFound();
   const { guest } = found;
+  // Sobald die verbindliche Einladung läuft (Platz reserviert, angemeldet, Warteliste …), zählt nur noch die Anmeldung
+  if (guest.status !== "eingeladen") redirect(guest.status === "angeboten" ? `/anmeldung?t=${token}` : `/meine-teilnahme/${token}`);
   const ev = await getEvent();
   const [counts, mine] = await Promise.all([interestCounts(ev.id), interestOf(guest.id)]);
   const cap = ev.total_capacity ?? 100;

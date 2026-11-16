@@ -25,15 +25,19 @@ const req = <span className="text-gold">*</span>;
 export function RegistrationForm({
   guest,
   slots,
+  initialArt = "own",
+  reservedUntil = null,
 }: {
   guest: FormGuest;
   slots: FreeSlots;
+  initialArt?: ParticipationType;
+  reservedUntil?: string | null;
 }) {
   const [state, action, pending] = useActionState<RegisterState, FormData>(
     registerAction,
     undefined,
   );
-  const [art, setArt] = useState<ParticipationType>("own");
+  const [art, setArt] = useState<ParticipationType>(initialArt);
   const [second, setSecond] = useState<ParticipationType | "">("");
   const others = PARTICIPATION_TYPES.filter((t) => t !== art);
   const need = new Set<ParticipationType>([art, ...(second ? [second] : [])]);
@@ -61,6 +65,13 @@ export function RegistrationForm({
       >
         Willkommen, {kurzanrede(guest)}
       </h1>
+      {reservedUntil && (
+        <p className="mt-5 max-w-[720px] border-l-2 border-gold bg-card p-4 text-[16px] leading-relaxed text-[#ddd]">
+          <b className="text-white">Ihr Platz ist für Sie reserviert</b> – bis{" "}
+          {new Date(reservedUntil).toLocaleString("de-DE", { timeZone: "Europe/Berlin", weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })} Uhr.
+          Danach geben wir ihn an den nächsten Gast auf der Warteliste weiter.
+        </p>
+      )}
       <p className="mb-2 mt-3.5 text-[17px] text-[#d1d1d1]">
         Bitte prüfen Sie Ihre Angaben und wählen Sie Ihre Teilnahmeart.
       </p>
@@ -95,7 +106,9 @@ export function RegistrationForm({
                 >
                   {PARTICIPATION[t].num}
                   <span className="text-[#a6a6a6]">
-                    {free === 0
+                    {reservedUntil
+                      ? ""
+                      : free === 0
                       ? "ausgebucht · Warteliste"
                       : free < 10
                         ? `noch ${free} frei`
@@ -116,6 +129,7 @@ export function RegistrationForm({
         </div>
       </fieldset>
       <div className="mb-10 grid items-end gap-x-6 gap-y-4 md:grid-cols-2">
+        {!reservedUntil && (
         <div>
           <label className="lbl" htmlFor="second_choice">
             Zweitwunsch, falls Ihre Erstwahl ausgebucht ist
@@ -137,6 +151,7 @@ export function RegistrationForm({
             ))}
           </select>
         </div>
+        )}
         <label className="chk min-h-12">
           <input type="checkbox" name="extra_ride" /> Zusatzwunsch: Gern auch
           eine weitere Fahrt, falls vor Ort Plätze frei sind.

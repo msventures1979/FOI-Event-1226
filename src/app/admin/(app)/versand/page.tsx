@@ -2,6 +2,8 @@ import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/supabase/admin";
 import { MAIL_LABEL } from "@/lib/mail/templates";
 import { SendForm } from "./form";
+import { WaveForm } from "./wave";
+import { getEvent, getFreeSlots } from "@/lib/event";
 import { DELIVERY_LABEL } from "@/lib/mail/delivery";
 import { SubmitButton } from "@/components/submit-button";
 import { checkDelivery } from "../../actions";
@@ -29,8 +31,20 @@ export default async function Versand({ searchParams }: { searchParams: Promise<
     if (l.status === "gesendet") stats[l.type].ok++;
     else stats[l.type].err++;
   }
+  // Verbindliche Einladung: wie viele „dabei“ sind noch nicht eingeladen, wie viele Plätze frei
+  const ev = await getEvent();
+  const slots = await getFreeSlots(ev.id);
+  const { data: dabeiRows } = await db().from("event_interest").select("guest_id,event_guests!inner(status,bounced)").eq("event_id", ev.id).eq("answer", "dabei").limit(2000);
+  type DG = { status: string; bounced: boolean };
+  const dg = (dabeiRows ?? []).map((r) => (Array.isArray(r.event_guests) ? r.event_guests[0] : r.event_guests) as DG);
+  const dabeiOpen = dg.filter((g) => g.status === "eingeladen" && !g.bounced).length;
+  const { count: reservedOpen } = await db().from("event_guests").select("id", { count: "exact", head: true }).eq("event_id", ev.id).eq("status", "angeboten");
   return (
     <div className="flex max-w-[900px] flex-col gap-10">
+      <section>
+        <h1 className="mb-3 font-display text-3xl font-semibold uppercase">Verbindliche Einladung</h1>
+        <WaveForm dabei={dabeiOpen} free={slots.free} started={reservedOpen ?? 0} />
+      </section>
       <section>
         <h1 className="mb-3 font-display text-3xl font-semibold uppercase">Versand</h1>
         <p className="mb-6 text-muted">

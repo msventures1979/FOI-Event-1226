@@ -340,3 +340,22 @@ export async function sendMissingConfirmations() {
   const r = await processQueue({ max: 200 });
   redirect(`/admin/interesse?bestaetigt=${q.queued}-${r.sent}-${r.failed}`);
 }
+
+/** Verbindliche Einladung, erste Welle: Plätze für die ersten „dabei“ reservieren, Rest auf die Warteliste, Einladungen einreihen. */
+export async function startInviteWave(_prev: unknown, form: FormData): Promise<{ msg: string }> {
+  await requireAdmin();
+  if (form.get("confirm") !== "on") return { msg: "Bitte bestätigen Sie zuerst, dass Frist und Empfänger stimmen." };
+  const deadline = String(form.get("deadline") ?? "");
+  const hours = Number(form.get("offer_hours") ?? 72);
+  if (!deadline) return { msg: "Bitte eine Frist angeben." };
+  if (!Number.isInteger(hours) || hours < 12 || hours > 336) return { msg: "Frist beim Nachrücken: 12 bis 336 Stunden." };
+  const ev = await getEvent();
+  const { data, error } = await db().rpc("start_invite_wave", { p_event: ev.id, p_deadline: berlinToUtc(deadline).toISOString(), p_offer_hours: hours });
+  if (error) return { msg: `Fehler: ${error.message}` };
+  const r = data as { result: string; reserved?: number; waitlist?: number };
+  if (r.result === "deadline_past") return { msg: "Die Frist liegt in der Vergangenheit." };
+  revalidatePath("/admin");
+  return {
+    msg: `${r.reserved} Plätze reserviert und ${r.reserved} Einladungen eingereiht, ${r.waitlist} Gäste auf die Warteliste gesetzt. Versand über „Nächstes Paket“ in der Übersicht oder automatisch morgens um 8 Uhr.`,
+  };
+}

@@ -28,7 +28,9 @@ export default async function MeineTeilnahme({
     bestaetigt: ["Wir sehen uns auf der Strecke.", "{name}, vielen Dank – Ihre Teilnahme ist bestätigt."],
     eingecheckt: ["Willkommen am Hockenheimring.", "{name}, Sie sind eingecheckt."],
     warteliste: ["Sie stehen auf der Warteliste.", "{name}, sobald ein Platz frei wird, schreiben wir Ihnen."],
-    angeboten: ["Ein Platz ist frei.", "{name}, für Sie ist ein Platz frei geworden. Bitte nehmen Sie ihn an."],
+    angeboten: registration
+      ? ["Ein Platz ist frei.", "{name}, für Sie ist ein Platz frei geworden. Bitte nehmen Sie ihn an."]
+      : ["Ihr Platz ist reserviert.", "{name}, für Sie ist ein Platz reserviert. Bitte melden Sie sich innerhalb der Frist verbindlich an."],
     abgesagt: ["Ihre Absage ist angekommen.", "{name}, schade, dass Sie diesmal nicht dabei sind."],
     storniert: ["Ihre Absage ist angekommen.", "{name}, Ihr Platz geht an einen anderen Gast. Vielen Dank für die Rückmeldung."],
     verfallen: ["Das Angebot ist abgelaufen.", "{name}, leider ist die Frist für den freien Platz verstrichen. Wenn Sie trotzdem gern dabei wären, schreiben Sie uns an info@frontlineofinnovation.de – wir schauen, was möglich ist."],
@@ -51,7 +53,17 @@ export default async function MeineTeilnahme({
         )}
 
         <div className="mt-6 flex flex-wrap items-start gap-3">
-          {s === "angeboten" && (
+          {s === "angeboten" && !registration && (
+            <div>
+              <Link href={`/anmeldung?t=${token}`} className="btn-gold">Jetzt anmelden</Link>
+              {guest.offer_expires_at && (
+                <p className="mt-2 text-sm text-[#a6a6a6]">
+                  Ihr Platz ist reserviert bis {new Date(guest.offer_expires_at).toLocaleString("de-DE", { timeZone: "Europe/Berlin", dateStyle: "full", timeStyle: "short" })} Uhr
+                </p>
+              )}
+            </div>
+          )}
+          {s === "angeboten" && registration && (
             <form action={acceptOfferAction}>
               <input type="hidden" name="token" value={token} />
               <button className="btn-gold">Platz annehmen</button>

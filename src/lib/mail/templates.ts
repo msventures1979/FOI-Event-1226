@@ -83,14 +83,15 @@ function fmtDate(iso: string): string {
 export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
   const g = ctx.guest;
   let anrede = `${briefanrede(g)},`;
-  const anmelden = `${ctx.siteUrl}/anmeldung?code=${encodeURIComponent(g.code)}`;
+  // Persönlicher Link – kein Code nötig
+  const anmelden = `${ctx.siteUrl}/anmeldung?t=${g.manage_token}`;
   const absagen = `${ctx.siteUrl}/absage?code=${encodeURIComponent(g.code)}`;
   const verwalten = `${ctx.siteUrl}/meine-teilnahme/${g.manage_token}`;
   const art = ctx.participationType ? PARTICIPATION[ctx.participationType].title : "";
 
   let subject = "";
   let preheader = "";
-  let from: string | undefined;
+  let from: string | undefined = HOSTS_FROM; // beide Gastgeber im Absender (Standard für alle Mails)
   let assets = ctx.siteUrl;
   let footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing";
   let blocks: Block[] = [];
@@ -204,21 +205,33 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       ];
       break;
     }
-    case "einladung":
-      subject = "Ihre Einladung: FOI Racing am 14. Dezember";
-      blocks = [
-        { p: "wir laden Sie herzlich zur Weihnachtsfeier der anderen Art ein: FOI Racing auf dem Hockenheimring." },
-        { facts: FAKTEN + ", mit einer Charity-Auktion" },
-        { p: "Sie fahren Ihren eigenen Wagen – für Einsteiger geführt per Funk – oder Sie steigen ins Renntaxi. Die Teilnahme ist für Sie kostenfrei. Es gibt 100 Plätze; sie werden in der Reihenfolge der Anmeldung vergeben." },
-        { code: g.code },
-        { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
-      ];
+    case "einladung": {
+      // Erste Welle: Platz ist reserviert (status „angeboten“ mit Frist) – sonst normale Einladung
+      const reserviert = g.status === "angeboten" && ctx.offerExpiresAt;
+      subject = reserviert ? "Ihr Platz ist reserviert: FOI Racing am 14. Dezember" : "Ihre Einladung: FOI Racing am 14. Dezember";
+      preheader = reserviert ? "Jetzt verbindlich anmelden – Ihr persönlicher Link ist in dieser Mail." : "";
+      blocks = reserviert
+        ? [
+            { p: "vielen Dank, dass Sie sich für unsere Weihnachtsfeier der anderen Art vorgemerkt haben. Jetzt wird es offiziell: Wir laden Sie herzlich ein zu FOI Racing auf dem Hockenheimring." },
+            { facts: FAKTEN + ", mit einer Charity-Auktion" },
+            { p: `Ihr Platz ist für Sie reserviert – bis ${fmtDate(ctx.offerExpiresAt!)}. Bitte melden Sie sich bis dahin über Ihren persönlichen Link verbindlich an, das dauert nur zwei Minuten. Danach geben wir den Platz an den nächsten Gast auf der Warteliste weiter.` },
+            { p: "Sie fahren Ihren eigenen Wagen – für Einsteiger geführt per Funk – oder Sie steigen ins Renntaxi. Die Teilnahme ist für Sie kostenfrei." },
+            { buttons: [{ label: "Jetzt verbindlich anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
+            { ps: "Der Link gilt nur für Sie persönlich. Über denselben Link sehen Sie später Ihre Anmeldung und können bei Bedarf absagen." },
+          ]
+        : [
+            { p: "wir laden Sie herzlich zur Weihnachtsfeier der anderen Art ein: FOI Racing auf dem Hockenheimring." },
+            { facts: FAKTEN + ", mit einer Charity-Auktion" },
+            { p: "Sie fahren Ihren eigenen Wagen – für Einsteiger geführt per Funk – oder Sie steigen ins Renntaxi. Die Teilnahme ist für Sie kostenfrei. Es gibt 100 Plätze; sie werden in der Reihenfolge der Anmeldung vergeben." },
+            { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
+            { ps: "Der Link gilt nur für Sie persönlich." },
+          ];
       break;
+    }
     case "erinnerung":
       subject = "Erinnerung: Ihr Platz bei FOI Racing";
       blocks = [
-        { p: "Ihre Einladung zur FOI-Weihnachtsfeier am 14. Dezember ist noch offen. " + (ctx.freeSlots != null && ctx.freeSlots < 20 ? `Es sind noch ${ctx.freeSlots} Plätze frei.` : "Die Plätze sind begrenzt.") },
-        { code: g.code },
+        { p: "Ihre Einladung zur FOI-Weihnachtsfeier am 14. Dezember ist noch offen. " + (g.status === "angeboten" && ctx.offerExpiresAt ? `Ihr Platz ist noch bis ${fmtDate(ctx.offerExpiresAt)} für Sie reserviert.` : ctx.freeSlots != null && ctx.freeSlots < 20 ? `Es sind noch ${ctx.freeSlots} Plätze frei.` : "Die Plätze sind begrenzt.") },
         { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
       ];
       break;
@@ -244,8 +257,8 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
       subject = "Ein Platz ist frei: FOI Racing am 14. Dezember";
       blocks = [
         { p: `für Sie ist ein Platz bei FOI Racing frei geworden${art ? ` (${art})` : ""}.` },
-        { p: ctx.offerExpiresAt ? `Bitte nehmen Sie ihn bis ${fmtDate(ctx.offerExpiresAt)} an. Danach geht er an den nächsten Gast auf der Warteliste.` : "Bitte nehmen Sie ihn zeitnah an." },
-        { buttons: [{ label: "Platz annehmen", href: verwalten, primary: true }] },
+        { p: ctx.offerExpiresAt ? `Der Platz ist bis ${fmtDate(ctx.offerExpiresAt)} für Sie reserviert. Bitte melden Sie sich bis dahin über Ihren persönlichen Link an – danach geht er an den nächsten Gast auf der Warteliste.` : "Bitte melden Sie sich zeitnah an." },
+        { buttons: [{ label: "Platz annehmen", href: anmelden, primary: true }, { label: "Leider nicht dabei", href: absagen }] },
       ];
       break;
     case "absage":
