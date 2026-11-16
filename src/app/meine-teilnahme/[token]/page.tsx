@@ -84,7 +84,7 @@ export default async function MeineTeilnahme({
             <a href={`/api/ics/${token}`} className="btn-ghost">In den Kalender eintragen</a>
           )}
           {s === "eingeladen" && (
-            <Link href={`/anmeldung?code=${guest.code}`} className="btn-gold">Jetzt anmelden</Link>
+            <Link href={`/anmeldung?t=${token}`} className="btn-gold">Jetzt anmelden</Link>
           )}
         </div>
 
