@@ -74,7 +74,7 @@ export const PARTNERS: { name: string; href: string; logo: string; w: number; h:
   { name: "UNZER", href: "https://www.unzer.com/de/", logo: "unzer-kachel2.png", w: 89, h: 46 },
   { name: "billiger.de", href: "https://www.billiger.de", logo: "billiger-kachel2.png", w: 71, h: 46 },
   { name: "ox8 Corporate Finance", href: "https://ox8-cf.com", logo: "ox8-kachel2.png", w: 54, h: 46 },
-  { name: "COVADO", href: "https://www.covado.de", logo: "covado-kachel2.png", w: 93, h: 46 },
+  { name: "COVADO", href: "https://www.covado.de", logo: "covado-kachel3.png", w: 93, h: 46 },
 ];
 
 const FAKTEN = [
