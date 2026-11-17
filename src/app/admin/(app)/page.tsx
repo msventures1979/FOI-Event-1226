@@ -59,7 +59,7 @@ export default async function Overview({ searchParams }: { searchParams: Promise
 
       <section>
         <h2 className="mb-1 font-display text-xl font-semibold uppercase">Plätze · verbindliche Anmeldung</h2>
-        <p className="mb-4 text-sm text-dim">Zählt erst, wenn die verbindliche Einladung mit Code verschickt ist und sich Gäste anmelden.</p>
+        <p className="mb-4 text-sm text-dim">Zählt erst, wenn die verbindliche Einladung mit persönlichem Link verschickt ist und sich Gäste anmelden.</p>
         <div className="grid gap-px border border-line bg-line sm:grid-cols-4">
           <Tile label="Belegt / gesamt" value={`${slots.taken} / ${slots.total}`} sub={`${slots.free} frei`} gold />
           {PARTICIPATION_TYPES.map((t) => (

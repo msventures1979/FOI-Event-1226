@@ -18,7 +18,7 @@ const schema = z
     title: z.string().max(40),
     first_name: z.string().trim().min(1, "Bitte Vornamen angeben").max(80),
     last_name: z.string().trim().min(1, "Bitte Nachnamen angeben").max(80),
-    company: z.string().trim().min(1, "Bitte Unternehmen angeben").max(120),
+    company: z.string().trim().max(120),
     position: z.string().trim().min(1, "Bitte Position angeben").max(120),
     email: z.string().trim().email("Bitte gültige E-Mail angeben").max(160),
     mobile: z.string().trim().min(6, "Bitte Mobilnummer angeben").max(40),

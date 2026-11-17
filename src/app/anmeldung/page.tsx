@@ -44,12 +44,12 @@ export default async function Anmeldung({ searchParams }: { searchParams: Promis
   let hasRegistration = false;
   if (t) {
     const found = await guestByToken(t);
-    if (!found) return <CodeEntry error="Dieser Link ist nicht (mehr) gültig. Bitte nutzen Sie den Link aus Ihrer Einladung oder geben Sie Ihren Code ein." />;
+    if (!found) return <CodeEntry error="Dieser Link ist nicht (mehr) gültig." />;
     guest = found.guest;
     hasRegistration = Boolean(found.registration);
   } else {
     guest = await guestByCode(code!);
-    if (!guest) return <CodeEntry code={code} error="Dieser Code ist nicht gültig. Bitte prüfen Sie die Schreibweise in Ihrer Einladung." />;
+    if (!guest) return <CodeEntry code={code} error="Dieser Link ist nicht gültig." />;
     hasRegistration = guest.status !== "eingeladen" && guest.status !== "angeboten";
   }
 
@@ -64,7 +64,7 @@ export default async function Anmeldung({ searchParams }: { searchParams: Promis
   const ev = await getEvent();
   const closed = ev.status !== "aktiv" || (!reservedUntil && ev.registration_deadline !== null && new Date() > new Date(ev.registration_deadline));
   if (closed) {
-    return <CodeEntry info="Die Anmeldung ist geschlossen. Bitte schreiben Sie uns an info@frontlineofinnovation.de." />;
+    return <CodeEntry info="Die Anmeldung ist geschlossen." />;
   }
   const [slots, interest] = await Promise.all([getFreeSlots(ev.id), interestOf(guest.id)]);
   const initialArt: ParticipationType = interest?.mode === "taxi" ? "taxi" : interest?.mode === "dinner" ? "dinner" : "own";
@@ -94,45 +94,21 @@ export default async function Anmeldung({ searchParams }: { searchParams: Promis
   );
 }
 
-function CodeEntry({ code = "", error, info }: { code?: string; error?: string; info?: string }) {
+function CodeEntry({ error, info }: { code?: string; error?: string; info?: string }) {
   return (
     <PageShell>
       <main className="mx-auto max-w-[1040px] px-6 pb-24 pt-16">
         <Progress step={1} />
         <section className="max-w-[560px]">
-          <h1 className="font-display text-[56px] font-bold uppercase leading-none">Ihr Einladungscode</h1>
+          <h1 className="font-display text-[56px] font-bold uppercase leading-none">Ihre Einladung</h1>
           <p className="mb-8 mt-4 text-[17px] leading-relaxed text-[#d1d1d1]">
-            Den Code finden Sie in Ihrer persönlichen Einladung. Er gilt für eine Person und ist nach der Anmeldung verbraucht.
+            Die Anmeldung läuft über den persönlichen Link in Ihrer Einladungsmail – er gilt für eine Person. Bitte öffnen Sie den Button
+            „Jetzt verbindlich anmelden“ direkt in der Mail.
           </p>
-          {info ? (
-            <p className="border-l-2 border-gold bg-card p-4 text-[15px] text-[#d1d1d1]">{info}</p>
-          ) : (
-            <form action="/anmeldung" method="get">
-              <label className="lbl" htmlFor="code">
-                Einladungscode <span className="text-gold">*</span>
-              </label>
-              <input
-                id="code"
-                name="code"
-                defaultValue={code}
-                required
-                autoComplete="off"
-                placeholder="FOI-XXXXXXXX"
-                aria-invalid={Boolean(error)}
-                aria-describedby={error ? "code-err" : undefined}
-                className="field !min-h-[60px] font-display !text-2xl tracking-[0.16em]"
-              />
-              {error && (
-                <p id="code-err" role="alert" className="mt-3 text-[15px] text-gold">
-                  {error}
-                </p>
-              )}
-              <div className="mt-5 flex flex-wrap items-center gap-4">
-                <button type="submit" className="btn-gold">Weiter</button>
-                <span className="text-sm text-[#a6a6a6]">Die Plätze sind auf 100 begrenzt.</span>
-              </div>
-            </form>
-          )}
+          <p className="border-l-2 border-gold bg-card p-4 text-[15px] text-[#d1d1d1]">
+            {error ?? info ?? "Die Teilnahme ist nur auf persönliche Einladung möglich."} Bei Fragen schreiben Sie uns an{" "}
+            <a href="mailto:info@frontlineofinnovation.de" className="text-gold">info@frontlineofinnovation.de</a>.
+          </p>
           <p className="mt-10 text-sm text-dim">
             <Link href="/" className="text-dim">Zurück zur Startseite</Link>
           </p>
