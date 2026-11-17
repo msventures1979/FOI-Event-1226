@@ -261,7 +261,6 @@ export function RegistrationForm({
         <Field
           name="position"
           label="Position"
-          required
           autoComplete="organization-title"
           maxLength={120}
         />
