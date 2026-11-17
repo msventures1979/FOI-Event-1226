@@ -69,7 +69,7 @@ export default async function Home() {
             <a href="https://www.unzer.com/de/" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/unzer.png" alt="UNZER" width={97} height={22} className="h-[22px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
             <a href="https://www.billiger.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/billiger.png" alt="billiger.de" width={79} height={26} className="h-[26px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
             <a href="https://ox8-cf.com" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/ox8.png" alt="ox8 Corporate Finance" width={54} height={34} className="h-[34px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
-            <a href="https://www.covado.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/covado.png" alt="COVADO Trusted Advisor" width={108} height={30} className="h-[30px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
+            <a href="https://covado.de/" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/covado.png" alt="COVADO Trusted Advisor" width={108} height={30} className="h-[30px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
           </div>
         </div>
       </section>
@@ -255,7 +255,7 @@ export default async function Home() {
           <PartnerTile><a href="https://www.unzer.com/de/" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/unzer.png" alt="UNZER" width={123} height={28} className="h-7 w-auto opacity-90 transition-opacity group-hover:opacity-100" /></a></PartnerTile>
           <PartnerTile><a href="https://www.billiger.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/billiger.png" alt="billiger.de" width={103} height={34} className="h-[34px] w-auto opacity-90 transition-opacity group-hover:opacity-100" /></a></PartnerTile>
           <PartnerTile><a href="https://ox8-cf.com" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/ox8.png" alt="ox8 Corporate Finance" width={73} height={46} className="h-[46px] w-auto opacity-90 transition-opacity group-hover:opacity-100" /></a></PartnerTile>
-          <PartnerTile><a href="https://www.covado.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/covado.png" alt="COVADO Trusted Advisor" width={144} height={40} className="h-[40px] w-auto opacity-90 transition-opacity group-hover:opacity-100" /></a></PartnerTile>
+          <PartnerTile><a href="https://covado.de/" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/covado.png" alt="COVADO Trusted Advisor" width={144} height={40} className="h-[40px] w-auto opacity-90 transition-opacity group-hover:opacity-100" /></a></PartnerTile>
         </div>
       </section>
 
