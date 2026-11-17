@@ -74,6 +74,7 @@ export const PARTNERS: { name: string; href: string; logo: string; w: number; h:
   { name: "UNZER", href: "https://www.unzer.com/de/", logo: "unzer-kachel.png", w: 112, h: 56 },
   { name: "billiger.de", href: "https://www.billiger.de", logo: "billiger-kachel.png", w: 91, h: 56 },
   { name: "ox8 Corporate Finance", href: "https://ox8-cf.com", logo: "ox8-kachel.png", w: 71, h: 56 },
+  { name: "COVADO", href: "https://www.covado.de", logo: "covado-kachel.png", w: 117, h: 56 },
 ];
 
 const FAKTEN = [
@@ -115,7 +116,7 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
   let preheader = "";
   let from: string | undefined = HOSTS_FROM; // beide Gastgeber im Absender (Standard für alle Mails)
   let assets = ctx.siteUrl;
-  let footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing · mit freundlicher Unterstützung von KOS Klima, UNZER, billiger.de und ox8 Corporate Finance";
+  let footer = "Frontline of Innovation · in Zusammenarbeit mit School of Racing · mit freundlicher Unterstützung von KOS Klima, UNZER, billiger.de, ox8 Corporate Finance und COVADO";
   let blocks: Block[] = [];
   let gruss = GRUSS;
   let unsubscribe: string | undefined;
