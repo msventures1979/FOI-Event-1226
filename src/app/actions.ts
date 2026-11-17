@@ -25,7 +25,7 @@ const schema = z
     diet: z.enum(["Fleisch", "Vegetarisch"], { message: "Bitte wählen Sie Ihren Hauptgang: Fleisch oder vegetarisch" }),
     allergies: z.string().max(500),
     consent_photo: z.boolean(),
-    consent_terms: z.literal(true, { message: "Bitte Teilnahmebedingungen und Datenschutzhinweise akzeptieren" }),
+    consent_terms: z.literal(true, { message: "Bitte die Datenschutzhinweise bestätigen" }),
     consent_waiver: z.boolean(),
     vehicle: z.record(z.string(), z.string().max(60)),
     experience: z.string().max(40),
@@ -40,7 +40,6 @@ const schema = z
       issue("Bitte alle Fahrzeugangaben ausfüllen", "vehicle");
     if (types.has("own") && !d.license_since) issue("Bitte angeben, seit wann Sie den Führerschein haben", "license_since");
     if (types.has("own") && !d.experience) issue("Bitte Ihre Rennstreckenerfahrung angeben", "experience");
-    if (types.has("taxi") && !types.has("own") && !d.consent_waiver) issue("Bitte den Haftungsverzicht der School of Racing bestätigen", "consent_waiver");
   });
 
 export type RegisterState = { error?: string } | undefined;

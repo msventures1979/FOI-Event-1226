@@ -94,9 +94,9 @@ export function Datenschutz() {
       <H3>Anmeldung und Durchführung der Veranstaltung</H3>
       <p>
         Bei der Anmeldung verarbeiten wir zusätzlich Ihre Mobilnummer, die gewählte Teilnahmeart und einen eventuellen Zweitwunsch, Ihre Angaben zur
-        Ernährung, den Status Ihrer Anmeldung sowie den Zeitpunkt Ihrer Zustimmung zu den Teilnahmebedingungen. Je nach Teilnahmeart kommen hinzu: Angaben
-        zu Ihrem Fahrzeug (Marke, Modell, Kennzeichen, Bereifung), das Jahr Ihres Führerscheins, Ihre
-        Rennstreckenerfahrung und Ihre Bestätigung des Haftungsverzichts. Rechtsgrundlage
+        Ernährung, den Status Ihrer Anmeldung sowie den Zeitpunkt Ihrer Bestätigung der Datenschutzhinweise. Je nach Teilnahmeart kommen hinzu: Angaben
+        zu Ihrem Fahrzeug (Marke, Modell, Kennzeichen, Bereifung), das Jahr Ihres Führerscheins und Ihre
+        Rennstreckenerfahrung. Rechtsgrundlage
         ist die Durchführung der Veranstaltung, zu der Sie sich anmelden (Art. 6 Abs. 1 lit. b DSGVO).
       </p>
 

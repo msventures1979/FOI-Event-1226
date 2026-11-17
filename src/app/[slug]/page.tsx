@@ -2,12 +2,10 @@ import { notFound } from "next/navigation";
 import { PageShell } from "@/components/site";
 import { Datenschutz, Impressum } from "@/content/legal";
 
-/** Rechtstexte. Teilnahmebedingungen und Partnertexte folgen (Platzhalter, bis die Texte vorliegen). */
+/** Rechtstexte. Teilnahmebedingungen und Haftungsverzicht folgen separat, sobald die Texte vorliegen. */
 const PAGES: Record<string, { title: string; body: React.ReactNode }> = {
   impressum: { title: "Impressum", body: <Impressum /> },
   datenschutz: { title: "Datenschutz", body: <Datenschutz /> },
-  teilnahmebedingungen: { title: "Teilnahmebedingungen", body: "[Teilnahmebedingungen FOI Racing]" },
-  haftungsverzicht: { title: "Haftungsverzicht School of Racing", body: "[Text bzw. PDF der School of Racing]" },
 };
 
 export const dynamicParams = false;
