@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 /** Partnerleiste (weiße Logos auf Schwarz) – Startseite oben, Anmeldeformular */
-export const PARTNERS_TEXT = "School of Racing, KOS Klima, UNZER, billiger.de, ox8 Corporate Finance, COVADO und ROHDE BAIER";
+export const PARTNERS_TEXT = "School of Racing, KOS Klima, UNZER, billiger.de, ox8 Corporate Finance, COVADO, ROHDE BAIER und Lamborghini Stuttgart";
 
 export function PartnerStrip({ label = "Möglich gemacht von unseren Partnern" }: { label?: string }) {
   return (
@@ -15,6 +15,7 @@ export function PartnerStrip({ label = "Möglich gemacht von unseren Partnern" }
         <a href="https://ox8-cf.com" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/ox8.png" alt="ox8 Corporate Finance" width={54} height={34} className="h-[34px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
         <a href="https://covado.de/" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/covado.png" alt="COVADO Trusted Advisor" width={108} height={30} className="h-[30px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
         <a href="https://rohdebaier.de/" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/rohde-baier.png" alt="ROHDE BAIER" width={152} height={16} className="h-[16px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
+        <a href="https://www.lamborghini-stuttgart.com/" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/lamborghini-stuttgart.png" alt="Lamborghini Stuttgart" width={84} height={46} className="h-[46px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
       </div>
     </section>
   );
