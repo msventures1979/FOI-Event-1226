@@ -69,14 +69,14 @@ export const INTEREST_FROM = "FOI Weihnachtsfeier <weihnachtsfeier@frontlineofin
 const GRUSS = "Herzliche Grüße aus Mannheim\nMatthias Storch und Süleyman Acar";
 /** Partner mit Link und dunklem Logo für helle Mails (Logos liegen unter /images/mail/) */
 export const PARTNERS: { name: string; href: string; logo: string; w: number; h: number }[] = [
-  { name: "School of Racing", href: "https://www.school-of-racing.de", logo: "school-of-racing-k4.png", w: 47, h: 42 },
-  { name: "KOS Klima", href: "https://kosklima.de", logo: "kos-klima-k4.png", w: 91, h: 42 },
-  { name: "UNZER", href: "https://www.unzer.com/de/", logo: "unzer-k4.png", w: 77, h: 42 },
-  { name: "billiger.de", href: "https://www.billiger.de", logo: "billiger-k4.png", w: 60, h: 42 },
-  { name: "ox8 Corporate Finance", href: "https://ox8-cf.com", logo: "ox8-k4.png", w: 45, h: 42 },
-  { name: "COVADO", href: "https://covado.de/", logo: "covado-k4.png", w: 81, h: 42 },
-  { name: "ROHDE BAIER", href: "https://rohdebaier.de/", logo: "rohde-baier-k4.png", w: 100, h: 42 },
-  { name: "Lamborghini Stuttgart", href: "https://www.lamborghini-stuttgart.com/", logo: "lamborghini-k4.png", w: 70, h: 42 },
+  { name: "School of Racing", href: "https://www.school-of-racing.de", logo: "school-of-racing-k5.png", w: 63, h: 56 },
+  { name: "KOS Klima", href: "https://kosklima.de", logo: "kos-klima-k5.png", w: 120, h: 56 },
+  { name: "UNZER", href: "https://www.unzer.com/de/", logo: "unzer-k5.png", w: 104, h: 56 },
+  { name: "billiger.de", href: "https://www.billiger.de", logo: "billiger-k5.png", w: 90, h: 56 },
+  { name: "ox8 Corporate Finance", href: "https://ox8-cf.com", logo: "ox8-k5.png", w: 71, h: 56 },
+  { name: "COVADO", href: "https://covado.de/", logo: "covado-k5.png", w: 116, h: 56 },
+  { name: "ROHDE BAIER", href: "https://rohdebaier.de/", logo: "rohde-baier-k5.png", w: 124, h: 56 },
+  { name: "Lamborghini Stuttgart", href: "https://www.lamborghini-stuttgart.com/", logo: "lamborghini-k5.png", w: 92, h: 56 },
 ];
 
 const FAKTEN = [
@@ -448,9 +448,17 @@ function toHtml(anrede: string, blocks: Block[], siteUrl: string, preheader = ""
       if ("facts" in b)
         return `<p style="margin:0 0 16px;padding:14px 16px;border-left:3px solid #E6941A;background:#f6f6f4;font-size:15px">${esc(b.facts).replace(/\n/g, "<br>")}</p>`;
       if ("partners" in b)
-        return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 24px;border-top:1px solid #e5e5e5;border-bottom:1px solid #e5e5e5"><tr><td style="padding:16px 0 6px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E6941A">Möglich gemacht von unseren Partnern</td></tr><tr><td style="padding:6px 0 16px">${PARTNERS.map(
-          (x, i) => `${i === 4 ? "<br>" : ""}<a href="${esc(x.href)}" style="display:inline-block;margin:4px 4px 4px 0;vertical-align:middle;text-decoration:none;background:#ffffff;border-radius:3px"><img src="${esc(siteUrl)}/images/mail/${x.logo}" width="${x.w}" height="${x.h}" alt="${esc(x.name)}" style="display:block;border:0;border-radius:3px;width:${x.w}px;height:${x.h}px"></a>`,
-        ).join("")}</td></tr></table>`;
+        return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 24px;border-top:1px solid #e5e5e5;border-bottom:1px solid #e5e5e5"><tr><td style="padding:16px 0 6px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E6941A">Möglich gemacht von unseren Partnern</td></tr><tr><td style="padding:6px 0 14px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="table-layout:fixed">${[PARTNERS.slice(0, 4), PARTNERS.slice(4)]
+          .map(
+            (row) =>
+              `<tr>${row
+                .map(
+                  (x) =>
+                    `<td width="25%" align="center" valign="middle" style="padding:8px 3px"><a href="${esc(x.href)}" style="display:block;margin:0 auto;width:${Math.min(100, Math.round((x.w / 130) * 100))}%;max-width:${x.w}px;text-decoration:none;background:#ffffff;border-radius:3px"><img src="${esc(siteUrl)}/images/mail/${x.logo}" width="${x.w}" alt="${esc(x.name)}" style="display:block;border:0;border-radius:3px;width:100%;max-width:${x.w}px;height:auto"></a></td>`,
+                )
+                .join("")}</tr>`,
+          )
+          .join("")}</table></td></tr></table>`;
       if ("code" in b)
         return `<p style="margin:0 0 16px">Ihr persönlicher Code:<br><span style="display:inline-block;margin-top:6px;padding:8px 14px;background:#000;color:#fff;font-family:'Courier New',monospace;font-size:20px;letter-spacing:3px">${esc(b.code)}</span></p>`;
       if (!("buttons" in b)) return "";
