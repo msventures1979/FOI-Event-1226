@@ -5,9 +5,9 @@ export const PARTNERS_TEXT = "School of Racing, KOS Klima, UNZER, billiger.de, o
 
 export function PartnerStrip({ label = "Möglich gemacht von unseren Partnern" }: { label?: string }) {
   return (
-    <section aria-label="Partner" className="mb-10 border border-line bg-[#050505] px-6 py-5">
-      <p className="mb-4 font-display text-xs uppercase tracking-[0.22em] text-gold">{label}</p>
-      <div className="flex flex-wrap items-center gap-x-10 gap-y-5">
+    <section aria-label="Partner" className="mb-10 border border-line bg-[#050505] px-6 py-7">
+      <p className="mb-6 text-center font-display text-xs uppercase tracking-[0.22em] text-gold">{label}</p>
+      <div className="grid grid-cols-2 place-items-center gap-x-8 gap-y-7 sm:grid-cols-4">
         <a href="https://www.school-of-racing.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/school-of-racing.svg" alt="School of Racing" width={50} height={40} unoptimized className="h-10 w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
         <a href="https://kosklima.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/kos-klima.png" alt="KOS Klima" width={118} height={20} className="h-5 w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
         <a href="https://www.unzer.com/de/" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/unzer.png" alt="UNZER" width={97} height={22} className="h-[22px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>

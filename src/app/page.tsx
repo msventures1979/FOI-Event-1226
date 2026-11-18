@@ -61,9 +61,9 @@ export default async function Home() {
 
       {/* Partnerleiste */}
       <section aria-label="Partner" className="border-b border-line bg-[#050505]">
-        <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-x-12 gap-y-6 px-6 py-7">
-          <div className="flex flex-wrap items-center gap-x-10 gap-y-5">
-            <span className="font-display text-xs uppercase tracking-[0.22em] text-gold">Partner</span>
+        <div className="mx-auto max-w-[1240px] px-6 py-7">
+          <div className="grid grid-cols-2 place-items-center gap-x-8 gap-y-7 sm:grid-cols-4 xl:flex xl:items-center xl:justify-between xl:gap-0">
+            <span className="col-span-2 font-display text-xs uppercase tracking-[0.22em] text-gold sm:col-span-4">Partner</span>
             <a href="https://www.school-of-racing.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/school-of-racing.svg" alt="School of Racing" width={55} height={44} unoptimized className="h-[44px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
             <a href="https://kosklima.de" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/kos-klima.png" alt="KOS Klima" width={118} height={20} className="h-5 w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
             <a href="https://www.unzer.com/de/" target="_blank" rel="noopener noreferrer" className="group"><Image src="/images/unzer.png" alt="UNZER" width={97} height={22} className="h-[22px] w-auto opacity-85 transition-opacity group-hover:opacity-100" /></a>
