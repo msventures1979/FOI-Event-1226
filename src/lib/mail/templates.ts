@@ -256,13 +256,24 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
           ];
       break;
     }
-    case "erinnerung":
-      subject = "Erinnerung: Ihr Platz bei FOI Racing";
-      blocks = [
-        { p: "Ihre Einladung zur FOI-Weihnachtsfeier am 14. Dezember ist noch offen. " + (g.status === "angeboten" && ctx.offerExpiresAt ? `Ihr Platz ist noch bis ${fmtDate(ctx.offerExpiresAt)} für Sie reserviert.` : ctx.freeSlots != null && ctx.freeSlots < 20 ? `Es sind noch ${ctx.freeSlots} Plätze frei.` : "Die Plätze sind begrenzt.") },
-        { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Ich kann leider nicht dabei sein", href: absagen, subtle: true }] },
-      ];
+    case "erinnerung": {
+      const reserviert = g.status === "angeboten" && ctx.offerExpiresAt;
+      subject = reserviert ? "Bitte bestätigen: Ihr Platz bei FOI Racing am 14. Dezember" : "Erinnerung: Ihr Platz bei FOI Racing";
+      blocks = reserviert
+        ? [
+            { p: "schön, dass Sie bei der FOI-Weihnachtsfeier am Hockenheimring dabei sein möchten! Ein kurzer, freundlicher Hinweis: Ihre Rückmeldung auf unser Save the Date war zunächst eine unverbindliche Vormerkung. Damit Ihr Platz sicher ist, brauchen wir noch Ihre verbindliche Anmeldung." },
+            { p: `Ihr Platz ist bis ${fmtDate(ctx.offerExpiresAt as string)} für Sie reserviert. Danach geben wir ihn an die Warteliste weiter – alle Plätze sind vergeben und die Nachfrage ist groß.` },
+            { p: "Die Anmeldung dauert nur zwei Minuten: Teilnahmeart wählen, ein paar Angaben, fertig." },
+            { buttons: [{ label: "Jetzt verbindlich anmelden", href: anmelden, primary: true }, { label: "Ich kann leider nicht dabei sein", href: absagen, subtle: true }] },
+            { p: "Und falls es bei Ihnen doch nicht passt, sagen Sie uns gern kurz über den Link Bescheid – dann freut sich jemand von der Warteliste über Ihren Platz." },
+            { ps: "Der Link gilt nur für Sie persönlich." },
+          ]
+        : [
+            { p: "Ihre Einladung zur FOI-Weihnachtsfeier am 14. Dezember ist noch offen. " + (ctx.freeSlots != null && ctx.freeSlots < 20 ? `Es sind noch ${ctx.freeSlots} Plätze frei.` : "Die Plätze sind begrenzt.") },
+            { buttons: [{ label: "Jetzt anmelden", href: anmelden, primary: true }, { label: "Ich kann leider nicht dabei sein", href: absagen, subtle: true }] },
+          ];
       break;
+    }
     case "bestaetigung":
       subject = "Anmeldung bestätigt: FOI Racing am 14. Dezember";
       blocks = [
