@@ -31,7 +31,7 @@ export default async function Anmeldung({ searchParams }: { searchParams: Promis
             guest={{ code: "FOI-VORSCHAU", salutation: "Herr", title: "", first_name: "Max", last_name: "Mustermann", company: "Musterfirma GmbH", position: "Geschäftsführer", email: "max.mustermann@beispiel.de" }}
             slots={slots}
             initialArt="own"
-            reservedUntil="2026-11-23T22:59:00Z"
+            reservedUntil="2026-11-24T22:59:00Z"
           />
         </main>
       </PageShell>

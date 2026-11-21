@@ -199,7 +199,7 @@ export async function queueMails(_prev: unknown, form: FormData): Promise<{ msg:
     // Testmail: immer Vorschau-Links (kein Klick ändert echte Daten). Einladung/Erinnerung so zeigen, wie die Vorgemerkten sie bekommen: mit reserviertem Platz.
     const reservedTest = type === "einladung" || type === "erinnerung";
     const tg: Guest = { ...g, manage_token: "vorschau", code: "FOI-VORSCHAU", ...(reservedTest ? { status: "angeboten" } : {}) } as Guest;
-    const mail = renderMail(type, { guest: tg, offerExpiresAt: reservedTest ? "2026-11-23T22:59:00Z" : undefined, siteUrl: env.siteUrl, participationType: "own", freeSlots: testFree, interest: { answer: "dabei", mode: "own", track_group: "rookie", vehicle: "" } });
+    const mail = renderMail(type, { guest: tg, offerExpiresAt: reservedTest ? "2026-11-24T22:59:00Z" : undefined, siteUrl: env.siteUrl, participationType: "own", freeSlots: testFree, interest: { answer: "dabei", mode: "own", track_group: "rookie", vehicle: "" } });
     const r = await new Resend(env.resendKey).emails.send({ from: mail.from ?? env.mailFrom, to: testTo || admin, replyTo: env.mailReplyTo, subject: `[TEST] ${mail.subject}`, html: mail.html, text: mail.text,
       // wie im Echtversand: Kalendereintrag an die Bestätigung hängen
       attachments: type === "bestaetigung" ? [{ filename: "FOI-Weihnachtsfeier-14-Dezember.ics", contentType: "text/calendar; charset=utf-8; method=PUBLISH", content: Buffer.from(buildIcs({ url: `${env.siteUrl}/meine-teilnahme/${g.manage_token}` })).toString("base64") }] : undefined,

@@ -259,14 +259,25 @@ export function renderMail(type: MailType, ctx: MailContext): RenderedMail {
     case "erinnerung": {
       const reserviert = g.status === "angeboten" && ctx.offerExpiresAt;
       subject = reserviert ? "Bitte bestätigen: Ihr Platz bei FOI Racing am 14. Dezember" : "Erinnerung: Ihr Platz bei FOI Racing";
+      if (reserviert) preheader = `Ihr Platz ist bis ${fmtDate(ctx.offerExpiresAt as string)} reserviert – jetzt verbindlich anmelden.`;
       blocks = reserviert
         ? [
             { p: "schön, dass Sie bei der FOI-Weihnachtsfeier am Hockenheimring dabei sein möchten! Ein kurzer, freundlicher Hinweis: Ihre Rückmeldung auf unser Save the Date war zunächst eine unverbindliche Vormerkung. Damit Ihr Platz sicher ist, brauchen wir noch Ihre verbindliche Anmeldung." },
             { p: `Ihr Platz ist bis ${fmtDate(ctx.offerExpiresAt as string)} für Sie reserviert. Danach geben wir ihn an die Warteliste weiter – alle Plätze sind vergeben und die Nachfrage ist groß.` },
+            { p: "Ein kleiner Vorgeschmack darauf, was Sie am 14. Dezember erwartet:" },
+            { facts: [
+                "13:00 Uhr · Ankunft der Selbstfahrer, um 13:45 Uhr folgt das Drivers Briefing",
+                "14:15 Uhr · Ankunft der Drift-Beifahrer",
+                "14:30 Uhr · Ab auf die Strecke: Runden im eigenen Wagen – oder auf dem Beifahrersitz, während ein Profi Sie quer durch die Kurven driftet",
+                "16:30 Uhr · Letzte Runden, dann geht es in die Loge",
+                "17:00 Uhr · Empfang in der Loge, jetzt kommen auch die Dinner-Gäste dazu",
+                "18:00 Uhr · Early Dinner mit Charity-Auktion und guten Gesprächen",
+              ].join("\n") },
             { p: "Die Anmeldung dauert nur zwei Minuten: Teilnahmeart wählen, ein paar Angaben, fertig." },
             { buttons: [{ label: "Jetzt verbindlich anmelden", href: anmelden, primary: true }, { label: "Ich kann leider nicht dabei sein", href: absagen, subtle: true }] },
             { p: "Und falls es bei Ihnen doch nicht passt, sagen Sie uns gern kurz über den Link Bescheid – dann freut sich jemand von der Warteliste über Ihren Platz." },
             { ps: "Der Link gilt nur für Sie persönlich." },
+            { partners: true },
           ]
         : [
             { p: "Ihre Einladung zur FOI-Weihnachtsfeier am 14. Dezember ist noch offen. " + (ctx.freeSlots != null && ctx.freeSlots < 20 ? `Es sind noch ${ctx.freeSlots} Plätze frei.` : "Die Plätze sind begrenzt.") },
